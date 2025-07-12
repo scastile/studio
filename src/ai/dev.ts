@@ -1,1 +1,6 @@
-// Flows will be imported for their side effects in this file.
+import { config } from 'dotenv';
+config();
+
+import '@/ai/flows/generate-promotion-ideas.ts';
+import '@/ai/flows/summarize-marketing-campaign.ts';
+import '@/ai/flows/summarize-promotion-event-impact.ts';
