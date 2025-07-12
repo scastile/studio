@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { Lightbulb, Loader2, CalendarDays } from 'lucide-react';
+import { Lightbulb, Loader2, CalendarDays, Image as ImageIcon } from 'lucide-react';
 
 import { generatePromotionIdeas } from '@/ai/flows/generate-promotion-ideas';
 import { generateImage } from '@/ai/flows/generate-image-flow';
@@ -16,6 +16,8 @@ import { IdeaCard } from './IdeaCard';
 import { Badge } from '@/components/ui/badge';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
+import { Switch } from '@/components/ui/switch';
+import { Label } from '@/components/ui/label';
 
 const formSchema = z.object({
   topic: z.string().min(3, {
@@ -41,6 +43,8 @@ export function PromotionGenerator({ onImageGenerated }: PromotionGeneratorProps
   const [ideas, setIdeas] = useState<Idea[]>([]);
   const [relevantDates, setRelevantDates] = useState<RelevantDate[]>([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [isGeneratingImage, setIsGeneratingImage] = useState(false);
+  const [shouldGenerateImage, setShouldGenerateImage] = useState(true);
   const [categories, setCategories] = useState<string[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const { toast } = useToast();
@@ -54,6 +58,7 @@ export function PromotionGenerator({ onImageGenerated }: PromotionGeneratorProps
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     setIsLoading(true);
+    setIsGeneratingImage(shouldGenerateImage);
     setIdeas([]);
     setRelevantDates([]);
     setCategories([]);
@@ -61,12 +66,16 @@ export function PromotionGenerator({ onImageGenerated }: PromotionGeneratorProps
     onImageGenerated(null);
     
     try {
-      // Kick off both requests in parallel
+      // Always generate ideas
       const ideasPromise = generatePromotionIdeas({ topic: values.topic });
-      const imagePromise = generateImage({ topic: `A creative, artistic, visually-appealing promotional image for a library about: ${values.topic}` });
-      
-      const [ideasResult, imageResult] = await Promise.all([ideasPromise, imagePromise]);
 
+      // Conditionally generate image
+      const imagePromise = shouldGenerateImage 
+        ? generateImage({ topic: `A creative, artistic, visually-appealing promotional image for a library about: ${values.topic}` })
+        : Promise.resolve(null);
+      
+      // Await idea generation first
+      const ideasResult = await ideasPromise;
       if (ideasResult) {
         if(ideasResult.ideas) {
           setIdeas(ideasResult.ideas);
@@ -79,20 +88,26 @@ export function PromotionGenerator({ onImageGenerated }: PromotionGeneratorProps
       } else {
         throw new Error('No ideas were generated.');
       }
+      setIsLoading(false); // Stop main loading state
 
-      if(imageResult && imageResult.imageDataUri) {
-        onImageGenerated(imageResult.imageDataUri);
+      // Await image generation if it was started
+      if (shouldGenerateImage) {
+        const imageResult = await imagePromise;
+        if(imageResult && imageResult.imageDataUri) {
+          onImageGenerated(imageResult.imageDataUri);
+        }
+        setIsGeneratingImage(false);
       }
 
     } catch (error) {
-      console.error('Error generating ideas or image:', error);
+      console.error('Error generating content:', error);
       toast({
         variant: 'destructive',
         title: 'Uh oh! Something went wrong.',
         description: 'There was a problem generating content. Please try again.',
       });
-    } finally {
       setIsLoading(false);
+      setIsGeneratingImage(false);
     }
   }
   
@@ -105,7 +120,7 @@ export function PromotionGenerator({ onImageGenerated }: PromotionGeneratorProps
       <div className="container mx-auto">
         <div className="max-w-xl mx-auto">
           <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
               <FormField
                 control={form.control}
                 name="topic"
@@ -123,11 +138,25 @@ export function PromotionGenerator({ onImageGenerated }: PromotionGeneratorProps
                   </FormItem>
                 )}
               />
-              <Button type="submit" disabled={isLoading} className="w-full py-6 text-lg">
+              <div className="flex items-center justify-center space-x-2 pt-2">
+                <Switch
+                  id="image-generation-switch"
+                  checked={shouldGenerateImage}
+                  onCheckedChange={setShouldGenerateImage}
+                  disabled={isLoading || isGeneratingImage}
+                />
+                <Label htmlFor="image-generation-switch" className="text-muted-foreground">Generate AI Image</Label>
+              </div>
+              <Button type="submit" disabled={isLoading || isGeneratingImage} className="w-full py-6 text-lg">
                 {isLoading ? (
                   <>
                     <Loader2 className="mr-2 h-6 w-6 animate-spin" />
                     Generating Ideas...
+                  </>
+                ) : isGeneratingImage ? (
+                   <>
+                    <Loader2 className="mr-2 h-6 w-6 animate-spin" />
+                    Generating Image...
                   </>
                 ) : (
                   <>
@@ -140,7 +169,7 @@ export function PromotionGenerator({ onImageGenerated }: PromotionGeneratorProps
           </Form>
         </div>
 
-        {isLoading && (
+        {(isLoading || isGeneratingImage) && (
           <div className="mt-12">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {[...Array(6)].map((_, i) => (

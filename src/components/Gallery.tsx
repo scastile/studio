@@ -21,7 +21,7 @@ export function Gallery({ generatedImageUrl }: GalleryProps) {
           </p>
         </div>
         
-        {generatedImageUrl && (
+        {generatedImageUrl ? (
           <div className="w-full max-w-2xl mx-auto">
             <Card className="overflow-hidden group">
               <CardContent className="p-0">
@@ -36,7 +36,7 @@ export function Gallery({ generatedImageUrl }: GalleryProps) {
               </CardContent>
             </Card>
           </div>
-        )}
+        ) : null}
       </div>
     </section>
   );
