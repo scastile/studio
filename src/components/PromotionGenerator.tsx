@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { Lightbulb, Loader2, CalendarDays, Info } from 'lucide-react';
+import { Lightbulb, Loader2, CalendarDays, Info, Copy } from 'lucide-react';
 
 import { generatePromotionIdeas } from '@/ai/flows/generate-promotion-ideas';
 import { generateImage } from '@/ai/flows/generate-image-flow';
@@ -19,8 +19,9 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog';
 import { getIconForCategory } from './icons';
+import { ScrollArea } from './ui/scroll-area';
 
 const formSchema = z.object({
   topic: z.string().min(3, {
@@ -138,6 +139,21 @@ export function PromotionGenerator({ onImageGenerated }: PromotionGeneratorProps
       setIsElaborating(false);
     }
   }
+
+  const handleCopyToClipboard = () => {
+    if (elaboratedIdea) {
+      // Create a temporary element to parse HTML and get text
+      const tempDiv = document.createElement('div');
+      tempDiv.innerHTML = elaboratedIdea;
+      const textToCopy = tempDiv.textContent || tempDiv.innerText || '';
+
+      navigator.clipboard.writeText(textToCopy);
+      toast({
+        title: 'Copied to Clipboard!',
+        description: 'The elaborated idea has been copied.',
+      });
+    }
+  };
 
   const filteredIdeas = selectedCategory
     ? ideas.filter((idea) => idea.category === selectedCategory)
@@ -284,15 +300,27 @@ export function PromotionGenerator({ onImageGenerated }: PromotionGeneratorProps
                     {selectedIdea.description}
                   </DialogDescription>
                 </DialogHeader>
-                <div className="prose prose-sm dark:prose-invert max-w-none mt-4">
-                  {isElaborating ? (
-                    <div className="flex items-center justify-center p-8">
-                      <Loader2 className="h-8 w-8 animate-spin text-primary" />
-                    </div>
-                  ) : (
-                    <div dangerouslySetInnerHTML={{ __html: elaboratedIdea || '' }} />
-                  )}
-                </div>
+                <ScrollArea className="h-[50vh] w-full rounded-md border p-4">
+                  <div className="prose prose-sm dark:prose-invert max-w-none">
+                    {isElaborating ? (
+                      <div className="flex items-center justify-center p-8">
+                        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+                      </div>
+                    ) : (
+                      <div dangerouslySetInnerHTML={{ __html: elaboratedIdea || '' }} />
+                    )}
+                  </div>
+                </ScrollArea>
+                <DialogFooter>
+                  <Button
+                    onClick={handleCopyToClipboard}
+                    disabled={isElaborating || !elaboratedIdea}
+                    variant="outline"
+                  >
+                    <Copy className="mr-2 h-4 w-4" />
+                    Copy Text
+                  </Button>
+                </DialogFooter>
               </>
             )}
           </DialogContent>
