@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
+import { marked } from 'marked';
 import { Lightbulb, Loader2, CalendarDays, Info, Copy } from 'lucide-react';
 
 import { generatePromotionIdeas } from '@/ai/flows/generate-promotion-ideas';
@@ -142,9 +143,10 @@ export function PromotionGenerator({ onImageGenerated }: PromotionGeneratorProps
 
   const handleCopyToClipboard = () => {
     if (elaboratedIdea) {
-      // Create a temporary element to parse HTML and get text
+      // Use marked to convert markdown to HTML, then get text content
+      const html = marked.parse(elaboratedIdea);
       const tempDiv = document.createElement('div');
-      tempDiv.innerHTML = elaboratedIdea; // The elaboratedIdea is already HTML from markdown
+      tempDiv.innerHTML = html;
       const textToCopy = tempDiv.textContent || tempDiv.innerText || '';
 
       navigator.clipboard.writeText(textToCopy);
@@ -161,6 +163,11 @@ export function PromotionGenerator({ onImageGenerated }: PromotionGeneratorProps
     : ideas;
 
   const SelectedIdeaIcon = selectedIdea ? getIconForCategory(selectedIdea.category) : Info;
+  
+  const getElaboratedIdeaAsHtml = () => {
+    if (!elaboratedIdea) return '';
+    return marked.parse(elaboratedIdea);
+  };
 
   return (
     <section id="generator" className="py-12 sm:py-16 bg-white dark:bg-card">
@@ -308,7 +315,7 @@ export function PromotionGenerator({ onImageGenerated }: PromotionGeneratorProps
                         <Loader2 className="h-8 w-8 animate-spin text-primary" />
                       </div>
                     ) : (
-                      <div dangerouslySetInnerHTML={{ __html: elaboratedIdea || '' }} />
+                      <div dangerouslySetInnerHTML={{ __html: getElaboratedIdeaAsHtml() }} />
                     )}
                   </article>
                 </ScrollArea>
