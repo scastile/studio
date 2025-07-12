@@ -7,15 +7,7 @@ interface GalleryProps {
   generatedImageUrl: string | null;
 }
 
-const placeholderItems = [
-  { src: 'https://placehold.co/600x400.png', hint: 'library display', alt: 'A creative book display in a library.' },
-  { src: 'https://placehold.co/600x400.png', hint: 'book promotion', alt: 'Promotional materials for a new book release.' },
-  { src: 'https://placehold.co/600x400.png', hint: 'event signage', alt: 'Signage for a library event.' },
-];
-
 export function Gallery({ generatedImageUrl }: GalleryProps) {
-  const isLoading = generatedImageUrl === null;
-
   return (
     <section id="gallery" className="py-12 sm:py-16 bg-background">
       <div className="container mx-auto">
@@ -29,7 +21,7 @@ export function Gallery({ generatedImageUrl }: GalleryProps) {
           </p>
         </div>
         
-        {generatedImageUrl ? (
+        {generatedImageUrl && (
           <div className="w-full max-w-2xl mx-auto">
             <Card className="overflow-hidden group">
               <CardContent className="p-0">
@@ -43,23 +35,6 @@ export function Gallery({ generatedImageUrl }: GalleryProps) {
                 />
               </CardContent>
             </Card>
-          </div>
-        ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {placeholderItems.map((item, index) => (
-              <Card key={index} className="overflow-hidden group">
-                <CardContent className="p-0">
-                  <Image
-                    src={item.src}
-                    alt={item.alt}
-                    width={600}
-                    height={400}
-                    data-ai-hint={item.hint}
-                    className="w-full h-auto object-cover transition-transform duration-300 group-hover:scale-105"
-                  />
-                </CardContent>
-              </Card>
-            ))}
           </div>
         )}
       </div>
