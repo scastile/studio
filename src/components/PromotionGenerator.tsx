@@ -144,7 +144,7 @@ export function PromotionGenerator({ onImageGenerated }: PromotionGeneratorProps
     if (elaboratedIdea) {
       // Create a temporary element to parse HTML and get text
       const tempDiv = document.createElement('div');
-      tempDiv.innerHTML = elaboratedIdea;
+      tempDiv.innerHTML = elaboratedIdea; // The elaboratedIdea is already HTML from markdown
       const textToCopy = tempDiv.textContent || tempDiv.innerText || '';
 
       navigator.clipboard.writeText(textToCopy);
@@ -154,6 +154,7 @@ export function PromotionGenerator({ onImageGenerated }: PromotionGeneratorProps
       });
     }
   };
+
 
   const filteredIdeas = selectedCategory
     ? ideas.filter((idea) => idea.category === selectedCategory)
@@ -301,7 +302,7 @@ export function PromotionGenerator({ onImageGenerated }: PromotionGeneratorProps
                   </DialogDescription>
                 </DialogHeader>
                 <ScrollArea className="h-[50vh] w-full rounded-md border p-4">
-                  <div className="prose prose-sm dark:prose-invert max-w-none">
+                  <article className="prose prose-sm dark:prose-invert max-w-none">
                     {isElaborating ? (
                       <div className="flex items-center justify-center p-8">
                         <Loader2 className="h-8 w-8 animate-spin text-primary" />
@@ -309,7 +310,7 @@ export function PromotionGenerator({ onImageGenerated }: PromotionGeneratorProps
                     ) : (
                       <div dangerouslySetInnerHTML={{ __html: elaboratedIdea || '' }} />
                     )}
-                  </div>
+                  </article>
                 </ScrollArea>
                 <DialogFooter>
                   <Button

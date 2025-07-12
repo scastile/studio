@@ -37,7 +37,7 @@ const prompt = ai.definePrompt({
   Idea Category: {{{category}}}
   Idea Description: {{{description}}}
   
-  Provide the output as a single block of Markdown text.`,
+  Provide the output as a single block of well-formatted Markdown text. Use headings, bold text, and lists to make the content easy to read and scan.`,
 });
 
 const elaborateOnIdeaFlow = ai.defineFlow(
