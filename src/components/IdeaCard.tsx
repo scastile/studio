@@ -1,5 +1,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { getIconForCategory } from '@/components/icons';
+import { Button } from './ui/button';
+import { Info } from 'lucide-react';
 
 type Idea = {
   category: string;
@@ -8,9 +10,10 @@ type Idea = {
 
 interface IdeaCardProps {
   idea: Idea;
+  onSelect: (idea: Idea) => void;
 }
 
-export function IdeaCard({ idea }: IdeaCardProps) {
+export function IdeaCard({ idea, onSelect }: IdeaCardProps) {
   const Icon = getIconForCategory(idea.category);
 
   return (
@@ -21,8 +24,17 @@ export function IdeaCard({ idea }: IdeaCardProps) {
           <span>{idea.category}</span>
         </CardTitle>
       </CardHeader>
-      <CardContent className="flex-grow">
-        <p className="text-muted-foreground">{idea.description}</p>
+      <CardContent className="flex-grow flex flex-col">
+        <p className="text-muted-foreground flex-grow">{idea.description}</p>
+        <Button 
+          variant="outline" 
+          size="sm" 
+          className="mt-4 w-full"
+          onClick={() => onSelect(idea)}
+        >
+          <Info className="mr-2 h-4 w-4" />
+          More Info
+        </Button>
       </CardContent>
     </Card>
   );

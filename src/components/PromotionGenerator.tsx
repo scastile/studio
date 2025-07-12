@@ -4,10 +4,11 @@ import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { Lightbulb, Loader2, CalendarDays, Image as ImageIcon } from 'lucide-react';
+import { Lightbulb, Loader2, CalendarDays, Info } from 'lucide-react';
 
 import { generatePromotionIdeas } from '@/ai/flows/generate-promotion-ideas';
 import { generateImage } from '@/ai/flows/generate-image-flow';
+import { elaborateOnIdea } from '@/ai/flows/elaborate-on-idea';
 import { Button } from '@/components/ui/button';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
@@ -18,6 +19,8 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
+import { getIconForCategory } from './icons';
 
 const formSchema = z.object({
   topic: z.string().min(3, {
@@ -47,6 +50,11 @@ export function PromotionGenerator({ onImageGenerated }: PromotionGeneratorProps
   const [shouldGenerateImage, setShouldGenerateImage] = useState(true);
   const [categories, setCategories] = useState<string[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+
+  const [selectedIdea, setSelectedIdea] = useState<Idea | null>(null);
+  const [isElaborating, setIsElaborating] = useState(false);
+  const [elaboratedIdea, setElaboratedIdea] = useState<string | null>(null);
+  
   const { toast } = useToast();
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -66,15 +74,12 @@ export function PromotionGenerator({ onImageGenerated }: PromotionGeneratorProps
     onImageGenerated(null);
     
     try {
-      // Always generate ideas
       const ideasPromise = generatePromotionIdeas({ topic: values.topic });
 
-      // Conditionally generate image
       const imagePromise = shouldGenerateImage 
         ? generateImage({ topic: `A creative, artistic, visually-appealing promotional image for a library about: ${values.topic}` })
         : Promise.resolve(null);
       
-      // Await idea generation first
       const ideasResult = await ideasPromise;
       if (ideasResult) {
         if(ideasResult.ideas) {
@@ -88,9 +93,8 @@ export function PromotionGenerator({ onImageGenerated }: PromotionGeneratorProps
       } else {
         throw new Error('No ideas were generated.');
       }
-      setIsLoading(false); // Stop main loading state
+      setIsLoading(false);
 
-      // Await image generation if it was started
       if (shouldGenerateImage) {
         const imageResult = await imagePromise;
         if(imageResult && imageResult.imageDataUri) {
@@ -110,10 +114,36 @@ export function PromotionGenerator({ onImageGenerated }: PromotionGeneratorProps
       setIsGeneratingImage(false);
     }
   }
-  
+
+  async function handleIdeaSelect(idea: Idea) {
+    setSelectedIdea(idea);
+    setIsElaborating(true);
+    setElaboratedIdea(null);
+    try {
+      const result = await elaborateOnIdea(idea);
+      if (result && result.elaboratedIdea) {
+        setElaboratedIdea(result.elaboratedIdea);
+      } else {
+        throw new Error('No elaboration was generated.');
+      }
+    } catch (error) {
+      console.error('Error elaborating on idea:', error);
+      toast({
+        variant: 'destructive',
+        title: 'Elaboration Failed',
+        description: 'There was a problem getting more details. Please try again.',
+      });
+      setSelectedIdea(null); // Close dialog on error
+    } finally {
+      setIsElaborating(false);
+    }
+  }
+
   const filteredIdeas = selectedCategory
     ? ideas.filter((idea) => idea.category === selectedCategory)
     : ideas;
+
+  const SelectedIdeaIcon = selectedIdea ? getIconForCategory(selectedIdea.category) : Info;
 
   return (
     <section id="generator" className="py-12 sm:py-16 bg-white dark:bg-card">
@@ -233,13 +263,40 @@ export function PromotionGenerator({ onImageGenerated }: PromotionGeneratorProps
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                   {filteredIdeas.map((idea, index) => (
-                    <IdeaCard key={index} idea={idea} />
+                    <IdeaCard key={index} idea={idea} onSelect={handleIdeaSelect} />
                   ))}
                 </div>
               </>
             )}
           </div>
         )}
+
+        <Dialog open={!!selectedIdea} onOpenChange={(isOpen) => { if (!isOpen) setSelectedIdea(null); }}>
+          <DialogContent className="sm:max-w-2xl">
+            {selectedIdea && (
+              <>
+                <DialogHeader>
+                  <DialogTitle className="flex items-center gap-3 text-2xl font-headline">
+                    <SelectedIdeaIcon className="w-8 h-8 text-primary" />
+                    {selectedIdea.category}
+                  </DialogTitle>
+                  <DialogDescription>
+                    {selectedIdea.description}
+                  </DialogDescription>
+                </DialogHeader>
+                <div className="prose prose-sm dark:prose-invert max-w-none mt-4">
+                  {isElaborating ? (
+                    <div className="flex items-center justify-center p-8">
+                      <Loader2 className="h-8 w-8 animate-spin text-primary" />
+                    </div>
+                  ) : (
+                    <div dangerouslySetInnerHTML={{ __html: elaboratedIdea || '' }} />
+                  )}
+                </div>
+              </>
+            )}
+          </DialogContent>
+        </Dialog>
       </div>
     </section>
   );
