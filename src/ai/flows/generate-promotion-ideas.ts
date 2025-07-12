@@ -2,7 +2,7 @@
 'use server';
 
 /**
- * @fileOverview Generates cross-promotional ideas for a given topic in a library setting.
+ * @fileOverview Generates cross-promotional ideas and relevant dates for a given topic in a library setting.
  *
  * - generatePromotionIdeas - A function that generates promotion ideas.
  * - GeneratePromotionIdeasInput - The input type for the generatePromotionIdeas function.
@@ -24,6 +24,12 @@ const GeneratePromotionIdeasOutputSchema = z.object({
       description: z.string().describe('A detailed description of the promotion idea.'),
     })
   ).describe('A list of creative cross-promotional ideas.'),
+  relevantDates: z.array(
+    z.object({
+      date: z.string().describe('A relevant date (e.g., "July 4th", "December 25th", "Halloween").'),
+      reason: z.string().describe('The reason why this date is relevant to the topic.'),
+    })
+  ).describe('A list of relevant dates associated with the topic, such as release dates, holidays depicted, or author birthdays.')
 });
 export type GeneratePromotionIdeasOutput = z.infer<typeof GeneratePromotionIdeasOutputSchema>;
 
@@ -39,9 +45,11 @@ const prompt = ai.definePrompt({
 
   Generate a list of creative cross-promotional ideas for the following topic in a library setting. Include ideas for displays, shelf signage, social media posts, video concepts, and escape room themes.
 
+  Also, identify any relevant dates or holidays associated with the topic. For example, for the movie "Jaws", a relevant date would be July 4th. For a book, it could be the author's birthday or a significant date within the story.
+
   Topic: {{{topic}}}
 
-  Format the output as a JSON array of objects, where each object has a category and a description.
+  Format the output as a JSON object.
   `,
 });
 

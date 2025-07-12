@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { Lightbulb, Loader2 } from 'lucide-react';
+import { Lightbulb, Loader2, CalendarDays } from 'lucide-react';
 
 import { generatePromotionIdeas } from '@/ai/flows/generate-promotion-ideas';
 import { generateImage } from '@/ai/flows/generate-image-flow';
@@ -15,6 +15,7 @@ import { useToast } from '@/hooks/use-toast';
 import { IdeaCard } from './IdeaCard';
 import { Badge } from '@/components/ui/badge';
 import { Skeleton } from '@/components/ui/skeleton';
+import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
 
 const formSchema = z.object({
   topic: z.string().min(3, {
@@ -27,12 +28,18 @@ type Idea = {
   description: string;
 };
 
+type RelevantDate = {
+  date: string;
+  reason: string;
+};
+
 interface PromotionGeneratorProps {
   onImageGenerated: (imageUrl: string | null) => void;
 }
 
 export function PromotionGenerator({ onImageGenerated }: PromotionGeneratorProps) {
   const [ideas, setIdeas] = useState<Idea[]>([]);
+  const [relevantDates, setRelevantDates] = useState<RelevantDate[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [categories, setCategories] = useState<string[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
@@ -48,6 +55,7 @@ export function PromotionGenerator({ onImageGenerated }: PromotionGeneratorProps
   async function onSubmit(values: z.infer<typeof formSchema>) {
     setIsLoading(true);
     setIdeas([]);
+    setRelevantDates([]);
     setCategories([]);
     setSelectedCategory(null);
     onImageGenerated(null);
@@ -59,10 +67,15 @@ export function PromotionGenerator({ onImageGenerated }: PromotionGeneratorProps
       
       const [ideasResult, imageResult] = await Promise.all([ideasPromise, imagePromise]);
 
-      if (ideasResult && ideasResult.ideas) {
-        setIdeas(ideasResult.ideas);
-        const uniqueCategories = [...new Set(ideasResult.ideas.map(idea => idea.category))];
-        setCategories(uniqueCategories);
+      if (ideasResult) {
+        if(ideasResult.ideas) {
+          setIdeas(ideasResult.ideas);
+          const uniqueCategories = [...new Set(ideasResult.ideas.map(idea => idea.category))];
+          setCategories(uniqueCategories);
+        }
+        if(ideasResult.relevantDates) {
+          setRelevantDates(ideasResult.relevantDates);
+        }
       } else {
         throw new Error('No ideas were generated.');
       }
@@ -144,32 +157,58 @@ export function PromotionGenerator({ onImageGenerated }: PromotionGeneratorProps
           </div>
         )}
 
-        {ideas.length > 0 && !isLoading && (
+        { !isLoading && (ideas.length > 0 || relevantDates.length > 0) && (
           <div className="mt-12">
-            <div className="flex flex-wrap justify-center gap-2 mb-8">
-              <Badge
-                variant={selectedCategory === null ? 'default' : 'secondary'}
-                onClick={() => setSelectedCategory(null)}
-                className="cursor-pointer text-base px-4 py-2"
-              >
-                All
-              </Badge>
-              {categories.map((category) => (
-                <Badge
-                  key={category}
-                  variant={selectedCategory === category ? 'default' : 'secondary'}
-                  onClick={() => setSelectedCategory(category)}
-                  className="cursor-pointer text-base px-4 py-2"
-                >
-                  {category}
-                </Badge>
-              ))}
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {filteredIdeas.map((idea, index) => (
-                <IdeaCard key={index} idea={idea} />
-              ))}
-            </div>
+            {relevantDates.length > 0 && (
+              <div className="mb-12">
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-3 text-lg font-headline">
+                      <CalendarDays className="w-6 h-6 text-primary" />
+                      <span>Relevant Dates</span>
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <ul className="space-y-2">
+                      {relevantDates.map((d, i) => (
+                        <li key={i} className="text-muted-foreground">
+                          <span className="font-bold text-foreground">{d.date}:</span> {d.reason}
+                        </li>
+                      ))}
+                    </ul>
+                  </CardContent>
+                </Card>
+              </div>
+            )}
+            
+            {ideas.length > 0 && (
+              <>
+                <div className="flex flex-wrap justify-center gap-2 mb-8">
+                  <Badge
+                    variant={selectedCategory === null ? 'default' : 'secondary'}
+                    onClick={() => setSelectedCategory(null)}
+                    className="cursor-pointer text-base px-4 py-2"
+                  >
+                    All
+                  </Badge>
+                  {categories.map((category) => (
+                    <Badge
+                      key={category}
+                      variant={selectedCategory === category ? 'default' : 'secondary'}
+                      onClick={() => setSelectedCategory(category)}
+                      className="cursor-pointer text-base px-4 py-2"
+                    >
+                      {category}
+                    </Badge>
+                  ))}
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {filteredIdeas.map((idea, index) => (
+                    <IdeaCard key={index} idea={idea} />
+                  ))}
+                </div>
+              </>
+            )}
           </div>
         )}
       </div>
