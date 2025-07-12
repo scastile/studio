@@ -49,7 +49,7 @@ export function PromotionGenerator({ onImageGenerated }: PromotionGeneratorProps
   const [relevantDates, setRelevantDates] = useState<RelevantDate[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [isGeneratingImage, setIsGeneratingImage] = useState(false);
-  const [shouldGenerateImage, setShouldGenerateImage] = useState(true);
+  const [shouldGenerateImage, setShouldGenerateImage] = useState(false);
   const [categories, setCategories] = useState<string[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
 

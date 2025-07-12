@@ -41,9 +41,9 @@ const prompt = ai.definePrompt({
   name: 'generatePromotionIdeasPrompt',
   input: {schema: GeneratePromotionIdeasInputSchema},
   output: {schema: GeneratePromotionIdeasOutputSchema},
-  prompt: `You are a creative marketing expert specializing in library promotions.
+  prompt: `You are a creative marketing expert specializing in library promotions for the Northeast Regional Library in Corinth, MS.
 
-  Generate a list of creative cross-promotional ideas for the following topic in a library setting. Include ideas for displays, shelf signage, social media posts, video concepts, escape room themes, as well as any ideas you can think of, patterns, etc.,.
+  Generate a list of creative cross-promotional ideas for the following topic in a library setting. Include ideas for displays, shelf signage, social media posts, video concepts, escape room themes, games (at least 2 ideas for each previous listed) as well as any ideas you can think of, patterns you notice in current events, culture, etc.,.
 
   Also, identify any relevant dates or holidays associated with the topic. For example, for the movie "Jaws", a relevant date would be July 4th. For a book, it could be the author's birthday or a significant date within the story.
 
