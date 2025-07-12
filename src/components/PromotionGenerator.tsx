@@ -7,6 +7,7 @@ import { z } from 'zod';
 import { Lightbulb, Loader2 } from 'lucide-react';
 
 import { generatePromotionIdeas } from '@/ai/flows/generate-promotion-ideas';
+import { generateImage } from '@/ai/flows/generate-image-flow';
 import { Button } from '@/components/ui/button';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
@@ -26,7 +27,11 @@ type Idea = {
   description: string;
 };
 
-export function PromotionGenerator() {
+interface PromotionGeneratorProps {
+  onImageGenerated: (imageUrl: string | null) => void;
+}
+
+export function PromotionGenerator({ onImageGenerated }: PromotionGeneratorProps) {
   const [ideas, setIdeas] = useState<Idea[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [categories, setCategories] = useState<string[]>([]);
@@ -45,21 +50,33 @@ export function PromotionGenerator() {
     setIdeas([]);
     setCategories([]);
     setSelectedCategory(null);
+    onImageGenerated(null);
+    
     try {
-      const result = await generatePromotionIdeas({ topic: values.topic });
-      if (result && result.ideas) {
-        setIdeas(result.ideas);
-        const uniqueCategories = [...new Set(result.ideas.map(idea => idea.category))];
+      // Kick off both requests in parallel
+      const ideasPromise = generatePromotionIdeas({ topic: values.topic });
+      const imagePromise = generateImage({ topic: `A creative, artistic, visually-appealing promotional image for a library about: ${values.topic}` });
+      
+      const [ideasResult, imageResult] = await Promise.all([ideasPromise, imagePromise]);
+
+      if (ideasResult && ideasResult.ideas) {
+        setIdeas(ideasResult.ideas);
+        const uniqueCategories = [...new Set(ideasResult.ideas.map(idea => idea.category))];
         setCategories(uniqueCategories);
       } else {
         throw new Error('No ideas were generated.');
       }
+
+      if(imageResult && imageResult.imageDataUri) {
+        onImageGenerated(imageResult.imageDataUri);
+      }
+
     } catch (error) {
-      console.error('Error generating ideas:', error);
+      console.error('Error generating ideas or image:', error);
       toast({
         variant: 'destructive',
         title: 'Uh oh! Something went wrong.',
-        description: 'There was a problem generating ideas. Please try again.',
+        description: 'There was a problem generating content. Please try again.',
       });
     } finally {
       setIsLoading(false);
