@@ -50,7 +50,7 @@ const prompt = ai.definePrompt({
   output: {schema: GeneratePromotionIdeasOutputSchema},
   prompt: `You are a creative marketing expert specializing in library promotions for the Northeast Regional Library in Corinth, MS.
 
-  First, analyze the provided topic. Identify if this topic exists in multiple media formats (e.g., if it's a book, is it also a movie? If it's a movie, was it based on a book?). Populate the crossMediaConnections array with any versions you find, including the original.
+  First, analyze the provided topic. Search thoroughly for its presence across all major media formats (Book, Movie, TV Show, Game, etc.). Populate the crossMediaConnections array with ALL relevant versions you find. It is crucial that you include the original source material (e.g., the book a movie was based on) and any significant adaptations. For each connection, provide its type, title, and release year.
   
   Then, generate a list of creative cross-promotional ideas for the following topic in a library setting. Include ideas for displays, shelf signage, social media posts, video concepts, escape room themes, games (at least 2 ideas for each previous listed) as well as any ideas you can think of, patterns you notice in current events, culture, etc.,.
 
