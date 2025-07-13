@@ -17,7 +17,7 @@ import { useToast } from '@/hooks/use-toast';
 import { IdeaCard } from './IdeaCard';
 import { Badge } from '@/components/ui/badge';
 import { Skeleton } from '@/components/ui/skeleton';
-import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from './ui/card';
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog';
@@ -64,6 +64,8 @@ export function PromotionGenerator({ onImageGenerated }: PromotionGeneratorProps
   const [selectedIdea, setSelectedIdea] = useState<Idea | null>(null);
   const [isElaborating, setIsElaborating] = useState(false);
   const [elaboratedIdea, setElaboratedIdea] = useState<string | null>(null);
+
+  const [isMediaConnectionsDialogOpen, setIsMediaConnectionsDialogOpen] = useState(false);
   
   const { toast } = useToast();
 
@@ -190,6 +192,16 @@ export function PromotionGenerator({ onImageGenerated }: PromotionGeneratorProps
     return <Info className="w-5 h-5 text-accent" />;
   };
 
+  const CrossMediaConnectionItem = ({ connection }: { connection: CrossMediaConnection }) => (
+    <li className="flex items-center gap-4 text-muted-foreground">
+      {getCrossMediaIcon(connection.type)}
+      <div>
+        <span className="font-bold text-foreground">{connection.title}</span> ({connection.year})
+        <p className="text-sm">{connection.type}</p>
+      </div>
+    </li>
+  );
+
   return (
     <section id="generator" className="py-12 sm:py-16 bg-white dark:bg-card">
       <div className="container mx-auto">
@@ -284,26 +296,31 @@ export function PromotionGenerator({ onImageGenerated }: PromotionGeneratorProps
                 </Card>
               )}
                {crossMediaConnections.length > 0 && (
-                <Card>
+                <Card className="flex flex-col">
                   <CardHeader>
                     <CardTitle className="flex items-center gap-3 text-lg font-headline">
                       <Film className="w-6 h-6 text-primary" />
                       <span>Media Connections</span>
                     </CardTitle>
                   </CardHeader>
-                  <CardContent>
+                  <CardContent className="flex-grow">
                     <ul className="space-y-3">
-                      {crossMediaConnections.map((c, i) => (
-                        <li key={i} className="flex items-center gap-4 text-muted-foreground">
-                          {getCrossMediaIcon(c.type)}
-                          <div>
-                             <span className="font-bold text-foreground">{c.title}</span> ({c.year})
-                             <p className="text-sm">{c.type}</p>
-                          </div>
-                        </li>
+                      {crossMediaConnections.slice(0, 5).map((c, i) => (
+                        <CrossMediaConnectionItem key={i} connection={c} />
                       ))}
                     </ul>
                   </CardContent>
+                  {crossMediaConnections.length > 5 && (
+                    <CardFooter>
+                      <Button
+                        variant="outline"
+                        className="w-full"
+                        onClick={() => setIsMediaConnectionsDialogOpen(true)}
+                      >
+                        Show all {crossMediaConnections.length} connections
+                      </Button>
+                    </CardFooter>
+                  )}
                 </Card>
               )}
             </div>
@@ -377,7 +394,27 @@ export function PromotionGenerator({ onImageGenerated }: PromotionGeneratorProps
             )}
           </DialogContent>
         </Dialog>
+
+        <Dialog open={isMediaConnectionsDialogOpen} onOpenChange={setIsMediaConnectionsDialogOpen}>
+          <DialogContent className="sm:max-w-lg">
+            <DialogHeader>
+              <DialogTitle className="flex items-center gap-3 text-2xl font-headline">
+                <Film className="w-8 h-8 text-primary" />
+                All Media Connections
+              </DialogTitle>
+              <DialogDescription>
+                A complete list of related media found for this topic.
+              </DialogDescription>
+            </DialogHeader>
+            <ScrollArea className="h-[50vh] w-full rounded-md border p-4">
+              <ul className="space-y-4">
+                {crossMediaConnections.map((c, i) => (
+                  <CrossMediaConnectionItem key={i} connection={c} />
+                ))}
+              </ul>
+            </ScrollArea>
+          </DialogContent>
+        </Dialog>
       </div>
     </section>
   );
-}
