@@ -203,59 +203,55 @@ export function PromotionGenerator({ onImageGenerated }: PromotionGeneratorProps
   );
 
   return (
-    <section id="generator" className="py-12 sm:py-16 bg-white dark:bg-card">
+    <section id="generator" className="py-12 sm:py-16 bg-background">
       <div className="container mx-auto">
         <div className="max-w-xl mx-auto">
-          <Card>
-            <CardContent className="p-6">
-              <Form {...form}>
-                <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-                  <FormField
-                    control={form.control}
-                    name="topic"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormControl>
-                          <Input 
-                            placeholder="e.g., 'The Great Gatsby', 'Minecraft', 'Stranger Things'" 
-                            {...field}
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <div className="flex items-center justify-center space-x-2 pt-2">
-                    <Switch
-                      id="image-generation-switch"
-                      checked={shouldGenerateImage}
-                      onCheckedChange={setShouldGenerateImage}
-                      disabled={isLoading || isGeneratingImage}
-                    />
-                    <Label htmlFor="image-generation-switch" className="text-muted-foreground">Generate AI Image with topic</Label>
-                  </div>
-                  <Button type="submit" disabled={isLoading || isGeneratingImage} className="w-full">
-                    {isLoading ? (
-                      <>
-                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                        Generating Ideas...
-                      </>
-                    ) : isGeneratingImage ? (
-                       <>
-                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                        Generating Ideas & Image...
-                      </>
-                    ) : (
-                      <>
-                        <Lightbulb className="mr-2 h-4 w-4" />
-                        Generate Promotion Ideas
-                      </>
-                    )}
-                  </Button>
-                </form>
-              </Form>
-            </CardContent>
-          </Card>
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+              <FormField
+                control={form.control}
+                name="topic"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormControl>
+                      <Input 
+                        placeholder="e.g., 'The Great Gatsby', 'Minecraft', 'Stranger Things'" 
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <div className="flex items-center justify-center space-x-2 pt-2">
+                <Switch
+                  id="image-generation-switch"
+                  checked={shouldGenerateImage}
+                  onCheckedChange={setShouldGenerateImage}
+                  disabled={isLoading || isGeneratingImage}
+                />
+                <Label htmlFor="image-generation-switch" className="text-muted-foreground">Generate AI Image with topic</Label>
+              </div>
+              <Button type="submit" disabled={isLoading || isGeneratingImage} className="w-full">
+                {isLoading ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    Generating Ideas...
+                  </>
+                ) : isGeneratingImage ? (
+                    <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    Generating Ideas & Image...
+                  </>
+                ) : (
+                  <>
+                    <Lightbulb className="mr-2 h-4 w-4" />
+                    Generate Promotion Ideas
+                  </>
+                )}
+              </Button>
+            </form>
+          </Form>
         </div>
 
         {(isLoading || isGeneratingImage) && (
@@ -264,8 +260,8 @@ export function PromotionGenerator({ onImageGenerated }: PromotionGeneratorProps
               {[...Array(6)].map((_, i) => (
                 <div key={i} className="flex flex-col space-y-3 p-6 border rounded-lg bg-card">
                   <div className="flex items-center space-x-4">
-                     <Skeleton className="h-8 w-8 rounded-full" />
-                     <Skeleton className="h-6 w-32" />
+                      <Skeleton className="h-8 w-8 rounded-full" />
+                      <Skeleton className="h-6 w-32" />
                   </div>
                   <Skeleton className="h-4 w-full" />
                   <Skeleton className="h-4 w-5/6" />
