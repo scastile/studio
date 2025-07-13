@@ -5,7 +5,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { marked } from 'marked';
-import { Lightbulb, Loader2, CalendarDays, Info, Copy } from 'lucide-react';
+import { Lightbulb, Loader2, CalendarDays, Info, Copy, Film, Book, Tv, Gamepad2 } from 'lucide-react';
 
 import { generatePromotionIdeas } from '@/ai/flows/generate-promotion-ideas';
 import { generateImage } from '@/ai/flows/generate-image-flow';
@@ -40,6 +40,13 @@ type RelevantDate = {
   reason: string;
 };
 
+type CrossMediaConnection = {
+  type: string;
+  title: string;
+  year: string;
+};
+
+
 interface PromotionGeneratorProps {
   onImageGenerated: (imageUrl: string | null) => void;
 }
@@ -47,6 +54,7 @@ interface PromotionGeneratorProps {
 export function PromotionGenerator({ onImageGenerated }: PromotionGeneratorProps) {
   const [ideas, setIdeas] = useState<Idea[]>([]);
   const [relevantDates, setRelevantDates] = useState<RelevantDate[]>([]);
+  const [crossMediaConnections, setCrossMediaConnections] = useState<CrossMediaConnection[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [isGeneratingImage, setIsGeneratingImage] = useState(false);
   const [shouldGenerateImage, setShouldGenerateImage] = useState(false);
@@ -71,6 +79,7 @@ export function PromotionGenerator({ onImageGenerated }: PromotionGeneratorProps
     setIsGeneratingImage(shouldGenerateImage);
     setIdeas([]);
     setRelevantDates([]);
+    setCrossMediaConnections([]);
     setCategories([]);
     setSelectedCategory(null);
     onImageGenerated(null);
@@ -91,6 +100,9 @@ export function PromotionGenerator({ onImageGenerated }: PromotionGeneratorProps
         }
         if(ideasResult.relevantDates) {
           setRelevantDates(ideasResult.relevantDates);
+        }
+        if (ideasResult.crossMediaConnections) {
+          setCrossMediaConnections(ideasResult.crossMediaConnections);
         }
       } else {
         throw new Error('No ideas were generated.');
@@ -169,6 +181,15 @@ export function PromotionGenerator({ onImageGenerated }: PromotionGeneratorProps
     return marked.parse(elaboratedIdea);
   };
 
+  const getCrossMediaIcon = (type: string) => {
+    const normalizedType = type.toLowerCase();
+    if (normalizedType.includes('movie') || normalizedType.includes('film')) return <Film className="w-5 h-5 text-accent" />;
+    if (normalizedType.includes('book')) return <Book className="w-5 h-5 text-accent" />;
+    if (normalizedType.includes('tv') || normalizedType.includes('series')) return <Tv className="w-5 h-5 text-accent" />;
+    if (normalizedType.includes('game')) return <Gamepad2 className="w-5 h-5 text-accent" />;
+    return <Info className="w-5 h-5 text-accent" />;
+  };
+
   return (
     <section id="generator" className="py-12 sm:py-16 bg-white dark:bg-card">
       <div className="container mx-auto">
@@ -242,8 +263,8 @@ export function PromotionGenerator({ onImageGenerated }: PromotionGeneratorProps
 
         { !isLoading && (ideas.length > 0 || relevantDates.length > 0) && (
           <div className="mt-12">
-            {relevantDates.length > 0 && (
-              <div className="mb-12">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
+              {relevantDates.length > 0 && (
                 <Card>
                   <CardHeader>
                     <CardTitle className="flex items-center gap-3 text-lg font-headline">
@@ -261,8 +282,31 @@ export function PromotionGenerator({ onImageGenerated }: PromotionGeneratorProps
                     </ul>
                   </CardContent>
                 </Card>
-              </div>
-            )}
+              )}
+               {crossMediaConnections.length > 0 && (
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-3 text-lg font-headline">
+                      <Film className="w-6 h-6 text-primary" />
+                      <span>Media Connections</span>
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <ul className="space-y-3">
+                      {crossMediaConnections.map((c, i) => (
+                        <li key={i} className="flex items-center gap-4 text-muted-foreground">
+                          {getCrossMediaIcon(c.type)}
+                          <div>
+                             <span className="font-bold text-foreground">{c.title}</span> ({c.year})
+                             <p className="text-sm">{c.type}</p>
+                          </div>
+                        </li>
+                      ))}
+                    </ul>
+                  </CardContent>
+                </Card>
+              )}
+            </div>
             
             {ideas.length > 0 && (
               <>

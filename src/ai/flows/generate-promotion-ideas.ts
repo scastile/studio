@@ -29,7 +29,14 @@ const GeneratePromotionIdeasOutputSchema = z.object({
       date: z.string().describe('A relevant date (e.g., "July 4th", "December 25th", "Halloween").'),
       reason: z.string().describe('The reason why this date is relevant to the topic.'),
     })
-  ).describe('A list of relevant dates associated with the topic, such as release dates, holidays depicted, or author birthdays.')
+  ).describe('A list of relevant dates associated with the topic, such as release dates, holidays depicted, or author birthdays.'),
+  crossMediaConnections: z.array(
+    z.object({
+      type: z.string().describe('The type of media (e.g., Book, Movie, TV Show, Game).'),
+      title: z.string().describe('The title of the item in that media type.'),
+      year: z.string().describe('The release year of the item.')
+    })
+  ).describe('A list of connections to other media formats if they exist.')
 });
 export type GeneratePromotionIdeasOutput = z.infer<typeof GeneratePromotionIdeasOutputSchema>;
 
@@ -43,7 +50,9 @@ const prompt = ai.definePrompt({
   output: {schema: GeneratePromotionIdeasOutputSchema},
   prompt: `You are a creative marketing expert specializing in library promotions for the Northeast Regional Library in Corinth, MS.
 
-  Generate a list of creative cross-promotional ideas for the following topic in a library setting. Include ideas for displays, shelf signage, social media posts, video concepts, escape room themes, games (at least 2 ideas for each previous listed) as well as any ideas you can think of, patterns you notice in current events, culture, etc.,.
+  First, analyze the provided topic. Identify if this topic exists in multiple media formats (e.g., if it's a book, is it also a movie? If it's a movie, was it based on a book?). Populate the crossMediaConnections array with any versions you find, including the original.
+  
+  Then, generate a list of creative cross-promotional ideas for the following topic in a library setting. Include ideas for displays, shelf signage, social media posts, video concepts, escape room themes, games (at least 2 ideas for each previous listed) as well as any ideas you can think of, patterns you notice in current events, culture, etc.,.
 
   Also, identify any relevant dates or holidays associated with the topic. For example, for the movie "Jaws", a relevant date would be July 4th. For a book, it could be the author's birthday or a significant date within the story.
 
