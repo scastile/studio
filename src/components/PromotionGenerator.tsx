@@ -217,8 +217,7 @@ export function PromotionGenerator({ onImageGenerated }: PromotionGeneratorProps
                     <FormControl>
                       <Input 
                         placeholder="e.g., 'The Great Gatsby', 'Minecraft', 'Stranger Things'" 
-                        {...field} 
-                        className="py-6 text-center text-lg"
+                        {...field}
                       />
                     </FormControl>
                     <FormMessage />
@@ -234,20 +233,20 @@ export function PromotionGenerator({ onImageGenerated }: PromotionGeneratorProps
                 />
                 <Label htmlFor="image-generation-switch" className="text-muted-foreground">Generate AI Image with topic</Label>
               </div>
-              <Button type="submit" disabled={isLoading || isGeneratingImage} className="w-full py-6 text-lg">
+              <Button type="submit" disabled={isLoading || isGeneratingImage} className="w-full">
                 {isLoading ? (
                   <>
-                    <Loader2 className="mr-2 h-6 w-6 animate-spin" />
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                     Generating Ideas...
                   </>
                 ) : isGeneratingImage ? (
                    <>
-                    <Loader2 className="mr-2 h-6 w-6 animate-spin" />
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                     Generating Ideas & Image...
                   </>
                 ) : (
                   <>
-                    <Lightbulb className="mr-2 h-6 w-6" />
+                    <Lightbulb className="mr-2 h-4 w-4" />
                     Generate Promotion Ideas
                   </>
                 )}
@@ -418,3 +417,4 @@ export function PromotionGenerator({ onImageGenerated }: PromotionGeneratorProps
       </div>
     </section>
   );
+}
