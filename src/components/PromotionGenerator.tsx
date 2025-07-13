@@ -11,7 +11,7 @@ import { generatePromotionIdeas } from '@/ai/flows/generate-promotion-ideas';
 import { generateImage } from '@/ai/flows/generate-image-flow';
 import { elaborateOnIdea } from '@/ai/flows/elaborate-on-idea';
 import { Button } from '@/components/ui/button';
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+import { Form, FormControl, FormField, FormItem, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { useToast } from '@/hooks/use-toast';
 import { IdeaCard } from './IdeaCard';
@@ -206,53 +206,56 @@ export function PromotionGenerator({ onImageGenerated }: PromotionGeneratorProps
     <section id="generator" className="py-12 sm:py-16 bg-white dark:bg-card">
       <div className="container mx-auto">
         <div className="max-w-xl mx-auto">
-          <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-              <FormField
-                control={form.control}
-                name="topic"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel className="text-lg sr-only">Enter a topic</FormLabel>
-                    <FormControl>
-                      <Input 
-                        placeholder="e.g., 'The Great Gatsby', 'Minecraft', 'Stranger Things'" 
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <div className="flex items-center justify-center space-x-2 pt-2">
-                <Switch
-                  id="image-generation-switch"
-                  checked={shouldGenerateImage}
-                  onCheckedChange={setShouldGenerateImage}
-                  disabled={isLoading || isGeneratingImage}
-                />
-                <Label htmlFor="image-generation-switch" className="text-muted-foreground">Generate AI Image with topic</Label>
-              </div>
-              <Button type="submit" disabled={isLoading || isGeneratingImage} className="w-full">
-                {isLoading ? (
-                  <>
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    Generating Ideas...
-                  </>
-                ) : isGeneratingImage ? (
-                   <>
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    Generating Ideas & Image...
-                  </>
-                ) : (
-                  <>
-                    <Lightbulb className="mr-2 h-4 w-4" />
-                    Generate Promotion Ideas
-                  </>
-                )}
-              </Button>
-            </form>
-          </Form>
+          <Card>
+            <CardContent className="p-6">
+              <Form {...form}>
+                <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+                  <FormField
+                    control={form.control}
+                    name="topic"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormControl>
+                          <Input 
+                            placeholder="e.g., 'The Great Gatsby', 'Minecraft', 'Stranger Things'" 
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <div className="flex items-center justify-center space-x-2 pt-2">
+                    <Switch
+                      id="image-generation-switch"
+                      checked={shouldGenerateImage}
+                      onCheckedChange={setShouldGenerateImage}
+                      disabled={isLoading || isGeneratingImage}
+                    />
+                    <Label htmlFor="image-generation-switch" className="text-muted-foreground">Generate AI Image with topic</Label>
+                  </div>
+                  <Button type="submit" disabled={isLoading || isGeneratingImage} className="w-full">
+                    {isLoading ? (
+                      <>
+                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                        Generating Ideas...
+                      </>
+                    ) : isGeneratingImage ? (
+                       <>
+                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                        Generating Ideas & Image...
+                      </>
+                    ) : (
+                      <>
+                        <Lightbulb className="mr-2 h-4 w-4" />
+                        Generate Promotion Ideas
+                      </>
+                    )}
+                  </Button>
+                </form>
+              </Form>
+            </CardContent>
+          </Card>
         </div>
 
         {(isLoading || isGeneratingImage) && (
