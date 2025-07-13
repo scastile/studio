@@ -88,7 +88,7 @@ export function PromotionGenerator({ onImageGenerated }: PromotionGeneratorProps
       const ideasPromise = generatePromotionIdeas({ topic: values.topic });
 
       const imagePromise = shouldGenerateImage 
-        ? generateImage({ topic: `A creative, artistic, visually-appealing promotional image for a library about: ${values.topic}` })
+        ? generateImage({ prompt: `A creative, artistic, visually-appealing promotional image for a library about: ${values.topic}` })
         : Promise.resolve(null);
       
       const ideasResult = await ideasPromise;
@@ -220,7 +220,7 @@ export function PromotionGenerator({ onImageGenerated }: PromotionGeneratorProps
                   onCheckedChange={setShouldGenerateImage}
                   disabled={isLoading || isGeneratingImage}
                 />
-                <Label htmlFor="image-generation-switch" className="text-muted-foreground">Generate AI Image</Label>
+                <Label htmlFor="image-generation-switch" className="text-muted-foreground">Generate AI Image with topic</Label>
               </div>
               <Button type="submit" disabled={isLoading || isGeneratingImage} className="w-full py-6 text-lg">
                 {isLoading ? (
@@ -231,7 +231,7 @@ export function PromotionGenerator({ onImageGenerated }: PromotionGeneratorProps
                 ) : isGeneratingImage ? (
                    <>
                     <Loader2 className="mr-2 h-6 w-6 animate-spin" />
-                    Generating Image...
+                    Generating Ideas & Image...
                   </>
                 ) : (
                   <>
