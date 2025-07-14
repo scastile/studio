@@ -1,4 +1,5 @@
 export type Idea = {
+  topic: string;
   category: string;
   description: string;
 };

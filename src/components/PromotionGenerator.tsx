@@ -77,7 +77,8 @@ export function PromotionGenerator({ onImageGenerated, onIdeaSelect }: Promotion
       const ideasResult = await ideasPromise;
       if (ideasResult) {
         if(ideasResult.ideas) {
-          setIdeas(ideasResult.ideas);
+          const ideasWithTopic = ideasResult.ideas.map(idea => ({ ...idea, topic: values.topic }));
+          setIdeas(ideasWithTopic);
           const uniqueCategories = [...new Set(ideasResult.ideas.map(idea => idea.category))];
           setCategories(uniqueCategories);
         }

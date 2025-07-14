@@ -84,9 +84,14 @@ export function PinnedIdeasBar({ pinnedIdeas, onIdeaSelect }: PinnedIdeasBarProp
                                                     <Trash2 className="w-4 h-4 text-muted-foreground hover:text-destructive" />
                                                 </Button>
                                             </CardTitle>
+                                             {idea.topic && (
+                                                <p className="text-xs text-muted-foreground font-sans truncate">
+                                                    Topic: {idea.topic}
+                                                </p>
+                                            )}
                                         </CardHeader>
-                                        <CardFooter className="flex flex-col items-start gap-2">
-                                            <div className="h-10 overflow-hidden">
+                                        <CardFooter className="flex flex-col items-start gap-2 pt-0">
+                                            <div className="h-10 overflow-hidden w-full">
                                                 <p className="text-sm text-muted-foreground line-clamp-2 whitespace-normal">
                                                     {idea.description}
                                                 </p>
