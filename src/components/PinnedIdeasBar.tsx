@@ -3,7 +3,7 @@
 
 import { useState } from 'react';
 import { Pin, Trash2, ChevronUp, ChevronDown, Info } from "lucide-react";
-import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
+import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "./ui/card";
 import { ScrollArea, ScrollBar } from "./ui/scroll-area";
 import { getIconForCategory } from "./icons";
 import type { PinnedIdea, Idea } from "@/lib/types";
@@ -73,7 +73,7 @@ export function PinnedIdeasBar({ pinnedIdeas, onIdeaSelect }: PinnedIdeasBarProp
                             {pinnedIdeas.map(idea => {
                                 const Icon = getIconForCategory(idea.category);
                                 return (
-                                    <Card key={idea.id} className="w-[300px] shrink-0 flex flex-col">
+                                    <Card key={idea.id} className="w-[300px] shrink-0 flex flex-col justify-between">
                                         <CardHeader>
                                             <CardTitle className="flex items-center justify-between text-base font-headline">
                                                 <div className="flex items-center gap-2">
@@ -84,20 +84,22 @@ export function PinnedIdeasBar({ pinnedIdeas, onIdeaSelect }: PinnedIdeasBarProp
                                                     <Trash2 className="w-4 h-4 text-muted-foreground hover:text-destructive" />
                                                 </Button>
                                             </CardTitle>
+                                             <p className="text-sm text-muted-foreground line-clamp-2 pt-2 min-h-[40px]">
+                                                {idea.description}
+                                            </p>
                                         </CardHeader>
-                                        <CardContent className="flex flex-col justify-between flex-grow">
-                                            <p className="text-sm text-muted-foreground line-clamp-2 min-h-[2.5rem]">{idea.description}</p>
+                                        <CardFooter>
                                             <Button
                                                 type="button"
                                                 variant="outline"
                                                 size="sm"
-                                                className="mt-4 w-full"
+                                                className="w-full"
                                                 onClick={() => onIdeaSelect(idea)}
                                                 >
                                                 <Info className="mr-2 h-4 w-4" />
                                                 More Info
                                             </Button>
-                                        </CardContent>
+                                        </CardFooter>
                                     </Card>
                                 )
                             })}
