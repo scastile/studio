@@ -116,7 +116,11 @@ export function PromotionGenerator({ onImageGenerated, onIdeaSelect }: Promotion
   async function handlePinIdea(idea: Idea) {
     try {
       const pinnedIdeasRef = ref(database, 'pinnedIdeas');
-      await push(pinnedIdeasRef, idea);
+      const ideaToPin = {
+        ...idea,
+        topic: form.getValues("topic")
+      };
+      await push(pinnedIdeasRef, ideaToPin);
       toast({
         title: 'Idea Pinned!',
         description: `"${idea.description.substring(0, 30)}..." has been saved.`,
