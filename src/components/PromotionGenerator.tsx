@@ -1,11 +1,12 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { marked } from 'marked';
-import { Lightbulb, Loader2, CalendarDays, Info, Copy, Film, Book, Tv, Gamepad2 } from 'lucide-react';
+import { Lightbulb, Loader2, CalendarDays, Info, Copy, Film, Book, Tv, Gamepad2, Pin } from 'lucide-react';
+import { getDatabase, ref, push, onValue, set } from "firebase/database";
 
 import { generatePromotionIdeas } from '@/ai/flows/generate-promotion-ideas';
 import { generateImage } from '@/ai/flows/generate-image-flow';
@@ -23,6 +24,9 @@ import { Label } from '@/components/ui/label';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog';
 import { getIconForCategory } from './icons';
 import { ScrollArea } from './ui/scroll-area';
+import type { Idea, RelevantDate, CrossMediaConnection, PinnedIdea } from '@/lib/types';
+import { database } from '@/lib/utils';
+
 
 const formSchema = z.object({
   topic: z.string().min(3, {
@@ -30,28 +34,12 @@ const formSchema = z.object({
   }),
 });
 
-type Idea = {
-  category: string;
-  description: string;
-};
-
-type RelevantDate = {
-  date: string;
-  reason: string;
-};
-
-type CrossMediaConnection = {
-  type: string;
-  title: string;
-  year: string;
-};
-
-
 interface PromotionGeneratorProps {
   onImageGenerated: (imageUrl: string | null) => void;
+  setPinnedIdeas: React.Dispatch<React.SetStateAction<PinnedIdea[]>>;
 }
 
-export function PromotionGenerator({ onImageGenerated }: PromotionGeneratorProps) {
+export function PromotionGenerator({ onImageGenerated, setPinnedIdeas }: PromotionGeneratorProps) {
   const [ideas, setIdeas] = useState<Idea[]>([]);
   const [relevantDates, setRelevantDates] = useState<RelevantDate[]>([]);
   const [crossMediaConnections, setCrossMediaConnections] = useState<CrossMediaConnection[]>([]);
@@ -68,6 +56,20 @@ export function PromotionGenerator({ onImageGenerated }: PromotionGeneratorProps
   const [isMediaConnectionsDialogOpen, setIsMediaConnectionsDialogOpen] = useState(false);
   
   const { toast } = useToast();
+
+  useEffect(() => {
+    const pinnedIdeasRef = ref(database, 'pinnedIdeas');
+    const unsubscribe = onValue(pinnedIdeasRef, (snapshot) => {
+      const data = snapshot.val();
+      const loadedIdeas: PinnedIdea[] = [];
+      for (const id in data) {
+        loadedIdeas.push({ id, ...data[id] });
+      }
+      setPinnedIdeas(loadedIdeas);
+    });
+
+    return () => unsubscribe();
+  }, [setPinnedIdeas]);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -154,6 +156,25 @@ export function PromotionGenerator({ onImageGenerated }: PromotionGeneratorProps
       setIsElaborating(false);
     }
   }
+
+  async function handlePinIdea(idea: Idea) {
+    try {
+      const pinnedIdeasRef = ref(database, 'pinnedIdeas');
+      await push(pinnedIdeasRef, idea);
+      toast({
+        title: 'Idea Pinned!',
+        description: `"${idea.description.substring(0, 30)}..." has been saved.`,
+      });
+    } catch (error) {
+      console.error("Error pinning idea:", error);
+      toast({
+        variant: 'destructive',
+        title: 'Pinning Failed',
+        description: 'There was a problem saving your idea. Please try again.',
+      });
+    }
+  }
+
 
   const handleCopyToClipboard = () => {
     if (elaboratedIdea) {
@@ -351,7 +372,7 @@ export function PromotionGenerator({ onImageGenerated }: PromotionGeneratorProps
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                   {filteredIdeas.map((idea, index) => (
-                    <IdeaCard key={index} idea={idea} onSelect={handleIdeaSelect} />
+                    <IdeaCard key={index} idea={idea} onSelect={handleIdeaSelect} onPin={handlePinIdea} />
                   ))}
                 </div>
               </>

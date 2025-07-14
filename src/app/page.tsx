@@ -4,9 +4,12 @@ import { Header } from '@/components/Header';
 import { PromotionGenerator } from '@/components/PromotionGenerator';
 import { Gallery, type GeneratedImage } from '@/components/Gallery';
 import { v4 as uuidv4 } from 'uuid';
+import { PinnedIdeasBar } from '@/components/PinnedIdeasBar';
+import type { PinnedIdea } from '@/lib/types';
 
 export default function Home() {
   const [generatedImages, setGeneratedImages] = useState<GeneratedImage[]>([]);
+  const [pinnedIdeas, setPinnedIdeas] = useState<PinnedIdea[]>([]);
 
   const handleInitialImageGenerated = (imageUrl: string | null) => {
     if (imageUrl) {
@@ -30,13 +33,14 @@ export default function Home() {
   return (
     <main className="min-h-screen bg-background px-4 sm:px-0">
       <Header />
-      <PromotionGenerator onImageGenerated={handleInitialImageGenerated} />
+      <PromotionGenerator onImageGenerated={handleInitialImageGenerated} setPinnedIdeas={setPinnedIdeas} />
       <Gallery
         images={generatedImages}
         onAddImage={addImageToList}
         onUpdateImage={updateImageInList}
         onRemoveImage={removeImageFromList}
       />
+      <PinnedIdeasBar pinnedIdeas={pinnedIdeas} setPinnedIdeas={setPinnedIdeas} />
       <footer className="text-center py-6 bg-background text-muted-foreground">
         <div className="container mx-auto">
           <p>&copy; {new Date().getFullYear()} LibraryLaunchpad. All rights reserved.</p>
