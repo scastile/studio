@@ -85,8 +85,8 @@ export function PinnedIdeasBar({ pinnedIdeas, onIdeaSelect }: PinnedIdeasBarProp
                                                 </Button>
                                             </CardTitle>
                                         </CardHeader>
-                                        <CardContent className="flex-grow flex flex-col">
-                                            <p className="text-sm text-muted-foreground line-clamp-2 flex-grow h-10">{idea.description}</p>
+                                        <CardContent className="flex flex-col justify-between flex-grow">
+                                            <p className="text-sm text-muted-foreground line-clamp-2 min-h-[2.5rem]">{idea.description}</p>
                                             <Button
                                                 type="button"
                                                 variant="outline"
