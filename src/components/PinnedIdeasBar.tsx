@@ -20,7 +20,7 @@ interface PinnedIdeasBarProps {
 
 export function PinnedIdeasBar({ pinnedIdeas, onIdeaSelect }: PinnedIdeasBarProps) {
     const { toast } = useToast();
-    const [isOpen, setIsOpen] = useState(true);
+    const [isOpen, setIsOpen] = useState(false);
 
     if (pinnedIdeas.length === 0) {
         return null;
