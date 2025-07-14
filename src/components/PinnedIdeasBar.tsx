@@ -4,7 +4,7 @@ import { ScrollArea, ScrollBar } from "./ui/scroll-area";
 import { getIconForCategory } from "./icons";
 import type { PinnedIdea } from "@/lib/types";
 import { Button } from "./ui/button";
-import { getDatabase, ref, remove } from "firebase/database";
+import { ref, remove } from "firebase/database";
 import { useToast } from "@/hooks/use-toast";
 import { database } from "@/lib/utils";
 
@@ -24,7 +24,7 @@ export function PinnedIdeasBar({ pinnedIdeas, setPinnedIdeas }: PinnedIdeasBarPr
         try {
             const ideaRef = ref(database, `pinnedIdeas/${id}`);
             await remove(ideaRef);
-            setPinnedIdeas(prev => prev.filter(idea => idea.id !== id));
+            // The onValue listener in PromotionGenerator will handle updating the state
             toast({
                 title: 'Idea Unpinned',
                 description: 'The idea has been removed from your saved list.',
