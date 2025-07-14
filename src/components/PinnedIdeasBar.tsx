@@ -1,3 +1,4 @@
+
 'use client';
 
 import { Pin, Trash2 } from "lucide-react";
@@ -6,31 +7,16 @@ import { ScrollArea, ScrollBar } from "./ui/scroll-area";
 import { getIconForCategory } from "./icons";
 import type { PinnedIdea } from "@/lib/types";
 import { Button } from "./ui/button";
-import { ref, remove, onValue } from "firebase/database";
+import { ref, remove } from "firebase/database";
 import { useToast } from "@/hooks/use-toast";
 import { database } from "@/lib/utils";
-import { useState, useEffect } from "react";
 
-export function PinnedIdeasBar() {
+interface PinnedIdeasBarProps {
+    pinnedIdeas: PinnedIdea[];
+}
+
+export function PinnedIdeasBar({ pinnedIdeas }: PinnedIdeasBarProps) {
     const { toast } = useToast();
-    const [pinnedIdeas, setPinnedIdeas] = useState<PinnedIdea[]>([]);
-
-    useEffect(() => {
-        const pinnedIdeasRef = ref(database, 'pinnedIdeas');
-        const unsubscribe = onValue(pinnedIdeasRef, (snapshot) => {
-            const data = snapshot.val();
-            const loadedIdeas: PinnedIdea[] = [];
-            if (data) {
-                for (const id in data) {
-                    loadedIdeas.push({ id, ...data[id] });
-                }
-            }
-            setPinnedIdeas(loadedIdeas);
-        });
-
-        return () => unsubscribe();
-    }, []);
-
 
     if (pinnedIdeas.length === 0) {
         return null;
