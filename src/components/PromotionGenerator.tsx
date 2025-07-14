@@ -5,13 +5,11 @@ import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { marked } from 'marked';
-import { Lightbulb, Loader2, CalendarDays, Info, Copy, Film, Book, Tv, Gamepad2 } from 'lucide-react';
 import { ref, push } from "firebase/database";
+import { Lightbulb, Loader2, CalendarDays, Info, Film, Book, Tv, Gamepad2 } from 'lucide-react';
 
 import { generatePromotionIdeas } from '@/ai/flows/generate-promotion-ideas';
 import { generateImage } from '@/ai/flows/generate-image-flow';
-import { elaborateOnIdea } from '@/ai/flows/elaborate-on-idea';
 import { Button } from '@/components/ui/button';
 import { Form, FormControl, FormField, FormItem, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
@@ -22,8 +20,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from './ui/card';
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog';
-import { getIconForCategory } from './icons';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { ScrollArea } from './ui/scroll-area';
 import type { Idea, RelevantDate, CrossMediaConnection } from '@/lib/types';
 import { database } from '@/lib/utils';
@@ -37,9 +34,10 @@ const formSchema = z.object({
 
 interface PromotionGeneratorProps {
   onImageGenerated: (imageUrl: string | null) => void;
+  onIdeaSelect: (idea: Idea) => void;
 }
 
-export function PromotionGenerator({ onImageGenerated }: PromotionGeneratorProps) {
+export function PromotionGenerator({ onImageGenerated, onIdeaSelect }: PromotionGeneratorProps) {
   const [ideas, setIdeas] = useState<Idea[]>([]);
   const [relevantDates, setRelevantDates] = useState<RelevantDate[]>([]);
   const [crossMediaConnections, setCrossMediaConnections] = useState<CrossMediaConnection[]>([]);
@@ -48,11 +46,6 @@ export function PromotionGenerator({ onImageGenerated }: PromotionGeneratorProps
   const [shouldGenerateImage, setShouldGenerateImage] = useState(false);
   const [categories, setCategories] = useState<string[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
-
-  const [selectedIdea, setSelectedIdea] = useState<Idea | null>(null);
-  const [isElaborating, setIsElaborating] = useState(false);
-  const [elaboratedIdea, setElaboratedIdea] = useState<string | null>(null);
-
   const [isMediaConnectionsDialogOpen, setIsMediaConnectionsDialogOpen] = useState(false);
   
   const { toast } = useToast();
@@ -119,30 +112,6 @@ export function PromotionGenerator({ onImageGenerated }: PromotionGeneratorProps
     }
   }
 
-  async function handleIdeaSelect(idea: Idea) {
-    setSelectedIdea(idea);
-    setIsElaborating(true);
-    setElaboratedIdea(null);
-    try {
-      const result = await elaborateOnIdea(idea);
-      if (result && result.elaboratedIdea) {
-        setElaboratedIdea(result.elaboratedIdea);
-      } else {
-        throw new Error('No elaboration was generated.');
-      }
-    } catch (error) {
-      console.error('Error elaborating on idea:', error);
-      toast({
-        variant: 'destructive',
-        title: 'Elaboration Failed',
-        description: 'There was a problem getting more details. Please try again.',
-      });
-      setSelectedIdea(null); // Close dialog on error
-    } finally {
-      setIsElaborating(false);
-    }
-  }
-
   async function handlePinIdea(idea: Idea) {
     try {
       const pinnedIdeasRef = ref(database, 'pinnedIdeas');
@@ -161,34 +130,9 @@ export function PromotionGenerator({ onImageGenerated }: PromotionGeneratorProps
     }
   }
 
-
-  const handleCopyToClipboard = () => {
-    if (elaboratedIdea) {
-      // Use marked to convert markdown to HTML, then get text content
-      const html = marked.parse(elaboratedIdea);
-      const tempDiv = document.createElement('div');
-      tempDiv.innerHTML = html;
-      const textToCopy = tempDiv.textContent || tempDiv.innerText || '';
-
-      navigator.clipboard.writeText(textToCopy);
-      toast({
-        title: 'Copied to Clipboard!',
-        description: 'The elaborated idea has been copied.',
-      });
-    }
-  };
-
-
   const filteredIdeas = selectedCategory
     ? ideas.filter((idea) => idea.category === selectedCategory)
     : ideas;
-
-  const SelectedIdeaIcon = selectedIdea ? getIconForCategory(selectedIdea.category) : Info;
-  
-  const getElaboratedIdeaAsHtml = () => {
-    if (!elaboratedIdea) return '';
-    return marked.parse(elaboratedIdea);
-  };
 
   const getCrossMediaIcon = (type: string) => {
     const normalizedType = type.toLowerCase();
@@ -357,52 +301,13 @@ export function PromotionGenerator({ onImageGenerated }: PromotionGeneratorProps
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                   {filteredIdeas.map((idea, index) => (
-                    <IdeaCard key={index} idea={idea} onSelect={handleIdeaSelect} onPin={handlePinIdea} />
+                    <IdeaCard key={index} idea={idea} onSelect={onIdeaSelect} onPin={handlePinIdea} />
                   ))}
                 </div>
               </>
             )}
           </div>
         )}
-
-        <Dialog open={!!selectedIdea} onOpenChange={(isOpen) => { if (!isOpen) setSelectedIdea(null); }}>
-          <DialogContent className="sm:max-w-2xl">
-            {selectedIdea && (
-              <>
-                <DialogHeader>
-                  <DialogTitle className="flex items-center gap-3 text-2xl font-headline">
-                    <SelectedIdeaIcon className="w-8 h-8 text-primary" />
-                    {selectedIdea.category}
-                  </DialogTitle>
-                  <DialogDescription>
-                    {selectedIdea.description}
-                  </DialogDescription>
-                </DialogHeader>
-                <ScrollArea className="h-[50vh] w-full rounded-md border p-4">
-                  <article className="prose prose-sm dark:prose-invert max-w-none">
-                    {isElaborating ? (
-                      <div className="flex items-center justify-center p-8">
-                        <Loader2 className="h-8 w-8 animate-spin text-primary" />
-                      </div>
-                    ) : (
-                      <div dangerouslySetInnerHTML={{ __html: getElaboratedIdeaAsHtml() }} />
-                    )}
-                  </article>
-                </ScrollArea>
-                <DialogFooter>
-                  <Button
-                    onClick={handleCopyToClipboard}
-                    disabled={isElaborating || !elaboratedIdea}
-                    variant="outline"
-                  >
-                    <Copy className="mr-2 h-4 w-4" />
-                    Copy Text
-                  </Button>
-                </DialogFooter>
-              </>
-            )}
-          </DialogContent>
-        </Dialog>
 
         <Dialog open={isMediaConnectionsDialogOpen} onOpenChange={setIsMediaConnectionsDialogOpen}>
           <DialogContent className="sm:max-w-lg">

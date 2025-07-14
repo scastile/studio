@@ -2,11 +2,11 @@
 'use client';
 
 import { useState } from 'react';
-import { Pin, Trash2, ChevronUp, ChevronDown } from "lucide-react";
+import { Pin, Trash2, ChevronUp, ChevronDown, Info } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
 import { ScrollArea, ScrollBar } from "./ui/scroll-area";
 import { getIconForCategory } from "./icons";
-import type { PinnedIdea } from "@/lib/types";
+import type { PinnedIdea, Idea } from "@/lib/types";
 import { Button } from "./ui/button";
 import { ref, remove } from "firebase/database";
 import { useToast } from "@/hooks/use-toast";
@@ -15,9 +15,10 @@ import { cn } from '@/lib/utils';
 
 interface PinnedIdeasBarProps {
     pinnedIdeas: PinnedIdea[];
+    onIdeaSelect: (idea: Idea) => void;
 }
 
-export function PinnedIdeasBar({ pinnedIdeas }: PinnedIdeasBarProps) {
+export function PinnedIdeasBar({ pinnedIdeas, onIdeaSelect }: PinnedIdeasBarProps) {
     const { toast } = useToast();
     const [isOpen, setIsOpen] = useState(true);
 
@@ -72,7 +73,7 @@ export function PinnedIdeasBar({ pinnedIdeas }: PinnedIdeasBarProps) {
                             {pinnedIdeas.map(idea => {
                                 const Icon = getIconForCategory(idea.category);
                                 return (
-                                    <Card key={idea.id} className="w-[300px] shrink-0">
+                                    <Card key={idea.id} className="w-[300px] shrink-0 flex flex-col">
                                         <CardHeader>
                                             <CardTitle className="flex items-center justify-between text-base font-headline">
                                                 <div className="flex items-center gap-2">
@@ -84,8 +85,18 @@ export function PinnedIdeasBar({ pinnedIdeas }: PinnedIdeasBarProps) {
                                                 </Button>
                                             </CardTitle>
                                         </CardHeader>
-                                        <CardContent>
-                                            <p className="text-sm text-muted-foreground line-clamp-3">{idea.description}</p>
+                                        <CardContent className="flex-grow">
+                                            <p className="text-sm text-muted-foreground line-clamp-3 flex-grow">{idea.description}</p>
+                                            <Button
+                                                type="button"
+                                                variant="outline"
+                                                size="sm"
+                                                className="mt-4 w-full"
+                                                onClick={() => onIdeaSelect(idea)}
+                                                >
+                                                <Info className="mr-2 h-4 w-4" />
+                                                More Info
+                                            </Button>
                                         </CardContent>
                                     </Card>
                                 )
