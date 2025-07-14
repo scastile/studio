@@ -1,7 +1,8 @@
 
 'use client';
 
-import { Pin, Trash2 } from "lucide-react";
+import { useState } from 'react';
+import { Pin, Trash2, ChevronUp, ChevronDown } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
 import { ScrollArea, ScrollBar } from "./ui/scroll-area";
 import { getIconForCategory } from "./icons";
@@ -10,6 +11,7 @@ import { Button } from "./ui/button";
 import { ref, remove } from "firebase/database";
 import { useToast } from "@/hooks/use-toast";
 import { database } from "@/lib/utils";
+import { cn } from '@/lib/utils';
 
 interface PinnedIdeasBarProps {
     pinnedIdeas: PinnedIdea[];
@@ -17,6 +19,7 @@ interface PinnedIdeasBarProps {
 
 export function PinnedIdeasBar({ pinnedIdeas }: PinnedIdeasBarProps) {
     const { toast } = useToast();
+    const [isOpen, setIsOpen] = useState(true);
 
     if (pinnedIdeas.length === 0) {
         return null;
@@ -42,37 +45,55 @@ export function PinnedIdeasBar({ pinnedIdeas }: PinnedIdeasBarProps) {
 
     return (
         <section className="sticky bottom-0 z-50 w-full bg-background/95 backdrop-blur-sm border-t">
-            <div className="container mx-auto py-4">
-                 <h2 className="font-headline text-xl font-bold text-gray-800 dark:text-gray-100 flex items-center gap-3 mb-4">
-                    <Pin className="w-6 h-6 text-primary" />
-                    Saved Ideas
-                </h2>
-                <ScrollArea className="w-full whitespace-nowrap">
-                    <div className="flex w-max space-x-4 pb-4">
-                        {pinnedIdeas.map(idea => {
-                            const Icon = getIconForCategory(idea.category);
-                            return (
-                                <Card key={idea.id} className="w-[300px] shrink-0">
-                                    <CardHeader>
-                                        <CardTitle className="flex items-center justify-between text-base font-headline">
-                                            <div className="flex items-center gap-2">
-                                                <Icon className="w-5 h-5 text-accent" />
-                                                <span>{idea.category}</span>
-                                            </div>
-                                            <Button variant="ghost" size="icon" onClick={() => handleUnpin(idea.id)} title="Unpin this idea">
-                                                <Trash2 className="w-4 h-4 text-muted-foreground hover:text-destructive" />
-                                            </Button>
-                                        </CardTitle>
-                                    </CardHeader>
-                                    <CardContent>
-                                        <p className="text-sm text-muted-foreground line-clamp-3">{idea.description}</p>
-                                    </CardContent>
-                                </Card>
-                            )
-                        })}
-                    </div>
-                    <ScrollBar orientation="horizontal" />
-                </ScrollArea>
+            <div className="container mx-auto">
+                <div 
+                    className="flex justify-center items-center py-2 cursor-pointer"
+                    onClick={() => setIsOpen(!isOpen)}
+                    role="button"
+                    aria-expanded={isOpen}
+                    aria-controls="pinned-ideas-content"
+                >
+                     <h2 className="font-headline text-xl font-bold text-gray-800 dark:text-gray-100 flex items-center gap-3">
+                        <Pin className="w-6 h-6 text-primary" />
+                        Saved Ideas ({pinnedIdeas.length})
+                    </h2>
+                    {isOpen ? <ChevronDown className="w-6 h-6 ml-2" /> : <ChevronUp className="w-6 h-6 ml-2" />}
+                </div>
+
+                <div
+                    id="pinned-ideas-content"
+                    className={cn(
+                        "overflow-hidden transition-all duration-300 ease-in-out",
+                        isOpen ? 'max-h-[300px] opacity-100' : 'max-h-0 opacity-0'
+                    )}
+                >
+                    <ScrollArea className="w-full whitespace-nowrap pb-4">
+                        <div className="flex w-max space-x-4 pt-2">
+                            {pinnedIdeas.map(idea => {
+                                const Icon = getIconForCategory(idea.category);
+                                return (
+                                    <Card key={idea.id} className="w-[300px] shrink-0">
+                                        <CardHeader>
+                                            <CardTitle className="flex items-center justify-between text-base font-headline">
+                                                <div className="flex items-center gap-2">
+                                                    <Icon className="w-5 h-5 text-accent" />
+                                                    <span>{idea.category}</span>
+                                                </div>
+                                                <Button variant="ghost" size="icon" onClick={() => handleUnpin(idea.id)} title="Unpin this idea">
+                                                    <Trash2 className="w-4 h-4 text-muted-foreground hover:text-destructive" />
+                                                </Button>
+                                            </CardTitle>
+                                        </CardHeader>
+                                        <CardContent>
+                                            <p className="text-sm text-muted-foreground line-clamp-3">{idea.description}</p>
+                                        </CardContent>
+                                    </Card>
+                                )
+                            })}
+                        </div>
+                        <ScrollBar orientation="horizontal" />
+                    </ScrollArea>
+                </div>
             </div>
         </section>
     )
