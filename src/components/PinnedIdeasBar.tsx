@@ -87,7 +87,7 @@ export function PinnedIdeasBar({ pinnedIdeas, onIdeaSelect }: PinnedIdeasBarProp
                                         </CardHeader>
                                         <CardFooter className="flex flex-col items-start gap-2">
                                             <div className="h-10 overflow-hidden">
-                                                <p className="text-sm text-muted-foreground line-clamp-2">
+                                                <p className="text-sm text-muted-foreground line-clamp-2 whitespace-normal">
                                                     {idea.description}
                                                 </p>
                                             </div>
