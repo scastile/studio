@@ -73,8 +73,8 @@ export function PinnedIdeasBar({ pinnedIdeas, onIdeaSelect }: PinnedIdeasBarProp
                             {pinnedIdeas.map(idea => {
                                 const Icon = getIconForCategory(idea.category);
                                 return (
-                                    <Card key={idea.id} className="w-[300px] shrink-0 flex flex-col justify-between">
-                                        <CardHeader>
+                                    <Card key={idea.id} className="w-[300px] shrink-0 flex flex-col">
+                                        <CardHeader className="flex-shrink-0">
                                             <CardTitle className="flex items-center justify-between text-base font-headline">
                                                 <div className="flex items-center gap-2">
                                                     <Icon className="w-5 h-5 text-accent" />
@@ -85,12 +85,14 @@ export function PinnedIdeasBar({ pinnedIdeas, onIdeaSelect }: PinnedIdeasBarProp
                                                 </Button>
                                             </CardTitle>
                                         </CardHeader>
-                                        <CardContent className="py-2 px-6 flex-grow">
-                                            <p className="text-sm text-muted-foreground line-clamp-2 h-[40px]">
-                                                {idea.description}
-                                            </p>
+                                        <CardContent className="flex-grow py-2 px-6 flex flex-col justify-center">
+                                            <div className="h-[40px] overflow-hidden">
+                                                <p className="text-sm text-muted-foreground">
+                                                    {idea.description}
+                                                </p>
+                                            </div>
                                         </CardContent>
-                                        <CardFooter>
+                                        <CardFooter className="flex-shrink-0">
                                             <Button
                                                 type="button"
                                                 variant="outline"
