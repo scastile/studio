@@ -7,7 +7,7 @@ import { PromotionGenerator } from '@/components/PromotionGenerator';
 import { Gallery, type GeneratedImage } from '@/components/Gallery';
 import { v4 as uuidv4 } from 'uuid';
 import { PinnedIdeasBar } from '@/components/PinnedIdeasBar';
-import type { PinnedIdea, Idea } from '@/lib/types';
+import type { PinnedIdea, Idea, SavedCampaign } from '@/lib/types';
 import { ref, onValue } from 'firebase/database';
 import { database } from '@/lib/utils';
 import { elaborateOnIdea } from '@/ai/flows/elaborate-on-idea';
@@ -26,6 +26,7 @@ export default function Home() {
   const [selectedIdea, setSelectedIdea] = useState<Idea | null>(null);
   const [isElaborating, setIsElaborating] = useState(false);
   const [elaboratedIdea, setElaboratedIdea] = useState<string | null>(null);
+  const [loadedCampaign, setLoadedCampaign] = useState<SavedCampaign | null>(null);
 
   const { toast } = useToast();
 
@@ -49,6 +50,16 @@ export default function Home() {
     if (imageUrl) {
       setGeneratedImages(prev => [...prev, { id: uuidv4(), url: imageUrl, prompt: 'Initial Topic Image' }]);
     }
+  };
+
+  const handleCampaignLoad = (campaign: SavedCampaign) => {
+    setLoadedCampaign(campaign);
+    // Clear any previous images when loading a new campaign
+    setGeneratedImages([]);
+    toast({
+      title: 'Campaign Loaded',
+      description: `The "${campaign.name}" campaign has been loaded.`,
+    });
   };
 
   const addImageToList = (image: GeneratedImage) => {
@@ -113,8 +124,12 @@ export default function Home() {
 
   return (
     <main className="min-h-screen bg-background px-4 sm:px-0">
-      <Header />
-      <PromotionGenerator onImageGenerated={handleInitialImageGenerated} onIdeaSelect={handleIdeaSelect} />
+      <Header onCampaignLoad={handleCampaignLoad} />
+      <PromotionGenerator 
+        onImageGenerated={handleInitialImageGenerated} 
+        onIdeaSelect={handleIdeaSelect}
+        campaignToLoad={loadedCampaign}
+      />
       <Gallery
         images={generatedImages}
         onAddImage={addImageToList}

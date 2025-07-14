@@ -1,7 +1,7 @@
 
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -22,7 +22,7 @@ import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { ScrollArea } from './ui/scroll-area';
-import type { Idea, RelevantDate, CrossMediaConnection } from '@/lib/types';
+import type { Idea, RelevantDate, CrossMediaConnection, SavedCampaign } from '@/lib/types';
 import { database } from '@/lib/utils';
 import { SaveSetDialog } from './SaveSetDialog';
 
@@ -36,9 +36,10 @@ const formSchema = z.object({
 interface PromotionGeneratorProps {
   onImageGenerated: (imageUrl: string | null) => void;
   onIdeaSelect: (idea: Idea) => void;
+  campaignToLoad: SavedCampaign | null;
 }
 
-export function PromotionGenerator({ onImageGenerated, onIdeaSelect }: PromotionGeneratorProps) {
+export function PromotionGenerator({ onImageGenerated, onIdeaSelect, campaignToLoad }: PromotionGeneratorProps) {
   const [ideas, setIdeas] = useState<Idea[]>([]);
   const [relevantDates, setRelevantDates] = useState<RelevantDate[]>([]);
   const [crossMediaConnections, setCrossMediaConnections] = useState<CrossMediaConnection[]>([]);
@@ -59,6 +60,22 @@ export function PromotionGenerator({ onImageGenerated, onIdeaSelect }: Promotion
       topic: '',
     },
   });
+
+  useEffect(() => {
+    if (campaignToLoad) {
+      form.setValue('topic', campaignToLoad.topic);
+      setCurrentTopic(campaignToLoad.topic);
+      setIdeas(campaignToLoad.ideas || []);
+      setRelevantDates(campaignToLoad.relevantDates || []);
+      setCrossMediaConnections(campaignToLoad.crossMediaConnections || []);
+      const uniqueCategories = [...new Set((campaignToLoad.ideas || []).map(idea => idea.category))];
+      setCategories(uniqueCategories);
+      setSelectedCategory(null);
+      setIsLoading(false);
+      setIsGeneratingImage(false);
+    }
+  }, [campaignToLoad, form]);
+
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     setIsLoading(true);
@@ -122,7 +139,7 @@ export function PromotionGenerator({ onImageGenerated, onIdeaSelect }: Promotion
       const pinnedIdeasRef = ref(database, 'pinnedIdeas');
       const ideaToPin = {
         ...idea,
-        topic: form.getValues("topic")
+        topic: currentTopic
       };
       await push(pinnedIdeasRef, ideaToPin);
       toast({
