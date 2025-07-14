@@ -1,19 +1,36 @@
+'use client';
+
 import { Pin, Trash2 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
 import { ScrollArea, ScrollBar } from "./ui/scroll-area";
 import { getIconForCategory } from "./icons";
 import type { PinnedIdea } from "@/lib/types";
 import { Button } from "./ui/button";
-import { ref, remove } from "firebase/database";
+import { ref, remove, onValue } from "firebase/database";
 import { useToast } from "@/hooks/use-toast";
 import { database } from "@/lib/utils";
+import { useState, useEffect } from "react";
 
-interface PinnedIdeasBarProps {
-    pinnedIdeas: PinnedIdea[];
-}
-
-export function PinnedIdeasBar({ pinnedIdeas }: PinnedIdeasBarProps) {
+export function PinnedIdeasBar() {
     const { toast } = useToast();
+    const [pinnedIdeas, setPinnedIdeas] = useState<PinnedIdea[]>([]);
+
+    useEffect(() => {
+        const pinnedIdeasRef = ref(database, 'pinnedIdeas');
+        const unsubscribe = onValue(pinnedIdeasRef, (snapshot) => {
+            const data = snapshot.val();
+            const loadedIdeas: PinnedIdea[] = [];
+            if (data) {
+                for (const id in data) {
+                    loadedIdeas.push({ id, ...data[id] });
+                }
+            }
+            setPinnedIdeas(loadedIdeas);
+        });
+
+        return () => unsubscribe();
+    }, []);
+
 
     if (pinnedIdeas.length === 0) {
         return null;
@@ -23,7 +40,6 @@ export function PinnedIdeasBar({ pinnedIdeas }: PinnedIdeasBarProps) {
         try {
             const ideaRef = ref(database, `pinnedIdeas/${id}`);
             await remove(ideaRef);
-            // The onValue listener in Home/page.tsx will handle updating the state
             toast({
                 title: 'Idea Unpinned',
                 description: 'The idea has been removed from your saved list.',
