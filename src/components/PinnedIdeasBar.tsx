@@ -73,8 +73,8 @@ export function PinnedIdeasBar({ pinnedIdeas, onIdeaSelect }: PinnedIdeasBarProp
                             {pinnedIdeas.map(idea => {
                                 const Icon = getIconForCategory(idea.category);
                                 return (
-                                    <Card key={idea.id} className="w-[300px] shrink-0 flex flex-col">
-                                        <CardHeader className="pb-2 flex-shrink-0">
+                                    <Card key={idea.id} className="w-[300px] shrink-0 flex flex-col justify-between">
+                                        <CardHeader className="pb-2">
                                             <CardTitle className="flex items-center justify-between text-base font-headline">
                                                 <div className="flex items-center gap-2">
                                                     <Icon className="w-5 h-5 text-accent" />
@@ -85,12 +85,12 @@ export function PinnedIdeasBar({ pinnedIdeas, onIdeaSelect }: PinnedIdeasBarProp
                                                 </Button>
                                             </CardTitle>
                                         </CardHeader>
-                                        <div className="px-6 py-2 flex-grow h-[60px]">
-                                            <p className="text-sm text-muted-foreground line-clamp-2">
-                                                {idea.description}
-                                            </p>
-                                        </div>
-                                        <CardFooter className="flex-shrink-0">
+                                        <CardFooter className="flex flex-col items-start gap-2">
+                                            <div className="h-10 overflow-hidden">
+                                                <p className="text-sm text-muted-foreground line-clamp-2">
+                                                    {idea.description}
+                                                </p>
+                                            </div>
                                             <Button
                                                 type="button"
                                                 variant="outline"
