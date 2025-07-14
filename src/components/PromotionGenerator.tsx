@@ -6,7 +6,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { ref, push } from "firebase/database";
-import { Lightbulb, Loader2, CalendarDays, Info, Film, Book, Tv, Gamepad2 } from 'lucide-react';
+import { Lightbulb, Loader2, CalendarDays, Info, Film, Book, Tv, Gamepad2, Save } from 'lucide-react';
 
 import { generatePromotionIdeas } from '@/ai/flows/generate-promotion-ideas';
 import { generateImage } from '@/ai/flows/generate-image-flow';
@@ -24,6 +24,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } f
 import { ScrollArea } from './ui/scroll-area';
 import type { Idea, RelevantDate, CrossMediaConnection } from '@/lib/types';
 import { database } from '@/lib/utils';
+import { SaveSetDialog } from './SaveSetDialog';
 
 
 const formSchema = z.object({
@@ -47,6 +48,8 @@ export function PromotionGenerator({ onImageGenerated, onIdeaSelect }: Promotion
   const [categories, setCategories] = useState<string[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [isMediaConnectionsDialogOpen, setIsMediaConnectionsDialogOpen] = useState(false);
+  const [isSaveSetDialogOpen, setIsSaveSetDialogOpen] = useState(false);
+  const [currentTopic, setCurrentTopic] = useState('');
   
   const { toast } = useToast();
 
@@ -59,6 +62,7 @@ export function PromotionGenerator({ onImageGenerated, onIdeaSelect }: Promotion
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     setIsLoading(true);
+    setCurrentTopic(values.topic);
     setIsGeneratingImage(shouldGenerateImage);
     setIdeas([]);
     setRelevantDates([]);
@@ -134,6 +138,35 @@ export function PromotionGenerator({ onImageGenerated, onIdeaSelect }: Promotion
       });
     }
   }
+
+  async function handleSaveSet(campaignName: string) {
+    const campaignData = {
+      name: campaignName,
+      topic: currentTopic,
+      ideas,
+      relevantDates,
+      crossMediaConnections,
+      createdAt: new Date().toISOString(),
+    };
+
+    try {
+      const savedCampaignsRef = ref(database, 'savedCampaigns');
+      await push(savedCampaignsRef, campaignData);
+      toast({
+        title: 'Campaign Saved!',
+        description: `The campaign "${campaignName}" has been saved successfully.`,
+      });
+      setIsSaveSetDialogOpen(false);
+    } catch (error) {
+      console.error("Error saving campaign set:", error);
+      toast({
+        variant: 'destructive',
+        title: 'Saving Failed',
+        description: 'There was a problem saving your campaign. Please try again.',
+      });
+    }
+  }
+
 
   const filteredIdeas = selectedCategory
     ? ideas.filter((idea) => idea.category === selectedCategory)
@@ -309,6 +342,16 @@ export function PromotionGenerator({ onImageGenerated, onIdeaSelect }: Promotion
                     <IdeaCard key={index} idea={idea} onSelect={onIdeaSelect} onPin={handlePinIdea} />
                   ))}
                 </div>
+                <div className="mt-12 text-center">
+                  <Button
+                    onClick={() => setIsSaveSetDialogOpen(true)}
+                    size="lg"
+                    variant="outline"
+                  >
+                    <Save className="mr-2 h-5 w-5" />
+                    Save Idea Set
+                  </Button>
+                </div>
               </>
             )}
           </div>
@@ -334,6 +377,13 @@ export function PromotionGenerator({ onImageGenerated, onIdeaSelect }: Promotion
             </ScrollArea>
           </DialogContent>
         </Dialog>
+
+        <SaveSetDialog 
+          isOpen={isSaveSetDialogOpen}
+          onClose={() => setIsSaveSetDialogOpen(false)}
+          onSave={handleSaveSet}
+          topic={currentTopic}
+        />
       </div>
     </section>
   );

@@ -1,3 +1,4 @@
+
 export type Idea = {
   topic: string;
   category: string;
@@ -18,3 +19,13 @@ export type CrossMediaConnection = {
   title: string;
   year: string;
 };
+
+export type SavedCampaign = {
+  id: string;
+  name: string;
+  topic: string;
+  ideas: Idea[];
+  relevantDates: RelevantDate[];
+  crossMediaConnections: CrossMediaConnection[];
+  createdAt: string;
+}
