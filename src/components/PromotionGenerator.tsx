@@ -1,12 +1,12 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { marked } from 'marked';
-import { Lightbulb, Loader2, CalendarDays, Info, Copy, Film, Book, Tv, Gamepad2, Pin } from 'lucide-react';
-import { getDatabase, ref, push, onValue, set } from "firebase/database";
+import { Lightbulb, Loader2, CalendarDays, Info, Copy, Film, Book, Tv, Gamepad2 } from 'lucide-react';
+import { getDatabase, ref, push } from "firebase/database";
 
 import { generatePromotionIdeas } from '@/ai/flows/generate-promotion-ideas';
 import { generateImage } from '@/ai/flows/generate-image-flow';
@@ -24,7 +24,7 @@ import { Label } from '@/components/ui/label';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog';
 import { getIconForCategory } from './icons';
 import { ScrollArea } from './ui/scroll-area';
-import type { Idea, RelevantDate, CrossMediaConnection, PinnedIdea } from '@/lib/types';
+import type { Idea, RelevantDate, CrossMediaConnection } from '@/lib/types';
 import { database } from '@/lib/utils';
 
 
@@ -36,10 +36,9 @@ const formSchema = z.object({
 
 interface PromotionGeneratorProps {
   onImageGenerated: (imageUrl: string | null) => void;
-  setPinnedIdeas: React.Dispatch<React.SetStateAction<PinnedIdea[]>>;
 }
 
-export function PromotionGenerator({ onImageGenerated, setPinnedIdeas }: PromotionGeneratorProps) {
+export function PromotionGenerator({ onImageGenerated }: PromotionGeneratorProps) {
   const [ideas, setIdeas] = useState<Idea[]>([]);
   const [relevantDates, setRelevantDates] = useState<RelevantDate[]>([]);
   const [crossMediaConnections, setCrossMediaConnections] = useState<CrossMediaConnection[]>([]);
@@ -56,20 +55,6 @@ export function PromotionGenerator({ onImageGenerated, setPinnedIdeas }: Promoti
   const [isMediaConnectionsDialogOpen, setIsMediaConnectionsDialogOpen] = useState(false);
   
   const { toast } = useToast();
-
-  useEffect(() => {
-    const pinnedIdeasRef = ref(database, 'pinnedIdeas');
-    const unsubscribe = onValue(pinnedIdeasRef, (snapshot) => {
-      const data = snapshot.val();
-      const loadedIdeas: PinnedIdea[] = [];
-      for (const id in data) {
-        loadedIdeas.push({ id, ...data[id] });
-      }
-      setPinnedIdeas(loadedIdeas);
-    });
-
-    return () => unsubscribe();
-  }, [setPinnedIdeas]);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),

@@ -10,10 +10,9 @@ import { database } from "@/lib/utils";
 
 interface PinnedIdeasBarProps {
     pinnedIdeas: PinnedIdea[];
-    setPinnedIdeas: React.Dispatch<React.SetStateAction<PinnedIdea[]>>;
 }
 
-export function PinnedIdeasBar({ pinnedIdeas, setPinnedIdeas }: PinnedIdeasBarProps) {
+export function PinnedIdeasBar({ pinnedIdeas }: PinnedIdeasBarProps) {
     const { toast } = useToast();
 
     if (pinnedIdeas.length === 0) {
@@ -24,7 +23,7 @@ export function PinnedIdeasBar({ pinnedIdeas, setPinnedIdeas }: PinnedIdeasBarPr
         try {
             const ideaRef = ref(database, `pinnedIdeas/${id}`);
             await remove(ideaRef);
-            // The onValue listener in PromotionGenerator will handle updating the state
+            // The onValue listener in Home/page.tsx will handle updating the state
             toast({
                 title: 'Idea Unpinned',
                 description: 'The idea has been removed from your saved list.',
