@@ -225,7 +225,6 @@ export function PromotionGenerator({ onImageGenerated }: PromotionGeneratorProps
                           <Input 
                             placeholder="e.g., 'The Great Gatsby', 'Minecraft', 'Stranger Things'" 
                             {...field}
-                            className="text-base md:text-sm"
                           />
                         </FormControl>
                         <FormMessage />
