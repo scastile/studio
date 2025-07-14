@@ -25,16 +25,17 @@ export function IdeaCard({ idea, onSelect, onPin }: IdeaCardProps) {
             <Icon className="w-6 h-6 text-accent" />
             <span>{idea.category}</span>
           </div>
-          <Button variant="ghost" size="icon" onClick={() => onPin(idea)} title="Pin this idea">
+          <Button type="button" variant="ghost" size="icon" onClick={() => onPin(idea)} title="Pin this idea">
             <Pin className="w-5 h-5 text-muted-foreground hover:text-primary" />
           </Button>
         </CardTitle>
       </CardHeader>
       <CardContent className="flex-grow flex flex-col">
         <p className="text-muted-foreground flex-grow">{idea.description}</p>
-        <Button 
-          variant="outline" 
-          size="sm" 
+        <Button
+          type="button"
+          variant="outline"
+          size="sm"
           className="mt-4 w-full"
           onClick={() => onSelect(idea)}
         >
