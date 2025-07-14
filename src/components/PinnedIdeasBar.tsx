@@ -84,10 +84,12 @@ export function PinnedIdeasBar({ pinnedIdeas, onIdeaSelect }: PinnedIdeasBarProp
                                                     <Trash2 className="w-4 h-4 text-muted-foreground hover:text-destructive" />
                                                 </Button>
                                             </CardTitle>
-                                             <p className="text-sm text-muted-foreground line-clamp-2 pt-2 min-h-[40px]">
+                                        </CardHeader>
+                                        <CardContent className="py-2 px-6 flex-grow">
+                                            <p className="text-sm text-muted-foreground line-clamp-2 h-[40px]">
                                                 {idea.description}
                                             </p>
-                                        </CardHeader>
+                                        </CardContent>
                                         <CardFooter>
                                             <Button
                                                 type="button"
