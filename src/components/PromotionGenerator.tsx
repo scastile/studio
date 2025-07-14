@@ -6,7 +6,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { marked } from 'marked';
 import { Lightbulb, Loader2, CalendarDays, Info, Copy, Film, Book, Tv, Gamepad2 } from 'lucide-react';
-import { getDatabase, ref, push } from "firebase/database";
+import { ref, push } from "firebase/database";
 
 import { generatePromotionIdeas } from '@/ai/flows/generate-promotion-ideas';
 import { generateImage } from '@/ai/flows/generate-image-flow';
