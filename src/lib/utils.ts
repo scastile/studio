@@ -14,8 +14,8 @@ const firebaseConfig = {
   projectId: "your-firebase-project-id",
   storageBucket: "your-firebase-storage-bucket",
   messagingSenderId: "your-firebase-messaging-sender-id",
-  appId: "your-firebase-app-id",
-  databaseURL: "https://your-firebase-project-id-default-rtdb.firebaseio.com/",
+  appId: "1:789012345678:web:abcdef1234567890abcdef",
+  databaseURL: "https://librarylaunchpad-default-rtdb.firebaseio.com",
 };
 
 // Initialize Firebase
