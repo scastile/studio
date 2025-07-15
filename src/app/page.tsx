@@ -6,7 +6,7 @@ import { Header } from '@/components/Header';
 import { PromotionGenerator } from '@/components/PromotionGenerator';
 import { Gallery, type GeneratedImage } from '@/components/Gallery';
 import { v4 as uuidv4 } from 'uuid';
-import { PinnedIdeasBar } from '@/components/PinnedIdeasBar';
+import { PinnedIdeasList } from '@/components/PinnedIdeasList';
 import type { PinnedIdea, Idea, SavedCampaign, SavedImage } from '@/lib/types';
 import { ref, onValue, push, remove } from 'firebase/database';
 import { database } from '@/lib/utils';
@@ -220,6 +220,7 @@ export default function Home() {
           onLoadSavedImage={(image) => addImageToList({ id: uuidv4(), url: image.url, prompt: image.prompt})}
           onImageClick={setLightboxImage}
         />
+        <PinnedIdeasList pinnedIdeas={pinnedIdeas} onIdeaSelect={handleIdeaSelect} />
       </div>
       
       <Gallery
@@ -228,7 +229,6 @@ export default function Home() {
         onRemoveImage={removeImageFromList}
         onImageClick={setLightboxImage}
       />
-      <PinnedIdeasBar pinnedIdeas={pinnedIdeas} onIdeaSelect={handleIdeaSelect} />
       <footer className="text-center py-6 text-muted-foreground">
         <div className="container mx-auto">
           <p>&copy; {new Date().getFullYear()} LibraryLaunchpad. All rights reserved.</p>
