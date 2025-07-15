@@ -361,6 +361,9 @@ export function PromotionGenerator({ onImageGenerated, onIdeaSelect, onReset, ca
                 </form>
               </Form>
             </CardContent>
+            <CardFooter className="flex justify-center">
+               <SavedCampaignsSheet onCampaignLoad={onCampaignLoad} />
+            </CardFooter>
           </Card>
 
           <Card>
@@ -433,10 +436,6 @@ export function PromotionGenerator({ onImageGenerated, onIdeaSelect, onReset, ca
               </div>
             </CardContent>
           </Card>
-
-          <div className="flex justify-center mt-4">
-            <SavedCampaignsSheet onCampaignLoad={onCampaignLoad} />
-          </div>
         </div>
         
 
@@ -581,3 +580,5 @@ export function PromotionGenerator({ onImageGenerated, onIdeaSelect, onReset, ca
     </section>
   );
 }
+
+    
