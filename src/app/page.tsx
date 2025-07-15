@@ -139,18 +139,19 @@ export default function Home() {
 
 
   return (
-    <main className="min-h-screen bg-background px-4 sm:px-0">
+    <main className="min-h-screen bg-background">
       <Header />
 
-      <PromotionGenerator 
-        onImageGenerated={handleInitialImageGenerated} 
-        onIdeaSelect={handleIdeaSelect}
-        onReset={handleResetSearch}
-        campaignToLoad={loadedCampaign}
-      />
-
-      <div className="container mx-auto flex justify-center py-4">
-        <SavedCampaignsSheet onCampaignLoad={handleCampaignLoad} />
+      <div className="container mx-auto px-4 sm:px-0">
+        <PromotionGenerator 
+          onImageGenerated={handleInitialImageGenerated} 
+          onIdeaSelect={handleIdeaSelect}
+          onReset={handleResetSearch}
+          campaignToLoad={loadedCampaign}
+        />
+        <div className="flex justify-center py-4">
+          <SavedCampaignsSheet onCampaignLoad={handleCampaignLoad} />
+        </div>
       </div>
       
       <Gallery
