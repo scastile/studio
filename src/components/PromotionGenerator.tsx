@@ -356,7 +356,7 @@ export function PromotionGenerator({ onImageGenerated, onIdeaSelect, onReset, ca
 
         { !isLoading && (ideas.length > 0 || relevantDates.length > 0 || crossMediaConnections.length > 0) && (
           <div className="mt-12">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               {relevantDates.length > 0 && (
                 <Card>
                   <CardHeader>
