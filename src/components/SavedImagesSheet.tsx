@@ -100,7 +100,7 @@ export function SavedImagesSheet({ savedImages, onImageLoad, onImageClick }: Sav
                       </CardDescription>
                     </CardHeader>
                     <CardContent>
-                      <div className="relative w-full h-48 cursor-pointer" onClick={() => onImageClick(image)}>
+                      <div className="relative w-48 h-48 cursor-pointer" onClick={() => onImageClick(image)}>
                            <Image 
                               src={image.url} 
                               alt={image.prompt} 
