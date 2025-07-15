@@ -87,7 +87,7 @@ export function Gallery({ images, savedImages, onAddImage, onUpdateImage, onRemo
 
 
   return (
-    <section id="gallery" className="py-12 sm:py-16 bg-background">
+    <section id="gallery" className="py-12 sm:py-16">
       <div className="container mx-auto">
         <div className="text-center mb-12">
           <h2 className="font-headline text-3xl sm:text-4xl font-bold text-gray-800 dark:text-gray-100 flex items-center justify-center gap-3">

@@ -63,6 +63,8 @@
     @apply border-border;
   }
   body {
-    @apply bg-background text-foreground;
+    @apply text-foreground;
+    background-color: #738db6;
+    background-image: linear-gradient(180deg, #d3e0f5 0%, #738db6 100%);
   }
 }

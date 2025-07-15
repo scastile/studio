@@ -228,7 +228,7 @@ export function PromotionGenerator({ onImageGenerated, onIdeaSelect, onReset, ca
   );
 
   return (
-    <section id="generator" className="py-12 sm:py-16 bg-background">
+    <section id="generator" className="py-12 sm:py-16">
       <div className="container mx-auto">
         <div className="max-w-xl mx-auto">
           <Card>

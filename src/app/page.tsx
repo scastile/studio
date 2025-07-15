@@ -198,7 +198,7 @@ export default function Home() {
 
 
   return (
-    <main className="min-h-screen bg-background">
+    <main className="min-h-screen">
       <Header />
 
       <div className="container mx-auto px-4 sm:px-0">
@@ -222,7 +222,7 @@ export default function Home() {
         onLoadSavedImage={(image) => addImageToList({ id: uuidv4(), url: image.url, prompt: image.prompt})}
       />
       <PinnedIdeasBar pinnedIdeas={pinnedIdeas} onIdeaSelect={handleIdeaSelect} />
-      <footer className="text-center py-6 bg-background text-muted-foreground">
+      <footer className="text-center py-6 text-muted-foreground">
         <div className="container mx-auto">
           <p>&copy; {new Date().getFullYear()} LibraryLaunchpad. All rights reserved.</p>
         </div>

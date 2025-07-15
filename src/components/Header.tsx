@@ -3,7 +3,7 @@ import { Lightbulb } from 'lucide-react';
 
 export function Header() {
   return (
-    <header className="bg-background py-8 sm:py-12 text-center relative">
+    <header className="py-8 sm:py-12 text-center relative">
       <div className="container mx-auto px-4 sm:px-0">
         <div className="flex justify-center items-center gap-2 mb-4">
             <Lightbulb className="h-10 w-10 text-primary" />
