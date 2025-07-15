@@ -64,7 +64,7 @@
   }
   body {
     @apply text-foreground;
-    background-color: #738db6;
-    background-image: linear-gradient(180deg, #d3e0f5 0%, #738db6 100%);
+    background-color: #a4bde5;
+    background-image: linear-gradient(180deg, #eaf2ff 0%, #a4bde5 100%);
   }
 }
