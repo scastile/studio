@@ -209,14 +209,13 @@ export default function Home() {
       <Header />
 
       <div className="container mx-auto px-4 sm:px-0">
-        <PromotionGenerator 
-          onImageGenerated={handleInitialImageGenerated} 
-          onIdeaSelect={handleIdeaSelect}
-          onReset={handleResetSearch}
-          campaignToLoad={loadedCampaign}
-          onCampaignLoad={handleCampaignLoad}
-        />
-        <div className="max-w-xl mx-auto space-y-8 mt-8">
+        <div className="max-w-xl mx-auto space-y-8">
+            <PromotionGenerator 
+              onImageGenerated={handleInitialImageGenerated} 
+              onIdeaSelect={handleIdeaSelect}
+              onReset={handleResetSearch}
+              campaignToLoad={loadedCampaign}
+            />
             <SavedCampaignsList onCampaignLoad={handleCampaignLoad} />
             <PinnedIdeasList pinnedIdeas={pinnedIdeas} onIdeaSelect={handleIdeaSelect} />
         </div>

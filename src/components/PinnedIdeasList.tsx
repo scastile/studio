@@ -8,7 +8,7 @@ import { useToast } from '@/hooks/use-toast';
 
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from './ui/scroll-area';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './ui/card';
+import { Card, CardContent } from './ui/card';
 import { Pin, Trash2, Info } from 'lucide-react';
 import type { PinnedIdea, Idea } from '@/lib/types';
 import {
@@ -21,6 +21,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog"
+import { CollapsibleCard } from './CollapsibleCard';
 
 interface PinnedIdeasListProps {
   pinnedIdeas: PinnedIdea[];
@@ -54,66 +55,41 @@ export function PinnedIdeasList({ pinnedIdeas, onIdeaSelect }: PinnedIdeasListPr
   const handleSelectIdea = (idea: PinnedIdea) => {
     onIdeaSelect(idea);
   }
-  
-  if (pinnedIdeas.length === 0) {
-    return (
-      <div className="max-w-xl mx-auto space-y-8 mt-8">
-        <Card>
-            <CardHeader>
-                <CardTitle className="text-2xl font-headline flex items-center gap-3">
-                  <Pin className="w-6 h-6 text-primary" />
-                  Pinned Ideas
-                </CardTitle>
-                <CardDescription>
-                  You haven't pinned any ideas yet. Click the pin icon on an idea card to save it here.
-                </CardDescription>
-            </CardHeader>
-        </Card>
-      </div>
-    )
-  }
-
 
   return (
-    <div className="max-w-xl mx-auto space-y-8 mt-8">
-      <Card>
-        <CardHeader>
-            <CardTitle className="text-2xl font-headline flex items-center gap-3">
-              <Pin className="w-6 h-6 text-primary" />
-              Pinned Ideas ({pinnedIdeas.length})
-            </CardTitle>
-            <CardDescription>
-              Here are your saved ideas. You can view more info or unpin them.
-            </CardDescription>
-        </CardHeader>
-        <CardContent>
-            <ScrollArea className="h-[250px] w-full pr-4">
-                <div className="space-y-4 pb-4">
-                {pinnedIdeas.map((idea) => (
-                  <Card key={idea.id} className="p-4 flex justify-between items-center group">
-                      <div>
-                        <h3 className="font-semibold text-foreground">{idea.category}</h3>
-                        <p className="text-sm text-muted-foreground mt-1 line-clamp-1" title={idea.description}>
-                            {idea.description}
-                        </p>
-                         <p className="text-xs text-muted-foreground mt-1">
-                            Topic: {idea.topic}
-                        </p>
-                      </div>
-                      <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                        <Button size="sm" variant="outline" onClick={() => handleSelectIdea(idea)} title="More Info">
-                            <Info className="h-4 w-4" />
-                        </Button>
-                        <Button size="sm" variant="destructive" onClick={() => setIdeaToDelete(idea)} title="Unpin Idea">
-                            <Trash2 className="h-4 w-4" />
-                        </Button>
-                      </div>
-                  </Card>
-                ))}
-                </div>
-            </ScrollArea>
-        </CardContent>
-      </Card>
+    <>
+      <CollapsibleCard
+        title="Pinned Ideas"
+        count={pinnedIdeas.length}
+        description={pinnedIdeas.length > 0 ? "Here are your saved ideas. You can view more info or unpin them." : "You haven't pinned any ideas yet. Click the pin icon on an idea card to save it here."}
+        Icon={Pin}
+      >
+        <ScrollArea className="h-[250px] w-full pr-4">
+            <div className="space-y-4 pb-4">
+            {pinnedIdeas.map((idea) => (
+              <Card key={idea.id} className="p-4 flex justify-between items-center group">
+                  <div>
+                    <h3 className="font-semibold text-foreground">{idea.category}</h3>
+                    <p className="text-sm text-muted-foreground mt-1 line-clamp-1" title={idea.description}>
+                        {idea.description}
+                    </p>
+                     <p className="text-xs text-muted-foreground mt-1">
+                        Topic: {idea.topic}
+                    </p>
+                  </div>
+                  <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                    <Button size="sm" variant="outline" onClick={() => handleSelectIdea(idea)} title="More Info">
+                        <Info className="h-4 w-4" />
+                    </Button>
+                    <Button size="sm" variant="destructive" onClick={() => setIdeaToDelete(idea)} title="Unpin Idea">
+                        <Trash2 className="h-4 w-4" />
+                    </Button>
+                  </div>
+              </Card>
+            ))}
+            </div>
+        </ScrollArea>
+      </CollapsibleCard>
 
       <AlertDialog open={!!ideaToDelete} onOpenChange={(isOpen) => !isOpen && setIdeaToDelete(null)}>
         <AlertDialogContent>
@@ -131,6 +107,6 @@ export function PinnedIdeasList({ pinnedIdeas, onIdeaSelect }: PinnedIdeasListPr
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
-    </div>
+    </>
   );
 }

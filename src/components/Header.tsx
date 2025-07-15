@@ -13,10 +13,7 @@ export function Header() {
         </div>
         <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
           Spark creativity and engage your community. Generate innovative cross-promotion ideas for books, movies, games, and more in your library.
-        </p>
-        <p className="text-md text-muted-foreground max-w-3xl mx-auto mt-4">
-          Pinned Cards are saved to the Saved Ideas tray.  Campaign Sets may be saved and reloaded via the Saved Campaigns button.
-        </p>
+        </p>        
       </div>
     </header>
   );

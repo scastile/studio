@@ -39,10 +39,9 @@ interface PromotionGeneratorProps {
   onIdeaSelect: (idea: Idea) => void;
   onReset: () => void;
   campaignToLoad: SavedCampaign | null;
-  onCampaignLoad: (campaign: SavedCampaign) => void;
 }
 
-export function PromotionGenerator({ onImageGenerated, onIdeaSelect, onReset, campaignToLoad, onCampaignLoad }: PromotionGeneratorProps) {
+export function PromotionGenerator({ onImageGenerated, onIdeaSelect, onReset, campaignToLoad }: PromotionGeneratorProps) {
   const [ideas, setIdeas] = useState<Idea[]>([]);
   const [relevantDates, setRelevantDates] = useState<RelevantDate[]>([]);
   const [crossMediaConnections, setCrossMediaConnections] = useState<CrossMediaConnection[]>([]);
@@ -104,7 +103,7 @@ export function PromotionGenerator({ onImageGenerated, onIdeaSelect, onReset, ca
     setCrossMediaConnections([]);
     setCategories([]);
     setSelectedCategory(null);
-    const imagePrompt = `Create a vibrant, eye-catching promotional image for a library campaign about ${values.topic}. Include visual elements and symbols that naturally connect to ${values.topic} while maintaining a library atmosphere. The setting should feel modern yet timeless, with natural lighting and an inviting environment. Use a rich, engaging color palette that complements the ${values.topic} theme. `;
+    const imagePrompt = `Create a vibrant, eye-catching promotional image about ${values.topic}. Include visual elements and or symbols that naturally connect to ${values.topic}. Use a rich, engaging color palette that complements the ${values.topic} theme. `;
     if(shouldGenerateImage) {
       onImageGenerated(null, undefined, imagePrompt);
     }
@@ -230,248 +229,242 @@ export function PromotionGenerator({ onImageGenerated, onIdeaSelect, onReset, ca
   );
 
   return (
-    <section id="generator" className="py-12 sm:py-16">
-      <div className="container mx-auto">
-        <div className="max-w-xl mx-auto space-y-8">
-          <Card>
-            <CardContent className="p-6">
-              <p className="font-bold text-left mb-4 text-lg">What would you like to promote?</p>
-              <Form {...promotionForm}>
-                <form onSubmit={promotionForm.handleSubmit(onPromotionSubmit)} className="space-y-4">
-                  <FormField
-                    control={promotionForm.control}
-                    name="topic"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormControl>
-                          <Input 
-                            placeholder="e.g., 'The Great Gatsby', 'Minecraft', 'Stranger Things'" 
-                            {...field}
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <div className="flex items-center justify-start space-x-2 pt-2">
-                    <Switch
-                      id="image-generation-switch"
-                      checked={shouldGenerateImage}
-                      onCheckedChange={setShouldGenerateImage}
-                      disabled={isLoading || isGeneratingTopicImage}
-                    />
-                    <Label htmlFor="image-generation-switch" className="text-muted-foreground">Generate AI Image with topic</Label>
-                  </div>
-                  {shouldGenerateImage && (
-                    <div className="flex justify-start items-center gap-4">
-                       <Label htmlFor="aspectRatio" className="text-muted-foreground">Aspect Ratio</Label>
-                      <Select
-                        defaultValue={topicImageAspectRatio}
-                        onValueChange={setTopicImageAspectRatio}
-                        disabled={isLoading || isGeneratingTopicImage}
-                      >
-                        <SelectTrigger id="aspectRatio" className="w-[120px]">
-                          <SelectValue placeholder="Ratio" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="1:1">Square</SelectItem>
-                          <SelectItem value="16:9">Wide</SelectItem>
-                          <SelectItem value="9:16">Tall</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </div>
+    <>
+      <Card>
+        <CardContent className="p-6">
+          <p className="font-bold text-left mb-4 text-lg">What would you like to promote?</p>
+          <Form {...promotionForm}>
+            <form onSubmit={promotionForm.handleSubmit(onPromotionSubmit)} className="space-y-4">
+              <FormField
+                control={promotionForm.control}
+                name="topic"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormControl>
+                      <Input 
+                        placeholder="e.g., 'The Great Gatsby', 'Minecraft', 'Stranger Things'" 
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <div className="flex items-center justify-start space-x-2 pt-2">
+                <Switch
+                  id="image-generation-switch"
+                  checked={shouldGenerateImage}
+                  onCheckedChange={setShouldGenerateImage}
+                  disabled={isLoading || isGeneratingTopicImage}
+                />
+                <Label htmlFor="image-generation-switch" className="text-muted-foreground">Generate AI Image with topic</Label>
+              </div>
+              {shouldGenerateImage && (
+                <div className="flex justify-start items-center gap-4">
+                   <Label htmlFor="aspectRatio" className="text-muted-foreground">Aspect Ratio</Label>
+                  <Select
+                    defaultValue={topicImageAspectRatio}
+                    onValueChange={setTopicImageAspectRatio}
+                    disabled={isLoading || isGeneratingTopicImage}
+                  >
+                    <SelectTrigger id="aspectRatio" className="w-[120px]">
+                      <SelectValue placeholder="Ratio" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="1:1">Square</SelectItem>
+                      <SelectItem value="16:9">Wide</SelectItem>
+                      <SelectItem value="9:16">Tall</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              )}
+              <div className="flex flex-col sm:flex-row gap-2">
+                <Button type="submit" disabled={isLoading || isGeneratingTopicImage} className="w-full">
+                  {isLoading ? (
+                    <>
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      Generating Ideas...
+                    </>
+                  ) : isGeneratingTopicImage ? (
+                      <>
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      Generating Ideas & Image...
+                    </>
+                  ) : (
+                    <>
+                      <Lightbulb className="mr-2 h-4 w-4" />
+                      Generate Promotion Ideas
+                    </>
                   )}
-                  <div className="flex flex-col sm:flex-row gap-2">
-                    <Button type="submit" disabled={isLoading || isGeneratingTopicImage} className="w-full">
-                      {isLoading ? (
-                        <>
-                          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                          Generating Ideas...
-                        </>
-                      ) : isGeneratingTopicImage ? (
-                          <>
-                          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                          Generating Ideas & Image...
-                        </>
-                      ) : (
-                        <>
-                          <Lightbulb className="mr-2 h-4 w-4" />
-                          Generate Promotion Ideas
-                        </>
-                      )}
-                    </Button>
-                     <Button type="button" variant="outline" onClick={handleReset} className="w-full sm:w-auto">
-                      <RotateCcw className="mr-2 h-4 w-4" />
-                      New Search
-                    </Button>
-                  </div>
-                </form>
-              </Form>
-            </CardContent>
-          </Card>
+                </Button>
+                 <Button type="button" variant="outline" onClick={handleReset} className="w-full sm:w-auto">
+                  <RotateCcw className="mr-2 h-4 w-4" />
+                  New Search
+                </Button>
+              </div>
+            </form>
+          </Form>
+        </CardContent>
+      </Card>
 
-          {campaignToLoad && (
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-3 text-lg font-headline">
-                  <Archive className="w-6 h-6 text-primary" />
-                  <span>Currently Loaded Campaign</span>
-                </CardTitle>
-                <CardDescription>
-                  You are viewing ideas and assets from a saved campaign.
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-1 text-sm text-muted-foreground">
-                  <p><span className="font-semibold text-foreground">Name:</span> {campaignToLoad.name}</p>
-                  <p><span className="font-semibold text-foreground">Topic:</span> {campaignToLoad.topic}</p>
-                  <p><span className="font-semibold text-foreground">Saved:</span> {formatDistanceToNow(new Date(campaignToLoad.createdAt), { addSuffix: true })}</p>
-                </div>
-              </CardContent>
-            </Card>
-          )}
-
-        </div>
-        
-
-        {(isLoading || isGeneratingTopicImage) && (
-          <div className="mt-12">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {[...Array(6)].map((_, i) => (
-                <div key={i} className="flex flex-col space-y-3 p-6 border rounded-lg bg-card">
-                  <div className="flex items-center space-x-4">
-                      <Skeleton className="h-8 w-8 rounded-full" />
-                      <Skeleton className="h-6 w-32" />
-                  </div>
-                  <Skeleton className="h-4 w-full" />
-                  <Skeleton className="h-4 w-5/6" />
-                </div>
-              ))}
+      {campaignToLoad && (
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-3 text-lg font-headline">
+              <Archive className="w-6 h-6 text-primary" />
+              <span>Currently Loaded Campaign</span>
+            </CardTitle>
+            <CardDescription>
+              You are viewing ideas and assets from a saved campaign.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-1 text-sm text-muted-foreground">
+              <p><span className="font-semibold text-foreground">Name:</span> {campaignToLoad.name}</p>
+              <p><span className="font-semibold text-foreground">Topic:</span> {campaignToLoad.topic}</p>
+              <p><span className="font-semibold text-foreground">Saved:</span> {formatDistanceToNow(new Date(campaignToLoad.createdAt), { addSuffix: true })}</p>
             </div>
+          </CardContent>
+        </Card>
+      )}
+
+      {(isLoading || isGeneratingTopicImage) && (
+        <div className="mt-12">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {[...Array(6)].map((_, i) => (
+              <div key={i} className="flex flex-col space-y-3 p-6 border rounded-lg bg-card">
+                <div className="flex items-center space-x-4">
+                    <Skeleton className="h-8 w-8 rounded-full" />
+                    <Skeleton className="h-6 w-32" />
+                </div>
+                <Skeleton className="h-4 w-full" />
+                <Skeleton className="h-4 w-5/6" />
+              </div>
+            ))}
           </div>
-        )}
+        </div>
+      )}
 
-        { !isLoading && (ideas.length > 0 || relevantDates.length > 0 || crossMediaConnections.length > 0) && (
-          <div className="mt-12">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-              {relevantDates.length > 0 && (
-                <Card>
-                  <CardHeader>
-                    <CardTitle className="flex items-center gap-3 text-lg font-headline">
-                      <CalendarDays className="w-6 h-6 text-primary" />
-                      <span>Relevant Dates</span>
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <ul className="space-y-2">
-                      {relevantDates.map((d, i) => (
-                        <li key={i} className="text-muted-foreground">
-                          <span className="font-bold text-foreground">{d.date}:</span> {d.reason}
-                        </li>
-                      ))}
-                    </ul>
-                  </CardContent>
-                </Card>
-              )}
-               {crossMediaConnections.length > 0 && (
-                <Card className="flex flex-col">
-                  <CardHeader>
-                    <CardTitle className="flex items-center gap-3 text-lg font-headline">
-                      <Film className="w-6 h-6 text-primary" />
-                      <span>Media Connections</span>
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent className="flex-grow">
-                    <ul className="space-y-3">
-                      {crossMediaConnections.slice(0, 5).map((c, i) => (
-                        <CrossMediaConnectionItem key={i} connection={c} />
-                      ))}
-                    </ul>
-                  </CardContent>
-                  {crossMediaConnections.length > 5 && (
-                    <CardFooter>
-                      <Button
-                        variant="outline"
-                        className="w-full"
-                        onClick={() => setIsMediaConnectionsDialogOpen(true)}
-                      >
-                        Show all {crossMediaConnections.length} connections
-                      </Button>
-                    </CardFooter>
-                  )}
-                </Card>
-              )}
-            </div>
-            
-            {ideas.length > 0 && (
-              <>
-                <div className="flex flex-wrap justify-center gap-2 mb-8">
-                  <Badge
-                    variant={selectedCategory === null ? 'default' : 'secondary'}
-                    onClick={() => setSelectedCategory(null)}
-                    className="cursor-pointer text-base px-4 py-2"
-                  >
-                    All
-                  </Badge>
-                  {categories.map((category) => (
-                    <Badge
-                      key={category}
-                      variant={selectedCategory === category ? 'default' : 'secondary'}
-                      onClick={() => setSelectedCategory(category)}
-                      className="cursor-pointer text-base px-4 py-2"
+      { !isLoading && (ideas.length > 0 || relevantDates.length > 0 || crossMediaConnections.length > 0) && (
+        <div className="mt-12">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            {relevantDates.length > 0 && (
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-3 text-lg font-headline">
+                    <CalendarDays className="w-6 h-6 text-primary" />
+                    <span>Relevant Dates</span>
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <ul className="space-y-2">
+                    {relevantDates.map((d, i) => (
+                      <li key={i} className="text-muted-foreground">
+                        <span className="font-bold text-foreground">{d.date}:</span> {d.reason}
+                      </li>
+                    ))}
+                  </ul>
+                </CardContent>
+              </Card>
+            )}
+             {crossMediaConnections.length > 0 && (
+              <Card className="flex flex-col">
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-3 text-lg font-headline">
+                    <Film className="w-6 h-6 text-primary" />
+                    <span>Media Connections</span>
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="flex-grow">
+                  <ul className="space-y-3">
+                    {crossMediaConnections.slice(0, 5).map((c, i) => (
+                      <CrossMediaConnectionItem key={i} connection={c} />
+                    ))}
+                  </ul>
+                </CardContent>
+                {crossMediaConnections.length > 5 && (
+                  <CardFooter>
+                    <Button
+                      variant="outline"
+                      className="w-full"
+                      onClick={() => setIsMediaConnectionsDialogOpen(true)}
                     >
-                      {category}
-                    </Badge>
-                  ))}
-                </div>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                  {filteredIdeas.map((idea, index) => (
-                    <IdeaCard key={index} idea={idea} onSelect={onIdeaSelect} onPin={handlePinIdea} />
-                  ))}
-                </div>
-                <div className="mt-12 text-center">
-                  <Button
-                    onClick={() => setIsSaveSetDialogOpen(true)}
-                    size="lg"
-                    variant="outline"
-                  >
-                    <Save className="mr-2 h-5 w-5" />
-                    Save Idea Set
-                  </Button>
-                </div>
-              </>
+                      Show all {crossMediaConnections.length} connections
+                    </Button>
+                  </CardFooter>
+                )}
+              </Card>
             )}
           </div>
-        )}
-
-        <Dialog open={isMediaConnectionsDialogOpen} onOpenChange={setIsMediaConnectionsDialogOpen}>
-          <DialogContent className="sm:max-w-lg">
-            <DialogHeader>
-              <DialogTitle className="flex items-center gap-3 text-2xl font-headline">
-                <Film className="w-8 h-8 text-primary" />
-                All Media Connections
-              </DialogTitle>
-              <DialogDescription>
-                A complete list of related media found for this topic.
-              </DialogDescription>
-            </DialogHeader>
-            <ScrollArea className="h-[50vh] w-full rounded-md border p-4">
-              <ul className="space-y-4">
-                {crossMediaConnections.map((c, i) => (
-                  <CrossMediaConnectionItem key={i} connection={c} />
+          
+          {ideas.length > 0 && (
+            <>
+              <div className="flex flex-wrap justify-center gap-2 my-8">
+                <Badge
+                  variant={selectedCategory === null ? 'default' : 'secondary'}
+                  onClick={() => setSelectedCategory(null)}
+                  className="cursor-pointer text-base px-4 py-2"
+                >
+                  All
+                </Badge>
+                {categories.map((category) => (
+                  <Badge
+                    key={category}
+                    variant={selectedCategory === category ? 'default' : 'secondary'}
+                    onClick={() => setSelectedCategory(category)}
+                    className="cursor-pointer text-base px-4 py-2"
+                  >
+                    {category}
+                  </Badge>
                 ))}
-              </ul>
-            </ScrollArea>
-          </DialogContent>
-        </Dialog>
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {filteredIdeas.map((idea, index) => (
+                  <IdeaCard key={index} idea={idea} onSelect={onIdeaSelect} onPin={handlePinIdea} />
+                ))}
+              </div>
+              <div className="mt-12 text-center">
+                <Button
+                  onClick={() => setIsSaveSetDialogOpen(true)}
+                  size="lg"
+                  variant="outline"
+                >
+                  <Save className="mr-2 h-5 w-5" />
+                  Save Idea Set
+                </Button>
+              </div>
+            </>
+          )}
+        </div>
+      )}
 
-        <SaveSetDialog 
-          isOpen={isSaveSetDialogOpen}
-          onClose={() => setIsSaveSetDialogOpen(false)}
-          onSave={handleSaveSet}
-          topic={currentTopic}
-        />
-      </div>
-    </section>
+      <Dialog open={isMediaConnectionsDialogOpen} onOpenChange={setIsMediaConnectionsDialogOpen}>
+        <DialogContent className="sm:max-w-lg">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-3 text-2xl font-headline">
+              <Film className="w-8 h-8 text-primary" />
+              All Media Connections
+            </DialogTitle>
+            <DialogDescription>
+              A complete list of related media found for this topic.
+            </DialogDescription>
+          </DialogHeader>
+          <ScrollArea className="h-[50vh] w-full rounded-md border p-4">
+            <ul className="space-y-4">
+              {crossMediaConnections.map((c, i) => (
+                <CrossMediaConnectionItem key={i} connection={c} />
+              ))}
+            </ul>
+          </ScrollArea>
+        </DialogContent>
+      </Dialog>
+
+      <SaveSetDialog 
+        isOpen={isSaveSetDialogOpen}
+        onClose={() => setIsSaveSetDialogOpen(false)}
+        onSave={handleSaveSet}
+        topic={currentTopic}
+      />
+    </>
   );
 }
