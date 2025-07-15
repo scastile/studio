@@ -48,14 +48,14 @@ export default function Home() {
     return () => unsubscribe();
   }, []);
 
-  const handleInitialImageGenerated = (imageUrl: string | null, imageId?: string) => {
+  const handleInitialImageGenerated = (imageUrl: string | null, imageId?: string, prompt?: string) => {
     if (imageUrl) {
       const newId = uuidv4();
-      setGeneratedImages(prev => [...prev, { id: newId, url: imageUrl, prompt: 'Initial Topic Image' }]);
+      setGeneratedImages(prev => [...prev, { id: newId, url: imageUrl, prompt: prompt || 'Initial Topic Image' }]);
       setInitialImageId(newId);
     } else if (imageId) {
       // Used for updating a loading image
-      setGeneratedImages(prev => prev.map(img => img.id === imageId ? { ...img, url: imageUrl } : img));
+       setGeneratedImages(prev => prev.map(img => img.id === imageId ? { ...img, url: imageUrl, prompt: prompt || img.prompt } : img));
     }
   };
   

@@ -25,6 +25,7 @@ import { ScrollArea } from './ui/scroll-area';
 import type { Idea, RelevantDate, CrossMediaConnection, SavedCampaign } from '@/lib/types';
 import { database } from '@/lib/utils';
 import { SaveSetDialog } from './SaveSetDialog';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
 
 
 const formSchema = z.object({
@@ -34,7 +35,7 @@ const formSchema = z.object({
 });
 
 interface PromotionGeneratorProps {
-  onImageGenerated: (imageUrl: string | null) => void;
+  onImageGenerated: (imageUrl: string | null, imageId?: string, prompt?: string) => void;
   onIdeaSelect: (idea: Idea) => void;
   onReset: () => void;
   campaignToLoad: SavedCampaign | null;
@@ -47,6 +48,7 @@ export function PromotionGenerator({ onImageGenerated, onIdeaSelect, onReset, ca
   const [isLoading, setIsLoading] = useState(false);
   const [isGeneratingImage, setIsGeneratingImage] = useState(false);
   const [shouldGenerateImage, setShouldGenerateImage] = useState(false);
+  const [aspectRatio, setAspectRatio] = useState('1:1');
   const [categories, setCategories] = useState<string[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [isMediaConnectionsDialogOpen, setIsMediaConnectionsDialogOpen] = useState(false);
@@ -100,13 +102,14 @@ export function PromotionGenerator({ onImageGenerated, onIdeaSelect, onReset, ca
     setCrossMediaConnections([]);
     setCategories([]);
     setSelectedCategory(null);
-    onImageGenerated(null);
+    const imagePrompt = `A creative, artistic, visually-appealing promotional image for a library about: ${values.topic}`;
+    onImageGenerated(null, undefined, imagePrompt);
     
     try {
       const ideasPromise = generatePromotionIdeas({ topic: values.topic });
 
       const imagePromise = shouldGenerateImage 
-        ? generateImage({ prompt: `A creative, artistic, visually-appealing promotional image for a library about: ${values.topic}` })
+        ? generateImage({ prompt: imagePrompt, aspectRatio: aspectRatio })
         : Promise.resolve(null);
       
       const ideasResult = await ideasPromise;
@@ -131,7 +134,7 @@ export function PromotionGenerator({ onImageGenerated, onIdeaSelect, onReset, ca
       if (shouldGenerateImage) {
         const imageResult = await imagePromise;
         if(imageResult && imageResult.imageDataUri) {
-          onImageGenerated(imageResult.imageDataUri);
+          onImageGenerated(imageResult.imageDataUri, undefined, imagePrompt);
         }
         setIsGeneratingImage(false);
       }
@@ -254,6 +257,25 @@ export function PromotionGenerator({ onImageGenerated, onIdeaSelect, onReset, ca
                     />
                     <Label htmlFor="image-generation-switch" className="text-muted-foreground">Generate AI Image with topic</Label>
                   </div>
+                  {shouldGenerateImage && (
+                    <div className="flex justify-center items-center gap-4">
+                       <Label htmlFor="aspectRatio" className="text-muted-foreground">Aspect Ratio</Label>
+                      <Select
+                        defaultValue={aspectRatio}
+                        onValueChange={setAspectRatio}
+                        disabled={isLoading || isGeneratingImage}
+                      >
+                        <SelectTrigger id="aspectRatio" className="w-[120px]">
+                          <SelectValue placeholder="Ratio" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="1:1">Square</SelectItem>
+                          <SelectItem value="16:9">Wide</SelectItem>
+                          <SelectItem value="9:16">Tall</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  )}
                   <div className="flex flex-col sm:flex-row gap-2">
                     <Button type="submit" disabled={isLoading || isGeneratingImage} className="w-full">
                       {isLoading ? (

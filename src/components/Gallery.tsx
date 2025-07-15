@@ -11,7 +11,8 @@ import { generateImage } from '@/ai/flows/generate-image-flow';
 import { useToast } from '@/hooks/use-toast';
 import { v4 as uuidv4 } from 'uuid';
 import { useState } from 'react';
-
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Label } from './ui/label';
 
 export type GeneratedImage = {
   id: string;
@@ -30,6 +31,7 @@ const formSchema = z.object({
   prompt: z.string().min(3, {
     message: 'Prompt must be at least 3 characters long.',
   }),
+  aspectRatio: z.string(),
 });
 
 export function Gallery({ images, onAddImage, onUpdateImage, onRemoveImage }: GalleryProps) {
@@ -40,6 +42,7 @@ export function Gallery({ images, onAddImage, onUpdateImage, onRemoveImage }: Ga
     resolver: zodResolver(formSchema),
     defaultValues: {
       prompt: '',
+      aspectRatio: '1:1',
     },
   });
 
@@ -50,7 +53,7 @@ export function Gallery({ images, onAddImage, onUpdateImage, onRemoveImage }: Ga
     form.reset();
 
     try {
-      const result = await generateImage({ prompt: values.prompt });
+      const result = await generateImage({ prompt: values.prompt, aspectRatio: values.aspectRatio });
       if (result && result.imageDataUri) {
         onUpdateImage(newImageId, result.imageDataUri);
       } else {
@@ -92,6 +95,24 @@ export function Gallery({ images, onAddImage, onUpdateImage, onRemoveImage }: Ga
                   {...form.register('prompt')}
                   disabled={isGenerating}
                 />
+                <div className="flex items-center gap-4">
+                    <Label htmlFor="aspectRatioGallery" className="text-muted-foreground">Aspect Ratio</Label>
+                    <Select
+                      defaultValue="1:1"
+                      onValueChange={(value) => form.setValue('aspectRatio', value)}
+                      disabled={isGenerating}
+                      name="aspectRatio"
+                    >
+                      <SelectTrigger id="aspectRatioGallery" className="w-[120px]">
+                        <SelectValue placeholder="Ratio" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="1:1">Square</SelectItem>
+                        <SelectItem value="16:9">Wide</SelectItem>
+                        <SelectItem value="9:16">Tall</SelectItem>
+                      </SelectContent>
+                    </Select>
+                </div>
                  <Button type="submit" disabled={isGenerating} className="w-full">
                   {isGenerating ? (
                     <>
@@ -110,13 +131,13 @@ export function Gallery({ images, onAddImage, onUpdateImage, onRemoveImage }: Ga
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {images.map((image) => (
               <Card key={image.id} className="overflow-hidden group flex flex-col">
-                <CardContent className="p-0 relative aspect-square">
+                <CardContent className="p-0 relative aspect-video">
                   {image.url ? (
                     <Image
                       src={image.url}
                       alt={image.prompt}
                       fill
-                      className="object-cover"
+                      className="object-contain"
                       unoptimized // Required for base64 data URIs
                     />
                   ) : (

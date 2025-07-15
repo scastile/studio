@@ -15,7 +15,7 @@ export function Header() {
           Spark creativity and engage your community. Generate innovative cross-promotion ideas for books, movies, games, and more in your library.
         </p>
         <p className="text-md text-muted-foreground max-w-3xl mx-auto mt-4">
-          Pinned Cards are saved to the Saved Ideas Tray.  Campaign Sets may be saved and reloaded via the Saved Campaigns Button.
+          Pinned Cards are saved to the Saved Ideas tray.  Campaign Sets may be saved and reloaded via the Saved Campaigns button.
         </p>
       </div>
     </header>
