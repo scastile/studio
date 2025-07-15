@@ -108,9 +108,6 @@ export function SavedCampaignsList({ onCampaignLoad }: SavedCampaignsListProps) 
                   <Card key={campaign.id} className="p-4 flex justify-between items-center group">
                       <div>
                         <h3 className="font-semibold text-foreground">{campaign.name}</h3>
-                        <p className="text-sm text-muted-foreground">
-                            {campaign.topic}
-                        </p>
                          <p className="text-xs text-muted-foreground mt-1">
                             Saved {formatDistanceToNow(new Date(campaign.createdAt), { addSuffix: true })}
                         </p>
