@@ -7,7 +7,6 @@ import { database } from '@/lib/utils';
 import { useToast } from '@/hooks/use-toast';
 import { formatDistanceToNow } from 'date-fns';
 import Image from 'next/image';
-import { v4 as uuidv4 } from 'uuid';
 
 import { Button } from "@/components/ui/button";
 import {
@@ -32,8 +31,8 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
+  AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import { AlertDialogTrigger } from '@radix-ui/react-alert-dialog';
 
 interface SavedImagesSheetProps {
   savedImages: SavedImage[];
@@ -42,6 +41,7 @@ interface SavedImagesSheetProps {
 
 export function SavedImagesSheet({ savedImages, onImageLoad }: SavedImagesSheetProps) {
   const { toast } = useToast();
+  const [isSheetOpen, setIsSheetOpen] = useState(false);
 
   const handleDelete = async (id: string) => {
     try {
@@ -61,8 +61,13 @@ export function SavedImagesSheet({ savedImages, onImageLoad }: SavedImagesSheetP
     }
   };
 
+  const handleLoadImage = (image: SavedImage) => {
+    onImageLoad(image);
+    setIsSheetOpen(false); // Close the sheet after loading
+  };
+
   return (
-    <Sheet>
+    <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
       <SheetTrigger asChild>
         <Button variant="outline">
           <ImageIcon className="mr-2 h-4 w-4" />
@@ -102,12 +107,10 @@ export function SavedImagesSheet({ savedImages, onImageLoad }: SavedImagesSheetP
                     </div>
                   </CardContent>
                   <CardFooter className="flex justify-between">
-                    <SheetClose asChild>
-                      <Button onClick={() => onImageLoad(image)}>
-                        <Download className="mr-2 h-4 w-4" />
-                        Load to Gallery
-                      </Button>
-                    </SheetClose>
+                    <Button onClick={() => handleLoadImage(image)}>
+                      <Download className="mr-2 h-4 w-4" />
+                      Load to Gallery
+                    </Button>
                     <AlertDialog>
                       <AlertDialogTrigger asChild>
                         <Button variant="destructive" size="icon">
