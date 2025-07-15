@@ -78,7 +78,7 @@ export function SavedImagesSheet({ savedImages, onImageLoad, onImageClick }: Sav
             Saved Images ({savedImages.length})
           </Button>
         </SheetTrigger>
-        <SheetContent className="sm:max-w-xl w-full">
+        <SheetContent className="sm:max-w-md w-full">
           <SheetHeader>
             <SheetTitle className="text-2xl font-headline flex items-center gap-3">
               <ImageIcon className="w-6 h-6 text-primary" />
@@ -94,7 +94,7 @@ export function SavedImagesSheet({ savedImages, onImageLoad, onImageClick }: Sav
                 savedImages.map((image) => (
                   <Card key={image.id}>
                     <CardHeader>
-                      <CardTitle className="text-base truncate">{image.prompt}</CardTitle>
+                      <CardTitle className="text-base whitespace-normal">{image.prompt}</CardTitle>
                       <CardDescription>
                         Saved {formatDistanceToNow(new Date(image.createdAt), { addSuffix: true })}
                       </CardDescription>
@@ -104,7 +104,8 @@ export function SavedImagesSheet({ savedImages, onImageLoad, onImageClick }: Sav
                            <Image 
                               src={image.url} 
                               alt={image.prompt} 
-                              fill
+                              width={192}
+                              height={192}
                               className="object-contain rounded-md" 
                               unoptimized
                           />
