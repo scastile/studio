@@ -17,6 +17,7 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { Button } from '@/components/ui/button';
 import { Loader2, Copy, Info } from 'lucide-react';
 import { getIconForCategory } from '@/components/icons';
+import { SavedCampaignsSheet } from '@/components/SavedCampaignsSheet';
 
 
 export default function Home() {
@@ -124,7 +125,10 @@ export default function Home() {
 
   return (
     <main className="min-h-screen bg-background px-4 sm:px-0">
-      <Header onCampaignLoad={handleCampaignLoad} />
+      <Header />
+      <div className="container mx-auto flex justify-center py-4">
+        <SavedCampaignsSheet onCampaignLoad={handleCampaignLoad} />
+      </div>
       <PromotionGenerator 
         onImageGenerated={handleInitialImageGenerated} 
         onIdeaSelect={handleIdeaSelect}

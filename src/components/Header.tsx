@@ -1,13 +1,7 @@
 
 import { Lightbulb } from 'lucide-react';
-import { SavedCampaignsSheet } from './SavedCampaignsSheet';
-import type { SavedCampaign } from '@/lib/types';
 
-interface HeaderProps {
-  onCampaignLoad: (campaign: SavedCampaign) => void;
-}
-
-export function Header({ onCampaignLoad }: HeaderProps) {
+export function Header() {
   return (
     <header className="bg-background py-8 sm:py-12 text-center relative">
       <div className="container mx-auto">
@@ -19,9 +13,6 @@ export function Header({ onCampaignLoad }: HeaderProps) {
                     Library Launchpad
                 </h1>
             </div>
-          </div>
-          <div className="flex-shrink-0">
-            <SavedCampaignsSheet onCampaignLoad={onCampaignLoad} />
           </div>
         </div>
         <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
