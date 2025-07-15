@@ -74,6 +74,11 @@ export default function Home() {
     } else if (imageId) {
       // Used for updating a loading image
        setGeneratedImages(prev => prev.map(img => img.id === imageId ? { ...img, url: imageUrl, prompt: prompt || img.prompt } : img));
+    } else {
+      // Handle the case where we just need to add a placeholder
+      const newId = uuidv4();
+      setGeneratedImages(prev => [...prev, { id: newId, url: null, prompt: prompt || 'Generating...' }]);
+      setInitialImageId(newId);
     }
   };
   
@@ -208,18 +213,20 @@ export default function Home() {
           onReset={handleResetSearch}
           campaignToLoad={loadedCampaign}
           onCampaignLoad={handleCampaignLoad}
+          onAddImage={addImageToList}
+          onUpdateImage={updateImageInList}
+          onRemoveImage={removeImageFromList}
+          savedImages={savedImages}
+          onLoadSavedImage={(image) => addImageToList({ id: uuidv4(), url: image.url, prompt: image.prompt})}
+          onImageClick={setLightboxImage}
         />
       </div>
       
       <Gallery
         images={generatedImages}
-        savedImages={savedImages}
-        onAddImage={addImageToList}
-        onUpdateImage={updateImageInList}
-        onRemoveImage={removeImageFromList}
         onSaveImage={handleSaveImage}
+        onRemoveImage={removeImageFromList}
         onImageClick={setLightboxImage}
-        onLoadSavedImage={(image) => addImageToList({ id: uuidv4(), url: image.url, prompt: image.prompt})}
       />
       <PinnedIdeasBar pinnedIdeas={pinnedIdeas} onIdeaSelect={handleIdeaSelect} />
       <footer className="text-center py-6 text-muted-foreground">

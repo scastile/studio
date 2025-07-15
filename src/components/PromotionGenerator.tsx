@@ -6,7 +6,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { ref, push } from "firebase/database";
-import { Lightbulb, Loader2, CalendarDays, Info, Film, Book, Tv, Gamepad2, Save, RotateCcw } from 'lucide-react';
+import { Lightbulb, Loader2, CalendarDays, Info, Film, Book, Tv, Gamepad2, Save, RotateCcw, Camera } from 'lucide-react';
 
 import { generatePromotionIdeas } from '@/ai/flows/generate-promotion-ideas';
 import { generateImage } from '@/ai/flows/generate-image-flow';
@@ -22,17 +22,25 @@ import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { ScrollArea } from './ui/scroll-area';
-import type { Idea, RelevantDate, CrossMediaConnection, SavedCampaign } from '@/lib/types';
+import type { Idea, RelevantDate, CrossMediaConnection, SavedCampaign, SavedImage } from '@/lib/types';
 import { database } from '@/lib/utils';
 import { SaveSetDialog } from './SaveSetDialog';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { SavedCampaignsSheet } from './SavedCampaignsSheet';
+import { SavedImagesSheet } from './SavedImagesSheet';
+import { v4 as uuidv4 } from 'uuid';
 
-
-const formSchema = z.object({
+const promotionFormSchema = z.object({
   topic: z.string().min(3, {
     message: 'Topic must be at least 3 characters long.',
   }),
+});
+
+const imageFormSchema = z.object({
+  prompt: z.string().min(3, {
+    message: 'Prompt must be at least 3 characters long.',
+  }),
+  aspectRatio: z.string(),
 });
 
 interface PromotionGeneratorProps {
@@ -41,33 +49,50 @@ interface PromotionGeneratorProps {
   onReset: () => void;
   campaignToLoad: SavedCampaign | null;
   onCampaignLoad: (campaign: SavedCampaign) => void;
+  onAddImage: (image: { id: string, url: string | null, prompt: string }) => void;
+  onUpdateImage: (id: string, url: string) => void;
+  onRemoveImage: (id: string) => void;
+  savedImages: SavedImage[];
+  onLoadSavedImage: (image: SavedImage) => void;
+  onImageClick: (image: SavedImage) => void;
 }
 
-export function PromotionGenerator({ onImageGenerated, onIdeaSelect, onReset, campaignToLoad, onCampaignLoad }: PromotionGeneratorProps) {
+export function PromotionGenerator({ onImageGenerated, onIdeaSelect, onReset, campaignToLoad, onCampaignLoad, onAddImage, onUpdateImage, onRemoveImage, savedImages, onLoadSavedImage, onImageClick }: PromotionGeneratorProps) {
   const [ideas, setIdeas] = useState<Idea[]>([]);
   const [relevantDates, setRelevantDates] = useState<RelevantDate[]>([]);
   const [crossMediaConnections, setCrossMediaConnections] = useState<CrossMediaConnection[]>([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [isGeneratingImage, setIsGeneratingImage] = useState(false);
+  const [isGeneratingTopicImage, setIsGeneratingTopicImage] = useState(false);
   const [shouldGenerateImage, setShouldGenerateImage] = useState(false);
-  const [aspectRatio, setAspectRatio] = useState('1:1');
+  const [topicImageAspectRatio, setTopicImageAspectRatio] = useState('1:1');
   const [categories, setCategories] = useState<string[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [isMediaConnectionsDialogOpen, setIsMediaConnectionsDialogOpen] = useState(false);
   const [isSaveSetDialogOpen, setIsSaveSetDialogOpen] = useState(false);
   const [currentTopic, setCurrentTopic] = useState('');
+  const [isGeneratingNewImage, setIsGeneratingNewImage] = useState(false);
   
   const { toast } = useToast();
 
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+  const promotionForm = useForm<z.infer<typeof promotionFormSchema>>({
+    resolver: zodResolver(promotionFormSchema),
     defaultValues: {
       topic: '',
     },
   });
 
+  const imageForm = useForm<z.infer<typeof imageFormSchema>>({
+    resolver: zodResolver(imageFormSchema),
+    defaultValues: {
+      prompt: '',
+      aspectRatio: '1:1',
+    },
+  });
+
+
   const handleReset = () => {
-    form.reset({ topic: '' });
+    promotionForm.reset({ topic: '' });
+    imageForm.reset();
     setIdeas([]);
     setRelevantDates([]);
     setCrossMediaConnections([]);
@@ -75,13 +100,14 @@ export function PromotionGenerator({ onImageGenerated, onIdeaSelect, onReset, ca
     setSelectedCategory(null);
     setCurrentTopic('');
     setIsLoading(false);
-    setIsGeneratingImage(false);
+    setIsGeneratingTopicImage(false);
+    setIsGeneratingNewImage(false);
     onReset();
   };
 
   useEffect(() => {
     if (campaignToLoad) {
-      form.setValue('topic', campaignToLoad.topic);
+      promotionForm.setValue('topic', campaignToLoad.topic);
       setCurrentTopic(campaignToLoad.topic);
       setIdeas(campaignToLoad.ideas || []);
       setRelevantDates(campaignToLoad.relevantDates || []);
@@ -90,28 +116,30 @@ export function PromotionGenerator({ onImageGenerated, onIdeaSelect, onReset, ca
       setCategories(uniqueCategories);
       setSelectedCategory(null);
       setIsLoading(false);
-      setIsGeneratingImage(false);
+      setIsGeneratingTopicImage(false);
     }
-  }, [campaignToLoad, form]);
+  }, [campaignToLoad, promotionForm]);
 
 
-  async function onSubmit(values: z.infer<typeof formSchema>) {
+  async function onPromotionSubmit(values: z.infer<typeof promotionFormSchema>) {
     setIsLoading(true);
     setCurrentTopic(values.topic);
-    setIsGeneratingImage(shouldGenerateImage);
+    setIsGeneratingTopicImage(shouldGenerateImage);
     setIdeas([]);
     setRelevantDates([]);
     setCrossMediaConnections([]);
     setCategories([]);
     setSelectedCategory(null);
     const imagePrompt = `Create a vibrant, eye-catching promotional image for a library campaign about ${values.topic}. Include visual elements and symbols that naturally connect to ${values.topic} while maintaining a library atmosphere. The setting should feel modern yet timeless, with natural lighting and an inviting environment. Use a rich, engaging color palette that complements the ${values.topic} theme. `;
-    onImageGenerated(null, undefined, imagePrompt);
+    if(shouldGenerateImage) {
+      onImageGenerated(null, undefined, imagePrompt);
+    }
     
     try {
       const ideasPromise = generatePromotionIdeas({ topic: values.topic });
 
       const imagePromise = shouldGenerateImage 
-        ? generateImage({ prompt: imagePrompt, aspectRatio: aspectRatio })
+        ? generateImage({ prompt: imagePrompt, aspectRatio: topicImageAspectRatio })
         : Promise.resolve(null);
       
       const ideasResult = await ideasPromise;
@@ -138,7 +166,7 @@ export function PromotionGenerator({ onImageGenerated, onIdeaSelect, onReset, ca
         if(imageResult && imageResult.imageDataUri) {
           onImageGenerated(imageResult.imageDataUri, undefined, imagePrompt);
         }
-        setIsGeneratingImage(false);
+        setIsGeneratingTopicImage(false);
       }
 
     } catch (error) {
@@ -149,9 +177,36 @@ export function PromotionGenerator({ onImageGenerated, onIdeaSelect, onReset, ca
         description: 'There was a problem generating content. Please try again.',
       });
       setIsLoading(false);
-      setIsGeneratingImage(false);
+      setIsGeneratingTopicImage(false);
     }
   }
+
+  async function onImageSubmit(values: z.infer<typeof imageFormSchema>) {
+    setIsGeneratingNewImage(true);
+    const newImageId = uuidv4();
+    onAddImage({ id: newImageId, url: null, prompt: values.prompt });
+    imageForm.reset();
+
+    try {
+      const result = await generateImage({ prompt: values.prompt, aspectRatio: values.aspectRatio });
+      if (result && result.imageDataUri) {
+        onUpdateImage(newImageId, result.imageDataUri);
+      } else {
+        throw new Error('Image generation failed to return a valid image.');
+      }
+    } catch (error) {
+      console.error("Error generating new image:", error);
+      toast({
+        variant: 'destructive',
+        title: 'Image Generation Failed',
+        description: 'There was a problem generating the image. Please try again.',
+      });
+      onRemoveImage(newImageId); // Clean up the placeholder
+    } finally {
+      setIsGeneratingNewImage(false);
+    }
+  }
+
 
   async function handlePinIdea(idea: Idea) {
     try {
@@ -230,14 +285,14 @@ export function PromotionGenerator({ onImageGenerated, onIdeaSelect, onReset, ca
   return (
     <section id="generator" className="py-12 sm:py-16">
       <div className="container mx-auto">
-        <div className="max-w-xl mx-auto">
+        <div className="max-w-xl mx-auto space-y-8">
           <Card>
             <CardContent className="p-6">
               <p className="font-bold text-left mb-4 text-lg">What would you like to promote?</p>
-              <Form {...form}>
-                <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+              <Form {...promotionForm}>
+                <form onSubmit={promotionForm.handleSubmit(onPromotionSubmit)} className="space-y-4">
                   <FormField
-                    control={form.control}
+                    control={promotionForm.control}
                     name="topic"
                     render={({ field }) => (
                       <FormItem>
@@ -256,7 +311,7 @@ export function PromotionGenerator({ onImageGenerated, onIdeaSelect, onReset, ca
                       id="image-generation-switch"
                       checked={shouldGenerateImage}
                       onCheckedChange={setShouldGenerateImage}
-                      disabled={isLoading || isGeneratingImage}
+                      disabled={isLoading || isGeneratingTopicImage}
                     />
                     <Label htmlFor="image-generation-switch" className="text-muted-foreground">Generate AI Image with topic</Label>
                   </div>
@@ -264,9 +319,9 @@ export function PromotionGenerator({ onImageGenerated, onIdeaSelect, onReset, ca
                     <div className="flex justify-start items-center gap-4">
                        <Label htmlFor="aspectRatio" className="text-muted-foreground">Aspect Ratio</Label>
                       <Select
-                        defaultValue={aspectRatio}
-                        onValueChange={setAspectRatio}
-                        disabled={isLoading || isGeneratingImage}
+                        defaultValue={topicImageAspectRatio}
+                        onValueChange={setTopicImageAspectRatio}
+                        disabled={isLoading || isGeneratingTopicImage}
                       >
                         <SelectTrigger id="aspectRatio" className="w-[120px]">
                           <SelectValue placeholder="Ratio" />
@@ -280,13 +335,13 @@ export function PromotionGenerator({ onImageGenerated, onIdeaSelect, onReset, ca
                     </div>
                   )}
                   <div className="flex flex-col sm:flex-row gap-2">
-                    <Button type="submit" disabled={isLoading || isGeneratingImage} className="w-full">
+                    <Button type="submit" disabled={isLoading || isGeneratingTopicImage} className="w-full">
                       {isLoading ? (
                         <>
                           <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                           Generating Ideas...
                         </>
-                      ) : isGeneratingImage ? (
+                      ) : isGeneratingTopicImage ? (
                           <>
                           <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                           Generating Ideas & Image...
@@ -307,13 +362,85 @@ export function PromotionGenerator({ onImageGenerated, onIdeaSelect, onReset, ca
               </Form>
             </CardContent>
           </Card>
+
+          <Card>
+            <CardContent className="p-6">
+               <div className="text-center mb-6">
+                <h2 className="font-headline text-2xl sm:text-3xl font-bold text-gray-800 dark:text-gray-100 flex items-center justify-center gap-3">
+                  <Camera className="w-7 h-7 text-primary" />
+                  Image Generation
+                </h2>
+                <p className="mt-2 text-md text-muted-foreground">
+                  Generate and manage unique AI images for your promotional campaigns.
+                </p>
+              </div>
+
+              <Form {...imageForm}>
+                <form onSubmit={imageForm.handleSubmit(onImageSubmit)} className="space-y-4">
+                  <FormField
+                    control={imageForm.control}
+                    name="prompt"
+                     render={({ field }) => (
+                        <FormItem>
+                          <FormControl>
+                            <Input 
+                              placeholder="Enter a prompt for a new image..." 
+                              {...field}
+                              disabled={isGeneratingNewImage}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                  />
+                  <div className="flex items-center gap-4">
+                      <Label htmlFor="aspectRatioGallery" className="text-muted-foreground">Aspect Ratio</Label>
+                      <FormField
+                          control={imageForm.control}
+                          name="aspectRatio"
+                          render={({ field }) => (
+                            <Select
+                              onValueChange={field.onChange}
+                              defaultValue={field.value}
+                              disabled={isGeneratingNewImage}
+                            >
+                              <FormControl>
+                                <SelectTrigger id="aspectRatioGallery" className="w-[120px]">
+                                  <SelectValue placeholder="Ratio" />
+                                </SelectTrigger>
+                              </FormControl>
+                              <SelectContent>
+                                <SelectItem value="1:1">Square</SelectItem>
+                                <SelectItem value="16:9">Wide</SelectItem>
+                                <SelectItem value="9:16">Tall</SelectItem>
+                              </SelectContent>
+                            </Select>
+                         )}
+                      />
+                  </div>
+                   <Button type="submit" disabled={isGeneratingNewImage} className="w-full">
+                    {isGeneratingNewImage ? (
+                      <>
+                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                        Generating...
+                      </>
+                    ) : 'Generate New Image'}
+                   </Button>
+                </form>
+              </Form>
+              <div className="flex justify-center mt-4">
+                <SavedImagesSheet savedImages={savedImages} onImageLoad={onLoadSavedImage} onImageClick={onImageClick} />
+              </div>
+            </CardContent>
+          </Card>
+
           <div className="flex justify-center mt-4">
             <SavedCampaignsSheet onCampaignLoad={onCampaignLoad} />
           </div>
         </div>
         
 
-        {(isLoading || isGeneratingImage) && (
+        {(isLoading || isGeneratingTopicImage) && (
           <div className="mt-12">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {[...Array(6)].map((_, i) => (
@@ -454,6 +581,3 @@ export function PromotionGenerator({ onImageGenerated, onIdeaSelect, onReset, ca
     </section>
   );
 }
-
-    
-    

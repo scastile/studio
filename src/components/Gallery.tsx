@@ -1,20 +1,9 @@
 
 import Image from 'next/image';
 import { Card, CardContent, CardFooter } from '@/components/ui/card';
-import { Camera, Loader2, Save, Trash2 } from 'lucide-react';
+import { Loader2, Save, Trash2 } from 'lucide-react';
 import { Skeleton } from './ui/skeleton';
 import { Button } from './ui/button';
-import { Input } from './ui/input';
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { z } from 'zod';
-import { generateImage } from '@/ai/flows/generate-image-flow';
-import { useToast } from '@/hooks/use-toast';
-import { v4 as uuidv4 } from 'uuid';
-import { useState } from 'react';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Label } from './ui/label';
-import { SavedImagesSheet } from './SavedImagesSheet';
 import type { SavedImage } from '@/lib/types';
 import {
   Tooltip,
@@ -31,120 +20,21 @@ export type GeneratedImage = {
 
 interface GalleryProps {
   images: GeneratedImage[];
-  savedImages: SavedImage[];
-  onAddImage: (image: GeneratedImage) => void;
-  onUpdateImage: (id: string, url: string) => void;
-  onRemoveImage: (id: string) => void;
   onSaveImage: (image: GeneratedImage) => void;
+  onRemoveImage: (id: string) => void;
   onImageClick: (image: GeneratedImage) => void;
-  onLoadSavedImage: (image: SavedImage) => void;
 }
 
-const formSchema = z.object({
-  prompt: z.string().min(3, {
-    message: 'Prompt must be at least 3 characters long.',
-  }),
-  aspectRatio: z.string(),
-});
+export function Gallery({ images, onSaveImage, onRemoveImage, onImageClick }: GalleryProps) {
 
-export function Gallery({ images, savedImages, onAddImage, onUpdateImage, onRemoveImage, onSaveImage, onImageClick, onLoadSavedImage }: GalleryProps) {
-  const [isGenerating, setIsGenerating] = useState(false);
-  const { toast } = useToast();
-  
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
-    defaultValues: {
-      prompt: '',
-      aspectRatio: '1:1',
-    },
-  });
-
-  async function onSubmit(values: z.infer<typeof formSchema>) {
-    setIsGenerating(true);
-    const newImageId = uuidv4();
-    onAddImage({ id: newImageId, url: null, prompt: values.prompt });
-    form.reset();
-
-    try {
-      const result = await generateImage({ prompt: values.prompt, aspectRatio: values.aspectRatio });
-      if (result && result.imageDataUri) {
-        onUpdateImage(newImageId, result.imageDataUri);
-      } else {
-        throw new Error('Image generation failed to return a valid image.');
-      }
-    } catch (error) {
-      console.error("Error generating new image:", error);
-      toast({
-        variant: 'destructive',
-        title: 'Image Generation Failed',
-        description: 'There was a problem generating the image. Please try again.',
-      });
-      onRemoveImage(newImageId); // Clean up the placeholder
-    } finally {
-      setIsGenerating(false);
-    }
+  if (images.length === 0) {
+    return null;
   }
-
 
   return (
     <section id="gallery" className="py-12 sm:py-16">
       <div className="container mx-auto">
-        <div className="text-center mb-12">
-          <h2 className="font-headline text-3xl sm:text-4xl font-bold text-gray-800 dark:text-gray-100 flex items-center justify-center gap-3">
-            <Camera className="w-8 h-8 text-primary" />
-            Image Generation
-          </h2>
-          <p className="mt-4 text-lg text-muted-foreground">
-            Generate and manage unique AI images for your promotional campaigns.
-          </p>
-        </div>
-        
-        <div className="max-w-xl mx-auto mb-12">
-          <Card>
-            <CardContent className="p-6">
-              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-                <Input 
-                  placeholder="Enter a prompt for a new image..." 
-                  {...form.register('prompt')}
-                  disabled={isGenerating}
-                />
-                <div className="flex items-center gap-4">
-                    <Label htmlFor="aspectRatioGallery" className="text-muted-foreground">Aspect Ratio</Label>
-                    <Select
-                      defaultValue="1:1"
-                      onValueChange={(value) => form.setValue('aspectRatio', value)}
-                      disabled={isGenerating}
-                      name="aspectRatio"
-                    >
-                      <SelectTrigger id="aspectRatioGallery" className="w-[120px]">
-                        <SelectValue placeholder="Ratio" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="1:1">Square</SelectItem>
-                        <SelectItem value="16:9">Wide</SelectItem>
-                        <SelectItem value="9:16">Tall</SelectItem>
-                      </SelectContent>
-                    </Select>
-                </div>
-                 <Button type="submit" disabled={isGenerating} className="w-full">
-                  {isGenerating ? (
-                    <>
-                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                      Generating...
-                    </>
-                  ) : 'Generate New Image'}
-                 </Button>
-              </form>
-            </CardContent>
-          </Card>
-          <div className="flex justify-center mt-4">
-             <SavedImagesSheet savedImages={savedImages} onImageLoad={onLoadSavedImage} onImageClick={onImageClick} />
-          </div>
-        </div>
-
-
-        {images.length > 0 && (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {images.map((image) => (
               <Card key={image.id} className="overflow-hidden group flex flex-col">
                 <CardContent className="p-0 relative aspect-video cursor-pointer" onClick={() => image.url && onImageClick(image)}>
@@ -200,8 +90,6 @@ export function Gallery({ images, savedImages, onAddImage, onUpdateImage, onRemo
               </Card>
             ))}
           </div>
-        )}
-
       </div>
     </section>
   );
