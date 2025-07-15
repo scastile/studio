@@ -76,7 +76,7 @@ export function Gallery({ images, onAddImage, onUpdateImage, onRemoveImage }: Ga
         <div className="text-center mb-12">
           <h2 className="font-headline text-3xl sm:text-4xl font-bold text-gray-800 dark:text-gray-100 flex items-center justify-center gap-3">
             <Camera className="w-8 h-8 text-primary" />
-            Inspiration Gallery
+            Image Generation
           </h2>
           <p className="mt-4 text-lg text-muted-foreground">
             Generate and manage unique AI images for your promotional campaigns.
