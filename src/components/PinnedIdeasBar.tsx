@@ -2,7 +2,7 @@
 'use client';
 
 import { useState, useMemo } from 'react';
-import { Pin, Trash2, ChevronUp, ChevronDown, Info } from "lucide-react";
+import { Pin, Trash2, ChevronUp, ChevronDown, Info, ArrowUpDown } from "lucide-react";
 import { Card, CardHeader, CardTitle, CardFooter } from "./ui/card";
 import { ScrollArea, ScrollBar } from "./ui/scroll-area";
 import { getIconForCategory } from "./icons";
@@ -12,18 +12,18 @@ import { ref, remove } from "firebase/database";
 import { useToast } from "@/hooks/use-toast";
 import { database } from "@/lib/utils";
 import { cn } from '@/lib/utils';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Label } from './ui/label';
 
 interface PinnedIdeasBarProps {
     pinnedIdeas: PinnedIdea[];
     onIdeaSelect: (idea: Idea) => void;
 }
 
+type SortBy = 'default' | 'category' | 'topic';
+
 export function PinnedIdeasBar({ pinnedIdeas, onIdeaSelect }: PinnedIdeasBarProps) {
     const { toast } = useToast();
     const [isOpen, setIsOpen] = useState(false);
-    const [sortBy, setSortBy] = useState('default');
+    const [sortBy, setSortBy] = useState<SortBy>('default');
     
     const sortedIdeas = useMemo(() => {
         const sortableIdeas = [...pinnedIdeas];
@@ -57,23 +57,35 @@ export function PinnedIdeasBar({ pinnedIdeas, onIdeaSelect }: PinnedIdeasBarProp
             });
         }
     };
+
+    const handleSortToggle = () => {
+        setSortBy(current => {
+            if (current === 'default') return 'category';
+            if (current === 'category') return 'topic';
+            return 'default';
+        });
+    }
+
+    const getSortButtonText = () => {
+        switch (sortBy) {
+            case 'category':
+                return 'Sort: Category';
+            case 'topic':
+                return 'Sort: Topic';
+            default:
+                return 'Sort: Default';
+        }
+    }
     
     return (
         <section className="sticky bottom-0 z-50 w-full bg-background/95 backdrop-blur-sm border-t">
             <div className="container mx-auto">
                  <div className="flex justify-between items-center py-2">
-                    <div className="flex items-center gap-2">
-                        <Label htmlFor="sort-ideas" className="text-sm font-medium sr-only">Sort By</Label>
-                        <Select value={sortBy} onValueChange={setSortBy}>
-                            <SelectTrigger id="sort-ideas" className="w-[120px] h-8 text-xs">
-                                <SelectValue placeholder="Sort by" />
-                            </SelectTrigger>
-                            <SelectContent>
-                                <SelectItem value="default">Default</SelectItem>
-                                <SelectItem value="category">Category</SelectItem>
-                                <SelectItem value="topic">Topic</SelectItem>
-                            </SelectContent>
-                        </Select>
+                    <div className="w-[140px]">
+                        <Button variant="outline" onClick={handleSortToggle} className="h-8 text-xs">
+                             <ArrowUpDown className="mr-2 h-3 w-3" />
+                             {getSortButtonText()}
+                        </Button>
                     </div>
                     <div 
                         className="flex justify-center items-center cursor-pointer"
@@ -88,7 +100,7 @@ export function PinnedIdeasBar({ pinnedIdeas, onIdeaSelect }: PinnedIdeasBarProp
                         </h2>
                         {isOpen ? <ChevronDown className="w-6 h-6 ml-2" /> : <ChevronUp className="w-6 h-6 ml-2" />}
                     </div>
-                    <div className="w-[120px]" /> 
+                    <div className="w-[140px]" /> 
                 </div>
 
 
