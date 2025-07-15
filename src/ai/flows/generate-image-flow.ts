@@ -37,6 +37,7 @@ const generateImageFlow = ai.defineFlow(
       prompt: prompt,
       config: {
         responseModalities: ['IMAGE', 'TEXT'],
+        aspectRatio,
       },
     });
 
