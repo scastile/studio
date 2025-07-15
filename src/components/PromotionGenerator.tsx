@@ -104,7 +104,7 @@ export function PromotionGenerator({ onImageGenerated, onIdeaSelect, onReset, ca
     setCrossMediaConnections([]);
     setCategories([]);
     setSelectedCategory(null);
-    const imagePrompt = `Create a vibrant, eye-catching promotional image about ${values.topic}. The design should feature people of diverse ages and backgrounds engaged in activities related to ${values.topic}. Include visual elements and symbols that naturally connect to ${values.topic}. Use natural lighting and an inviting environment. Choose a rich, engaging color palette that complements the ${values.topic} theme. Include prominent, readable text with the main message in an elegant, approachable font. The overall mood should be inspiring, engaging, and positive, conveying enthusiasm and accessibility around ${values.topic}.`;
+    const imagePrompt = `Create a vibrant, eye-catching promotional image for a library campaign about ${values.topic}. Include visual elements and symbols that naturally connect to ${values.topic} while maintaining a library atmosphere. The setting should feel modern yet timeless, with natural lighting and an inviting environment. Use a rich, engaging color palette that complements the ${values.topic} theme.`;
     onImageGenerated(null, undefined, imagePrompt);
     
     try {
@@ -454,4 +454,5 @@ export function PromotionGenerator({ onImageGenerated, onIdeaSelect, onReset, ca
   );
 }
 
+    
     
