@@ -268,17 +268,23 @@ export default function Home() {
       </Dialog>
 
       <Dialog open={!!lightboxImage} onOpenChange={(isOpen) => { if (!isOpen) setLightboxImage(null); }}>
-        <DialogContent className="max-w-4xl h-[80vh]">
+        <DialogContent className="max-w-4xl h-[80vh] flex flex-col">
             {lightboxImage && (
-              <div className="relative w-full h-full">
-                <Image 
-                    src={lightboxImage.url!}
-                    alt={lightboxImage.prompt}
-                    fill
-                    className="object-contain"
-                    unoptimized
-                />
-              </div>
+              <>
+                <DialogHeader className="sr-only">
+                  <DialogTitle>{lightboxImage.prompt}</DialogTitle>
+                  <DialogDescription>A larger view of the generated image.</DialogDescription>
+                </DialogHeader>
+                <div className="relative w-full h-full">
+                  <Image 
+                      src={lightboxImage.url!}
+                      alt={lightboxImage.prompt}
+                      fill
+                      className="object-contain"
+                      unoptimized
+                  />
+                </div>
+              </>
             )}
         </DialogContent>
       </Dialog>
