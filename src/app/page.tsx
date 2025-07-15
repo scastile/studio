@@ -19,6 +19,7 @@ import { Button } from '@/components/ui/button';
 import { Loader2, Copy, Info } from 'lucide-react';
 import { getIconForCategory } from '@/components/icons';
 import Image from 'next/image';
+import { SavedCampaignsList } from '@/components/SavedCampaignsList';
 
 
 export default function Home() {
@@ -215,7 +216,10 @@ export default function Home() {
           campaignToLoad={loadedCampaign}
           onCampaignLoad={handleCampaignLoad}
         />
-        <PinnedIdeasList pinnedIdeas={pinnedIdeas} onIdeaSelect={handleIdeaSelect} />
+        <div className="max-w-xl mx-auto space-y-8 mt-8">
+            <SavedCampaignsList onCampaignLoad={handleCampaignLoad} />
+            <PinnedIdeasList pinnedIdeas={pinnedIdeas} onIdeaSelect={handleIdeaSelect} />
+        </div>
         
         <ImageGenerator 
           onAddImage={addImageToList}

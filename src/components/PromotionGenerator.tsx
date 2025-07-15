@@ -27,7 +27,6 @@ import type { Idea, RelevantDate, CrossMediaConnection, SavedCampaign } from '@/
 import { database } from '@/lib/utils';
 import { SaveSetDialog } from './SaveSetDialog';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { SavedCampaignsList } from './SavedCampaignsList';
 
 const promotionFormSchema = z.object({
   topic: z.string().min(3, {
@@ -310,8 +309,6 @@ export function PromotionGenerator({ onImageGenerated, onIdeaSelect, onReset, ca
               </Form>
             </CardContent>
           </Card>
-
-          <SavedCampaignsList onCampaignLoad={onCampaignLoad} />
 
           {campaignToLoad && (
             <Card>
