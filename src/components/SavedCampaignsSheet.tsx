@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -96,7 +95,7 @@ export function SavedCampaignsSheet({ onCampaignLoad }: SavedCampaignsSheetProps
           </SheetDescription>
         </SheetHeader>
         <ScrollArea className="h-[calc(100vh-150px)] mt-4 pr-4">
-          <div className="space-y-4 pb-4">
+          <div className="space-y-4 pb-8">
             {campaigns.length > 0 ? (
               campaigns.map((campaign) => (
                 <Card key={campaign.id}>
