@@ -126,14 +126,14 @@ export default function Home() {
   return (
     <main className="min-h-screen bg-background px-4 sm:px-0">
       <Header />
-      <div className="container mx-auto flex justify-center py-4">
-        <SavedCampaignsSheet onCampaignLoad={handleCampaignLoad} />
-      </div>
       <PromotionGenerator 
         onImageGenerated={handleInitialImageGenerated} 
         onIdeaSelect={handleIdeaSelect}
         campaignToLoad={loadedCampaign}
       />
+      <div className="container mx-auto flex justify-center py-4">
+        <SavedCampaignsSheet onCampaignLoad={handleCampaignLoad} />
+      </div>
       <Gallery
         images={generatedImages}
         onAddImage={addImageToList}
