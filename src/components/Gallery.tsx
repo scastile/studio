@@ -1,6 +1,6 @@
 import Image from 'next/image';
 import { Card, CardContent, CardFooter } from '@/components/ui/card';
-import { Camera, Loader2, Trash2 } from 'lucide-react';
+import { Camera, Loader2, Save, Trash2 } from 'lucide-react';
 import { Skeleton } from './ui/skeleton';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
@@ -13,6 +13,14 @@ import { v4 as uuidv4 } from 'uuid';
 import { useState } from 'react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Label } from './ui/label';
+import { SavedImagesSheet } from './SavedImagesSheet';
+import type { SavedImage } from '@/lib/types';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip"
 
 export type GeneratedImage = {
   id: string;
@@ -22,9 +30,11 @@ export type GeneratedImage = {
 
 interface GalleryProps {
   images: GeneratedImage[];
+  savedImages: SavedImage[];
   onAddImage: (image: GeneratedImage) => void;
   onUpdateImage: (id: string, url: string) => void;
   onRemoveImage: (id: string) => void;
+  onSaveImage: (image: GeneratedImage) => void;
 }
 
 const formSchema = z.object({
@@ -34,7 +44,7 @@ const formSchema = z.object({
   aspectRatio: z.string(),
 });
 
-export function Gallery({ images, onAddImage, onUpdateImage, onRemoveImage }: GalleryProps) {
+export function Gallery({ images, savedImages, onAddImage, onUpdateImage, onRemoveImage, onSaveImage }: GalleryProps) {
   const [isGenerating, setIsGenerating] = useState(false);
   const { toast } = useToast();
   
@@ -124,6 +134,9 @@ export function Gallery({ images, onAddImage, onUpdateImage, onRemoveImage }: Ga
               </form>
             </CardContent>
           </Card>
+          <div className="flex justify-center mt-4">
+             <SavedImagesSheet savedImages={savedImages} onImageLoad={(image) => onAddImage({ id: uuidv4(), url: image.url, prompt: image.prompt})} />
+          </div>
         </div>
 
 
@@ -151,10 +164,35 @@ export function Gallery({ images, onAddImage, onUpdateImage, onRemoveImage }: Ga
                   <p className="text-sm text-muted-foreground truncate" title={image.prompt}>
                     {image.prompt}
                   </p>
-                  <Button variant="destructive" size="icon" onClick={() => onRemoveImage(image.id)}>
-                    <Trash2 className="h-4 w-4" />
-                    <span className="sr-only">Delete Image</span>
-                  </Button>
+                  <div className="flex items-center gap-1">
+                     <TooltipProvider>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                           <Button variant="outline" size="icon" onClick={() => onSaveImage(image)} disabled={!image.url}>
+                              <Save className="h-4 w-4" />
+                              <span className="sr-only">Save Image</span>
+                            </Button>
+                        </TooltipTrigger>
+                        <TooltipContent>
+                          <p>Save to Collection</p>
+                        </TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
+
+                    <TooltipProvider>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                           <Button variant="destructive" size="icon" onClick={() => onRemoveImage(image.id)}>
+                              <Trash2 className="h-4 w-4" />
+                              <span className="sr-only">Delete Image</span>
+                            </Button>
+                        </TooltipTrigger>
+                        <TooltipContent>
+                          <p>Remove from Session</p>
+                        </TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
+                  </div>
                 </CardFooter>
               </Card>
             ))}

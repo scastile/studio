@@ -7,8 +7,8 @@ import { PromotionGenerator } from '@/components/PromotionGenerator';
 import { Gallery, type GeneratedImage } from '@/components/Gallery';
 import { v4 as uuidv4 } from 'uuid';
 import { PinnedIdeasBar } from '@/components/PinnedIdeasBar';
-import type { PinnedIdea, Idea, SavedCampaign } from '@/lib/types';
-import { ref, onValue } from 'firebase/database';
+import type { PinnedIdea, Idea, SavedCampaign, SavedImage } from '@/lib/types';
+import { ref, onValue, push, remove } from 'firebase/database';
 import { database } from '@/lib/utils';
 import { elaborateOnIdea } from '@/ai/flows/elaborate-on-idea';
 import { useToast } from '@/hooks/use-toast';
@@ -21,6 +21,7 @@ import { getIconForCategory } from '@/components/icons';
 
 export default function Home() {
   const [generatedImages, setGeneratedImages] = useState<GeneratedImage[]>([]);
+  const [savedImages, setSavedImages] = useState<SavedImage[]>([]);
   const [pinnedIdeas, setPinnedIdeas] = useState<PinnedIdea[]>([]);
   
   const [selectedIdea, setSelectedIdea] = useState<Idea | null>(null);
@@ -33,7 +34,7 @@ export default function Home() {
 
   useEffect(() => {
     const pinnedIdeasRef = ref(database, 'pinnedIdeas');
-    const unsubscribe = onValue(pinnedIdeasRef, (snapshot) => {
+    const pinnedIdeasUnsubscribe = onValue(pinnedIdeasRef, (snapshot) => {
         const data = snapshot.val();
         const loadedIdeas: PinnedIdea[] = [];
         if (data) {
@@ -44,7 +45,23 @@ export default function Home() {
         setPinnedIdeas(loadedIdeas);
     });
 
-    return () => unsubscribe();
+    const savedImagesRef = ref(database, 'savedImages');
+    const savedImagesUnsubscribe = onValue(savedImagesRef, (snapshot) => {
+      const data = snapshot.val();
+      const loadedImages: SavedImage[] = [];
+      if (data) {
+        for (const id in data) {
+          loadedImages.push({ id, ...data[id] });
+        }
+      }
+       setSavedImages(loadedImages.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()));
+    });
+
+
+    return () => {
+      pinnedIdeasUnsubscribe();
+      savedImagesUnsubscribe();
+    }
   }, []);
 
   const handleInitialImageGenerated = (imageUrl: string | null, imageId?: string, prompt?: string) => {
@@ -78,6 +95,15 @@ export default function Home() {
   };
 
   const addImageToList = (image: GeneratedImage) => {
+    // Check if an image with the same URL already exists to avoid duplicates from loading saved images
+    if (generatedImages.some(img => img.url === image.url)) {
+      toast({
+        variant: 'destructive',
+        title: 'Image already in Gallery',
+        description: 'This image has already been loaded into the current session.',
+      });
+      return;
+    }
     setGeneratedImages(prev => [...prev, image]);
   };
   
@@ -87,6 +113,38 @@ export default function Home() {
 
   const removeImageFromList = (id: string) => {
     setGeneratedImages(prev => prev.filter(img => img.id !== id));
+  };
+
+  const handleSaveImage = async (image: GeneratedImage) => {
+    if (!image.url) {
+      toast({
+        variant: 'destructive',
+        title: 'Cannot save a loading image.',
+        description: 'Please wait for the image to finish generating.',
+      });
+      return;
+    }
+
+    try {
+      const savedImagesRef = ref(database, 'savedImages');
+      const imageToSave = {
+        prompt: image.prompt,
+        url: image.url,
+        createdAt: new Date().toISOString(),
+      };
+      await push(savedImagesRef, imageToSave);
+      toast({
+        title: 'Image Saved!',
+        description: 'The image has been saved to your collection.',
+      });
+    } catch (error) {
+      console.error("Error saving image:", error);
+      toast({
+        variant: 'destructive',
+        title: 'Saving Failed',
+        description: 'There was a problem saving your image. Please try again.',
+      });
+    }
   };
 
   async function handleIdeaSelect(idea: Idea) {
@@ -153,9 +211,11 @@ export default function Home() {
       
       <Gallery
         images={generatedImages}
+        savedImages={savedImages}
         onAddImage={addImageToList}
         onUpdateImage={updateImageInList}
         onRemoveImage={removeImageFromList}
+        onSaveImage={handleSaveImage}
       />
       <PinnedIdeasBar pinnedIdeas={pinnedIdeas} onIdeaSelect={handleIdeaSelect} />
       <footer className="text-center py-6 bg-background text-muted-foreground">

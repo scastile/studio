@@ -1,0 +1,146 @@
+
+'use client';
+
+import { useState } from 'react';
+import { ref, remove } from 'firebase/database';
+import { database } from '@/lib/utils';
+import { useToast } from '@/hooks/use-toast';
+import { formatDistanceToNow } from 'date-fns';
+import Image from 'next/image';
+import { v4 as uuidv4 } from 'uuid';
+
+import { Button } from "@/components/ui/button";
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+  SheetClose
+} from "@/components/ui/sheet";
+import { ScrollArea } from './ui/scroll-area';
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from './ui/card';
+import { Image as ImageIcon, Trash2, Download } from 'lucide-react';
+import type { SavedImage } from '@/lib/types';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
+import { AlertDialogTrigger } from '@radix-ui/react-alert-dialog';
+
+interface SavedImagesSheetProps {
+  savedImages: SavedImage[];
+  onImageLoad: (image: SavedImage) => void;
+}
+
+export function SavedImagesSheet({ savedImages, onImageLoad }: SavedImagesSheetProps) {
+  const { toast } = useToast();
+
+  const handleDelete = async (id: string) => {
+    try {
+      const imageRef = ref(database, `savedImages/${id}`);
+      await remove(imageRef);
+      toast({
+        title: 'Image Deleted',
+        description: 'The image has been removed from your collection.',
+      });
+    } catch (error) {
+      console.error("Error deleting image:", error);
+      toast({
+        variant: 'destructive',
+        title: 'Deletion Failed',
+        description: 'Could not delete the image. Please try again.',
+      });
+    }
+  };
+
+  return (
+    <Sheet>
+      <SheetTrigger asChild>
+        <Button variant="outline">
+          <ImageIcon className="mr-2 h-4 w-4" />
+          Saved Images ({savedImages.length})
+        </Button>
+      </SheetTrigger>
+      <SheetContent className="sm:max-w-xl w-full">
+        <SheetHeader>
+          <SheetTitle className="text-2xl font-headline flex items-center gap-3">
+            <ImageIcon className="w-6 h-6 text-primary" />
+            Saved Images
+          </SheetTitle>
+          <SheetDescription>
+            Here are your saved images. You can load them into the current gallery or delete them.
+          </SheetDescription>
+        </SheetHeader>
+        <ScrollArea className="h-[calc(100vh-150px)] mt-4 pr-4">
+          <div className="space-y-4 pb-8">
+            {savedImages.length > 0 ? (
+              savedImages.map((image) => (
+                <Card key={image.id}>
+                  <CardHeader>
+                    <CardTitle className="text-base truncate">{image.prompt}</CardTitle>
+                    <CardDescription>
+                      Saved {formatDistanceToNow(new Date(image.createdAt), { addSuffix: true })}
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent className="flex justify-center items-center">
+                    <div className="relative w-full h-48">
+                         <Image 
+                            src={image.url} 
+                            alt={image.prompt} 
+                            fill
+                            className="object-contain rounded-md" 
+                            unoptimized
+                        />
+                    </div>
+                  </CardContent>
+                  <CardFooter className="flex justify-between">
+                    <SheetClose asChild>
+                      <Button onClick={() => onImageLoad(image)}>
+                        <Download className="mr-2 h-4 w-4" />
+                        Load to Gallery
+                      </Button>
+                    </SheetClose>
+                    <AlertDialog>
+                      <AlertDialogTrigger asChild>
+                        <Button variant="destructive" size="icon">
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      </AlertDialogTrigger>
+                      <AlertDialogContent>
+                        <AlertDialogHeader>
+                          <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                          <AlertDialogDescription>
+                            This action cannot be undone. This will permanently delete this image from your collection.
+                          </AlertDialogDescription>
+                        </AlertDialogHeader>
+                        <AlertDialogFooter>
+                          <AlertDialogCancel>Cancel</AlertDialogCancel>
+                          <AlertDialogAction onClick={() => handleDelete(image.id)}>
+                            Delete
+                          </AlertDialogAction>
+                        </AlertDialogFooter>
+                      </AlertDialogContent>
+                    </AlertDialog>
+                  </CardFooter>
+                </Card>
+              ))
+            ) : (
+              <div className="text-center text-muted-foreground py-12">
+                <p>You haven't saved any images yet.</p>
+                <p className="text-sm">Generate some images and click the save icon to get started.</p>
+              </div>
+            )}
+          </div>
+        </ScrollArea>
+      </SheetContent>
+    </Sheet>
+  );
+}

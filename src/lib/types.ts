@@ -29,3 +29,10 @@ export type SavedCampaign = {
   crossMediaConnections: CrossMediaConnection[];
   createdAt: string;
 }
+
+export type SavedImage = {
+  id: string;
+  prompt: string;
+  url: string;
+  createdAt: string;
+}
