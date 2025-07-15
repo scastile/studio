@@ -9,7 +9,7 @@ import { formatDistanceToNow } from 'date-fns';
 
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from './ui/scroll-area';
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from './ui/card';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './ui/card';
 import { Bookmark, Trash2, Download } from 'lucide-react';
 import type { SavedCampaign } from '@/lib/types';
 import {
@@ -76,6 +76,23 @@ export function SavedCampaignsList({ onCampaignLoad }: SavedCampaignsListProps) 
         description: `The "${campaign.name}" campaign has been loaded.`
     })
   }
+  
+  if (campaigns.length === 0) {
+    return (
+      <Card>
+          <CardHeader>
+              <CardTitle className="text-2xl font-headline flex items-center gap-3">
+                <Bookmark className="w-6 h-6 text-primary" />
+                Saved Campaigns
+              </CardTitle>
+              <CardDescription>
+                You haven't saved any campaigns yet. Generate some ideas and click "Save Idea Set" to get started.
+              </CardDescription>
+          </CardHeader>
+      </Card>
+    )
+  }
+
 
   return (
     <>
@@ -83,7 +100,7 @@ export function SavedCampaignsList({ onCampaignLoad }: SavedCampaignsListProps) 
         <CardHeader>
             <CardTitle className="text-2xl font-headline flex items-center gap-3">
               <Bookmark className="w-6 h-6 text-primary" />
-              Saved Campaigns
+              Saved Campaigns ({campaigns.length})
             </CardTitle>
             <CardDescription>
               Here are your saved idea sets. You can load them back into the generator or delete them.
@@ -92,39 +109,27 @@ export function SavedCampaignsList({ onCampaignLoad }: SavedCampaignsListProps) 
         <CardContent>
             <ScrollArea className="h-[400px] w-full pr-4">
                 <div className="space-y-4 pb-4">
-                {campaigns.length > 0 ? (
-                    campaigns.map((campaign) => (
-                    <Card key={campaign.id} className="bg-muted/40">
-                        <CardHeader>
-                        <CardTitle className="text-base">{campaign.name}</CardTitle>
-                        <CardDescription>
-                            Topic: <span className="font-semibold text-foreground">{campaign.topic}</span>
-                        </CardDescription>
-                        </CardHeader>
-                        <CardContent>
+                {campaigns.map((campaign) => (
+                  <Card key={campaign.id} className="bg-muted/40 p-4 flex justify-between items-center group">
+                      <div>
+                        <h3 className="font-semibold text-foreground">{campaign.name}</h3>
                         <p className="text-sm text-muted-foreground">
-                            {campaign.ideas?.length || 0} ideas saved{' '}
-                            {formatDistanceToNow(new Date(campaign.createdAt), { addSuffix: true })}
+                            Topic: {campaign.topic}
                         </p>
-                        </CardContent>
-                        <CardFooter className="flex justify-start gap-2">
-                        <Button size="sm" onClick={() => handleLoadCampaign(campaign)}>
-                            <Download className="mr-2 h-4 w-4" />
-                            Load
+                         <p className="text-xs text-muted-foreground mt-1">
+                            Saved {formatDistanceToNow(new Date(campaign.createdAt), { addSuffix: true })}
+                        </p>
+                      </div>
+                      <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                        <Button size="sm" variant="outline" onClick={() => handleLoadCampaign(campaign)} title="Load Campaign">
+                            <Download className="h-4 w-4" />
                         </Button>
-                        <Button size="sm" variant="destructive" onClick={() => setCampaignToDelete(campaign)}>
-                            <Trash2 className="mr-2 h-4 w-4" />
-                            Delete
+                        <Button size="sm" variant="destructive" onClick={() => setCampaignToDelete(campaign)} title="Delete Campaign">
+                            <Trash2 className="h-4 w-4" />
                         </Button>
-                        </CardFooter>
-                    </Card>
-                    ))
-                ) : (
-                    <div className="text-center text-muted-foreground py-12">
-                    <p>You haven't saved any campaigns yet.</p>
-                    <p className="text-sm">Generate some ideas and click "Save Idea Set" to get started.</p>
-                    </div>
-                )}
+                      </div>
+                  </Card>
+                ))}
                 </div>
             </ScrollArea>
         </CardContent>
