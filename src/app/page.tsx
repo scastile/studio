@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { marked } from 'marked';
 import { Header } from '@/components/Header';
 import { PromotionGenerator } from '@/components/PromotionGenerator';
+import { ImageGenerator } from '@/components/ImageGenerator';
 import { Gallery, type GeneratedImage } from '@/components/Gallery';
 import { v4 as uuidv4 } from 'uuid';
 import { PinnedIdeasList } from '@/components/PinnedIdeasList';
@@ -213,6 +214,10 @@ export default function Home() {
           onReset={handleResetSearch}
           campaignToLoad={loadedCampaign}
           onCampaignLoad={handleCampaignLoad}
+        />
+        <PinnedIdeasList pinnedIdeas={pinnedIdeas} onIdeaSelect={handleIdeaSelect} />
+        
+        <ImageGenerator 
           onAddImage={addImageToList}
           onUpdateImage={updateImageInList}
           onRemoveImage={removeImageFromList}
@@ -220,7 +225,6 @@ export default function Home() {
           onLoadSavedImage={(image) => addImageToList({ id: uuidv4(), url: image.url, prompt: image.prompt})}
           onImageClick={setLightboxImage}
         />
-        <PinnedIdeasList pinnedIdeas={pinnedIdeas} onIdeaSelect={handleIdeaSelect} />
       </div>
       
       <Gallery

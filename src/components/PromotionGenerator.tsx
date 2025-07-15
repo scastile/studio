@@ -6,7 +6,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { ref, push } from "firebase/database";
-import { Lightbulb, Loader2, CalendarDays, Info, Film, Book, Tv, Gamepad2, Save, RotateCcw, Camera, Archive } from 'lucide-react';
+import { Lightbulb, Loader2, CalendarDays, Info, Film, Book, Tv, Gamepad2, Save, RotateCcw, Archive } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
 
 import { generatePromotionIdeas } from '@/ai/flows/generate-promotion-ideas';
@@ -23,12 +23,10 @@ import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { ScrollArea } from './ui/scroll-area';
-import type { Idea, RelevantDate, CrossMediaConnection, SavedCampaign, SavedImage } from '@/lib/types';
+import type { Idea, RelevantDate, CrossMediaConnection, SavedCampaign } from '@/lib/types';
 import { database } from '@/lib/utils';
 import { SaveSetDialog } from './SaveSetDialog';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { SavedImagesSheet } from './SavedImagesSheet';
-import { v4 as uuidv4 } from 'uuid';
 import { SavedCampaignsList } from './SavedCampaignsList';
 
 const promotionFormSchema = z.object({
@@ -37,28 +35,15 @@ const promotionFormSchema = z.object({
   }),
 });
 
-const imageFormSchema = z.object({
-  prompt: z.string().min(3, {
-    message: 'Prompt must be at least 3 characters long.',
-  }),
-  aspectRatio: z.string(),
-});
-
 interface PromotionGeneratorProps {
   onImageGenerated: (imageUrl: string | null, imageId?: string, prompt?: string) => void;
   onIdeaSelect: (idea: Idea) => void;
   onReset: () => void;
   campaignToLoad: SavedCampaign | null;
   onCampaignLoad: (campaign: SavedCampaign) => void;
-  onAddImage: (image: { id: string, url: string | null, prompt: string }) => void;
-  onUpdateImage: (id: string, url: string) => void;
-  onRemoveImage: (id: string) => void;
-  savedImages: SavedImage[];
-  onLoadSavedImage: (image: SavedImage) => void;
-  onImageClick: (image: SavedImage) => void;
 }
 
-export function PromotionGenerator({ onImageGenerated, onIdeaSelect, onReset, campaignToLoad, onCampaignLoad, onAddImage, onUpdateImage, onRemoveImage, savedImages, onLoadSavedImage, onImageClick }: PromotionGeneratorProps) {
+export function PromotionGenerator({ onImageGenerated, onIdeaSelect, onReset, campaignToLoad, onCampaignLoad }: PromotionGeneratorProps) {
   const [ideas, setIdeas] = useState<Idea[]>([]);
   const [relevantDates, setRelevantDates] = useState<RelevantDate[]>([]);
   const [crossMediaConnections, setCrossMediaConnections] = useState<CrossMediaConnection[]>([]);
@@ -71,7 +56,6 @@ export function PromotionGenerator({ onImageGenerated, onIdeaSelect, onReset, ca
   const [isMediaConnectionsDialogOpen, setIsMediaConnectionsDialogOpen] = useState(false);
   const [isSaveSetDialogOpen, setIsSaveSetDialogOpen] = useState(false);
   const [currentTopic, setCurrentTopic] = useState('');
-  const [isGeneratingNewImage, setIsGeneratingNewImage] = useState(false);
   
   const { toast } = useToast();
 
@@ -82,18 +66,9 @@ export function PromotionGenerator({ onImageGenerated, onIdeaSelect, onReset, ca
     },
   });
 
-  const imageForm = useForm<z.infer<typeof imageFormSchema>>({
-    resolver: zodResolver(imageFormSchema),
-    defaultValues: {
-      prompt: '',
-      aspectRatio: '1:1',
-    },
-  });
-
 
   const handleReset = () => {
     promotionForm.reset({ topic: '' });
-    imageForm.reset();
     setIdeas([]);
     setRelevantDates([]);
     setCrossMediaConnections([]);
@@ -102,7 +77,6 @@ export function PromotionGenerator({ onImageGenerated, onIdeaSelect, onReset, ca
     setCurrentTopic('');
     setIsLoading(false);
     setIsGeneratingTopicImage(false);
-    setIsGeneratingNewImage(false);
     onReset();
   };
 
@@ -181,33 +155,6 @@ export function PromotionGenerator({ onImageGenerated, onIdeaSelect, onReset, ca
       setIsGeneratingTopicImage(false);
     }
   }
-
-  async function onImageSubmit(values: z.infer<typeof imageFormSchema>) {
-    setIsGeneratingNewImage(true);
-    const newImageId = uuidv4();
-    onAddImage({ id: newImageId, url: null, prompt: values.prompt });
-    imageForm.reset({ prompt: '', aspectRatio: '1:1' });
-
-    try {
-      const result = await generateImage({ prompt: values.prompt, aspectRatio: values.aspectRatio });
-      if (result && result.imageDataUri) {
-        onUpdateImage(newImageId, result.imageDataUri);
-      } else {
-        throw new Error('Image generation failed to return a valid image.');
-      }
-    } catch (error) {
-      console.error("Error generating new image:", error);
-      toast({
-        variant: 'destructive',
-        title: 'Image Generation Failed',
-        description: 'There was a problem generating the image. Please try again.',
-      });
-      onRemoveImage(newImageId); // Clean up the placeholder
-    } finally {
-      setIsGeneratingNewImage(false);
-    }
-  }
-
 
   async function handlePinIdea(idea: Idea) {
     try {
@@ -387,76 +334,6 @@ export function PromotionGenerator({ onImageGenerated, onIdeaSelect, onReset, ca
             </Card>
           )}
 
-          <Card>
-            <CardContent className="p-6">
-               <div className="text-center mb-6">
-                <h2 className="font-headline text-2xl sm:text-3xl font-bold text-gray-800 dark:text-gray-100 flex items-center justify-center gap-3">
-                  <Camera className="w-7 h-7 text-primary" />
-                  Image Generation
-                </h2>
-                <p className="mt-2 text-md text-muted-foreground">
-                  Generate and manage unique AI images for your promotional campaigns.
-                </p>
-              </div>
-
-              <Form {...imageForm}>
-                <form onSubmit={imageForm.handleSubmit(onImageSubmit)} className="space-y-4">
-                  <FormField
-                    control={imageForm.control}
-                    name="prompt"
-                     render={({ field }) => (
-                        <FormItem>
-                          <FormControl>
-                            <Input 
-                              placeholder="Enter a prompt for a new image..." 
-                              {...field}
-                              disabled={isGeneratingNewImage}
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                  />
-                  <div className="flex items-center gap-4">
-                      <Label htmlFor="aspectRatioGallery" className="text-muted-foreground">Aspect Ratio</Label>
-                      <FormField
-                          control={imageForm.control}
-                          name="aspectRatio"
-                          render={({ field }) => (
-                            <Select
-                              onValueChange={field.onChange}
-                              defaultValue={field.value}
-                              disabled={isGeneratingNewImage}
-                            >
-                              <FormControl>
-                                <SelectTrigger id="aspectRatioGallery" className="w-[120px]">
-                                  <SelectValue placeholder="Ratio" />
-                                </SelectTrigger>
-                              </FormControl>
-                              <SelectContent>
-                                <SelectItem value="1:1">Square</SelectItem>
-                                <SelectItem value="16:9">Wide</SelectItem>
-                                <SelectItem value="9:16">Tall</SelectItem>
-                              </SelectContent>
-                            </Select>
-                         )}
-                      />
-                  </div>
-                   <Button type="submit" disabled={isGeneratingNewImage} className="w-full">
-                    {isGeneratingNewImage ? (
-                      <>
-                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                        Generating...
-                      </>
-                    ) : 'Generate New Image'}
-                   </Button>
-                </form>
-              </Form>
-              <div className="flex justify-center mt-4">
-                <SavedImagesSheet savedImages={savedImages} onImageLoad={onLoadSavedImage} onImageClick={onImageClick} />
-              </div>
-            </CardContent>
-          </Card>
         </div>
         
 
