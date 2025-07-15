@@ -14,6 +14,9 @@ export function Header() {
         <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
           Spark creativity and engage your community. Generate innovative cross-promotion ideas for books, movies, games, and more in your library.
         </p>
+        <p className="text-md text-muted-foreground max-w-3xl mx-auto mt-4">
+          You can save individual ideas to the tray below or save the entire set of ideas as a campaign to reload later.
+        </p>
       </div>
     </header>
   );
