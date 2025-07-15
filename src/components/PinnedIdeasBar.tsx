@@ -24,7 +24,18 @@ export function PinnedIdeasBar({ pinnedIdeas, onIdeaSelect }: PinnedIdeasBarProp
     const { toast } = useToast();
     const [isOpen, setIsOpen] = useState(false);
     const [sortBy, setSortBy] = useState('default');
-
+    
+    const sortedIdeas = useMemo(() => {
+        const sortableIdeas = [...pinnedIdeas];
+        if (sortBy === 'category') {
+            return sortableIdeas.sort((a, b) => a.category.localeCompare(b.category));
+        }
+        if (sortBy === 'topic') {
+            return sortableIdeas.sort((a, b) => (a.topic || '').localeCompare(b.topic || ''));
+        }
+        return sortableIdeas; // Default order
+    }, [pinnedIdeas, sortBy]);
+    
     if (pinnedIdeas.length === 0) {
         return null;
     }
@@ -47,17 +58,6 @@ export function PinnedIdeasBar({ pinnedIdeas, onIdeaSelect }: PinnedIdeasBarProp
         }
     };
     
-    const sortedIdeas = useMemo(() => {
-        const sortableIdeas = [...pinnedIdeas];
-        if (sortBy === 'category') {
-            return sortableIdeas.sort((a, b) => a.category.localeCompare(b.category));
-        }
-        if (sortBy === 'topic') {
-            return sortableIdeas.sort((a, b) => (a.topic || '').localeCompare(b.topic || ''));
-        }
-        return sortableIdeas; // Default order
-    }, [pinnedIdeas, sortBy]);
-
     return (
         <section className="sticky bottom-0 z-50 w-full bg-background/95 backdrop-blur-sm border-t">
             <div className="container mx-auto">
