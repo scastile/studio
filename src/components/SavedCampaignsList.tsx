@@ -107,10 +107,10 @@ export function SavedCampaignsList({ onCampaignLoad }: SavedCampaignsListProps) 
             </CardDescription>
         </CardHeader>
         <CardContent>
-            <ScrollArea className="h-[400px] w-full pr-4">
+            <ScrollArea className="h-[300px] w-full pr-4">
                 <div className="space-y-4 pb-4">
                 {campaigns.map((campaign) => (
-                  <Card key={campaign.id} className="bg-muted/40 p-4 flex justify-between items-center group">
+                  <Card key={campaign.id} className="p-4 flex justify-between items-center group">
                       <div>
                         <h3 className="font-semibold text-foreground">{campaign.name}</h3>
                         <p className="text-sm text-muted-foreground">
