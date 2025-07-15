@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -110,7 +109,7 @@ export function SavedCampaignsList({ onCampaignLoad }: SavedCampaignsListProps) 
                       <div>
                         <h3 className="font-semibold text-foreground">{campaign.name}</h3>
                         <p className="text-sm text-muted-foreground">
-                            Topic: {campaign.topic}
+                            {campaign.topic}
                         </p>
                          <p className="text-xs text-muted-foreground mt-1">
                             Saved {formatDistanceToNow(new Date(campaign.createdAt), { addSuffix: true })}
