@@ -1,3 +1,4 @@
+
 import Image from 'next/image';
 import { Card, CardContent, CardFooter } from '@/components/ui/card';
 import { Camera, Loader2, Save, Trash2 } from 'lucide-react';
@@ -35,6 +36,8 @@ interface GalleryProps {
   onUpdateImage: (id: string, url: string) => void;
   onRemoveImage: (id: string) => void;
   onSaveImage: (image: GeneratedImage) => void;
+  onImageClick: (image: GeneratedImage) => void;
+  onLoadSavedImage: (image: SavedImage) => void;
 }
 
 const formSchema = z.object({
@@ -44,7 +47,7 @@ const formSchema = z.object({
   aspectRatio: z.string(),
 });
 
-export function Gallery({ images, savedImages, onAddImage, onUpdateImage, onRemoveImage, onSaveImage }: GalleryProps) {
+export function Gallery({ images, savedImages, onAddImage, onUpdateImage, onRemoveImage, onSaveImage, onImageClick, onLoadSavedImage }: GalleryProps) {
   const [isGenerating, setIsGenerating] = useState(false);
   const { toast } = useToast();
   
@@ -135,7 +138,7 @@ export function Gallery({ images, savedImages, onAddImage, onUpdateImage, onRemo
             </CardContent>
           </Card>
           <div className="flex justify-center mt-4">
-             <SavedImagesSheet savedImages={savedImages} onImageLoad={(image) => onAddImage({ id: uuidv4(), url: image.url, prompt: image.prompt})} />
+             <SavedImagesSheet savedImages={savedImages} onImageLoad={onLoadSavedImage} onImageClick={onImageClick} />
           </div>
         </div>
 
@@ -144,7 +147,7 @@ export function Gallery({ images, savedImages, onAddImage, onUpdateImage, onRemo
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {images.map((image) => (
               <Card key={image.id} className="overflow-hidden group flex flex-col">
-                <CardContent className="p-0 relative aspect-video">
+                <CardContent className="p-0 relative aspect-video cursor-pointer" onClick={() => image.url && onImageClick(image)}>
                   {image.url ? (
                     <Image
                       src={image.url}

@@ -306,10 +306,11 @@ export function PromotionGenerator({ onImageGenerated, onIdeaSelect, onReset, ca
               </Form>
             </CardContent>
           </Card>
+          <div className="flex justify-center mt-4">
+            <SavedCampaignsSheet onCampaignLoad={onCampaignLoad} />
+          </div>
         </div>
-        <div className="flex justify-center mt-4">
-          <SavedCampaignsSheet onCampaignLoad={onCampaignLoad} />
-        </div>
+        
 
         {(isLoading || isGeneratingImage) && (
           <div className="mt-12">

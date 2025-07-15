@@ -17,6 +17,7 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { Button } from '@/components/ui/button';
 import { Loader2, Copy, Info } from 'lucide-react';
 import { getIconForCategory } from '@/components/icons';
+import Image from 'next/image';
 
 
 export default function Home() {
@@ -29,6 +30,7 @@ export default function Home() {
   const [elaboratedIdea, setElaboratedIdea] = useState<string | null>(null);
   const [loadedCampaign, setLoadedCampaign] = useState<SavedCampaign | null>(null);
   const [initialImageId, setInitialImageId] = useState<string | null>(null);
+  const [lightboxImage, setLightboxImage] = useState<GeneratedImage | SavedImage | null>(null);
 
   const { toast } = useToast();
 
@@ -216,6 +218,8 @@ export default function Home() {
         onUpdateImage={updateImageInList}
         onRemoveImage={removeImageFromList}
         onSaveImage={handleSaveImage}
+        onImageClick={setLightboxImage}
+        onLoadSavedImage={(image) => addImageToList({ id: uuidv4(), url: image.url, prompt: image.prompt})}
       />
       <PinnedIdeasBar pinnedIdeas={pinnedIdeas} onIdeaSelect={handleIdeaSelect} />
       <footer className="text-center py-6 bg-background text-muted-foreground">
@@ -260,6 +264,22 @@ export default function Home() {
               </DialogFooter>
             </>
           )}
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={!!lightboxImage} onOpenChange={(isOpen) => { if (!isOpen) setLightboxImage(null); }}>
+        <DialogContent className="max-w-4xl h-[80vh]">
+            {lightboxImage && (
+              <div className="relative w-full h-full">
+                <Image 
+                    src={lightboxImage.url!}
+                    alt={lightboxImage.prompt}
+                    fill
+                    className="object-contain"
+                    unoptimized
+                />
+              </div>
+            )}
         </DialogContent>
       </Dialog>
     </main>

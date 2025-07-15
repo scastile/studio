@@ -35,9 +35,10 @@ import {
 interface SavedImagesSheetProps {
   savedImages: SavedImage[];
   onImageLoad: (image: SavedImage) => void;
+  onImageClick: (image: SavedImage) => void;
 }
 
-export function SavedImagesSheet({ savedImages, onImageLoad }: SavedImagesSheetProps) {
+export function SavedImagesSheet({ savedImages, onImageLoad, onImageClick }: SavedImagesSheetProps) {
   const { toast } = useToast();
   const [isSheetOpen, setIsSheetOpen] = useState(false);
   const [imageToDelete, setImageToDelete] = useState<SavedImage | null>(null);
@@ -99,7 +100,7 @@ export function SavedImagesSheet({ savedImages, onImageLoad }: SavedImagesSheetP
                       </CardDescription>
                     </CardHeader>
                     <CardContent className="flex justify-center items-center">
-                      <div className="relative w-full h-48">
+                      <div className="relative w-full h-48 cursor-pointer" onClick={() => onImageClick(image)}>
                            <Image 
                               src={image.url} 
                               alt={image.prompt} 
