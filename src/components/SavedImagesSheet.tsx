@@ -99,7 +99,7 @@ export function SavedImagesSheet({ savedImages, onImageLoad, onImageClick }: Sav
                         Saved {formatDistanceToNow(new Date(image.createdAt), { addSuffix: true })}
                       </CardDescription>
                     </CardHeader>
-                    <CardContent className="flex justify-center items-center">
+                    <CardContent className="flex items-center">
                       <div className="relative w-full h-48 cursor-pointer" onClick={() => onImageClick(image)}>
                            <Image 
                               src={image.url} 
@@ -110,7 +110,7 @@ export function SavedImagesSheet({ savedImages, onImageLoad, onImageClick }: Sav
                           />
                       </div>
                     </CardContent>
-                    <CardFooter className="flex justify-between">
+                    <CardFooter className="flex justify-start gap-2">
                       <Button onClick={() => handleLoadImage(image)}>
                         <Download className="mr-2 h-4 w-4" />
                         Load to Gallery
