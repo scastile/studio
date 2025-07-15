@@ -104,7 +104,7 @@ export function PromotionGenerator({ onImageGenerated, onIdeaSelect, onReset, ca
     setCrossMediaConnections([]);
     setCategories([]);
     setSelectedCategory(null);
-    const imagePrompt = `A creative, artistic, visually-appealing promotional image for a library about: ${values.topic}`;
+    const imagePrompt = `Create a vibrant, eye-catching promotional poster for a library campaign about ${values.topic}. The design should feature a warm, welcoming library setting with people of diverse ages and backgrounds engaged in relevant activities - reading, researching, learning, and exploring materials related to ${values.topic}. Include visual elements and symbols that naturally connect to ${values.topic} while maintaining a library atmosphere. The setting should feel modern yet timeless, with natural lighting and an inviting environment. Use a rich, engaging color palette that complements the ${values.topic} theme. Include prominent, readable text with the main message and 'Your Library is Here to Help' in an elegant, approachable font. The overall mood should be inspiring, educational, and community-focused, conveying that the library is an essential resource for ${values.topic}.`;
     onImageGenerated(null, undefined, imagePrompt);
     
     try {
