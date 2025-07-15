@@ -220,10 +220,9 @@ export default function Home() {
           onLoadSavedImage={(image) => addImageToList({ id: uuidv4(), url: image.url, prompt: image.prompt})}
           onImageClick={setLightboxImage}
         />
+        <PinnedIdeasList pinnedIdeas={pinnedIdeas} onIdeaSelect={handleIdeaSelect} />
       </div>
       
-      <PinnedIdeasList pinnedIdeas={pinnedIdeas} onIdeaSelect={handleIdeaSelect} />
-
       <Gallery
         images={generatedImages}
         onSaveImage={handleSaveImage}
