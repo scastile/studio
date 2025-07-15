@@ -99,7 +99,7 @@ export function SavedImagesSheet({ savedImages, onImageLoad, onImageClick }: Sav
                         Saved {formatDistanceToNow(new Date(image.createdAt), { addSuffix: true })}
                       </CardDescription>
                     </CardHeader>
-                    <CardContent className="flex items-center">
+                    <CardContent>
                       <div className="relative w-full h-48 cursor-pointer" onClick={() => onImageClick(image)}>
                            <Image 
                               src={image.url} 
