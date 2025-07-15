@@ -6,7 +6,8 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { ref, push } from "firebase/database";
-import { Lightbulb, Loader2, CalendarDays, Info, Film, Book, Tv, Gamepad2, Save, RotateCcw, Camera } from 'lucide-react';
+import { Lightbulb, Loader2, CalendarDays, Info, Film, Book, Tv, Gamepad2, Save, RotateCcw, Camera, Archive } from 'lucide-react';
+import { formatDistanceToNow } from 'date-fns';
 
 import { generatePromotionIdeas } from '@/ai/flows/generate-promotion-ideas';
 import { generateImage } from '@/ai/flows/generate-image-flow';
@@ -17,7 +18,7 @@ import { useToast } from '@/hooks/use-toast';
 import { IdeaCard } from './IdeaCard';
 import { Badge } from '@/components/ui/badge';
 import { Skeleton } from '@/components/ui/skeleton';
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from './ui/card';
+import { Card, CardContent, CardFooter, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
@@ -365,6 +366,27 @@ export function PromotionGenerator({ onImageGenerated, onIdeaSelect, onReset, ca
                <SavedCampaignsSheet onCampaignLoad={onCampaignLoad} />
             </CardFooter>
           </Card>
+          
+          {campaignToLoad && (
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-3 text-lg font-headline">
+                  <Archive className="w-6 h-6 text-primary" />
+                  <span>Currently Loaded Campaign</span>
+                </CardTitle>
+                <CardDescription>
+                  You are viewing ideas and assets from a saved campaign.
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-1 text-sm text-muted-foreground">
+                  <p><span className="font-semibold text-foreground">Name:</span> {campaignToLoad.name}</p>
+                  <p><span className="font-semibold text-foreground">Topic:</span> {campaignToLoad.topic}</p>
+                  <p><span className="font-semibold text-foreground">Saved:</span> {formatDistanceToNow(new Date(campaignToLoad.createdAt), { addSuffix: true })}</p>
+                </div>
+              </CardContent>
+            </Card>
+          )}
 
           <Card>
             <CardContent className="p-6">
@@ -580,5 +602,3 @@ export function PromotionGenerator({ onImageGenerated, onIdeaSelect, onReset, ca
     </section>
   );
 }
-
-    
