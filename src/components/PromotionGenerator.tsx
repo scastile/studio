@@ -26,6 +26,7 @@ import type { Idea, RelevantDate, CrossMediaConnection, SavedCampaign } from '@/
 import { database } from '@/lib/utils';
 import { SaveSetDialog } from './SaveSetDialog';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
+import { SavedCampaignsSheet } from './SavedCampaignsSheet';
 
 
 const formSchema = z.object({
@@ -39,9 +40,10 @@ interface PromotionGeneratorProps {
   onIdeaSelect: (idea: Idea) => void;
   onReset: () => void;
   campaignToLoad: SavedCampaign | null;
+  onCampaignLoad: (campaign: SavedCampaign) => void;
 }
 
-export function PromotionGenerator({ onImageGenerated, onIdeaSelect, onReset, campaignToLoad }: PromotionGeneratorProps) {
+export function PromotionGenerator({ onImageGenerated, onIdeaSelect, onReset, campaignToLoad, onCampaignLoad }: PromotionGeneratorProps) {
   const [ideas, setIdeas] = useState<Idea[]>([]);
   const [relevantDates, setRelevantDates] = useState<RelevantDate[]>([]);
   const [crossMediaConnections, setCrossMediaConnections] = useState<CrossMediaConnection[]>([]);
@@ -304,6 +306,9 @@ export function PromotionGenerator({ onImageGenerated, onIdeaSelect, onReset, ca
               </Form>
             </CardContent>
           </Card>
+        </div>
+        <div className="flex justify-center mt-4">
+          <SavedCampaignsSheet onCampaignLoad={onCampaignLoad} />
         </div>
 
         {(isLoading || isGeneratingImage) && (

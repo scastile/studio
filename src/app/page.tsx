@@ -17,7 +17,6 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { Button } from '@/components/ui/button';
 import { Loader2, Copy, Info } from 'lucide-react';
 import { getIconForCategory } from '@/components/icons';
-import { SavedCampaignsSheet } from '@/components/SavedCampaignsSheet';
 
 
 export default function Home() {
@@ -148,10 +147,8 @@ export default function Home() {
           onIdeaSelect={handleIdeaSelect}
           onReset={handleResetSearch}
           campaignToLoad={loadedCampaign}
+          onCampaignLoad={handleCampaignLoad}
         />
-        <div className="flex justify-center mt-4">
-          <SavedCampaignsSheet onCampaignLoad={handleCampaignLoad} />
-        </div>
       </div>
       
       <Gallery
