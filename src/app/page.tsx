@@ -28,6 +28,7 @@ export default function Home() {
   const [isElaborating, setIsElaborating] = useState(false);
   const [elaboratedIdea, setElaboratedIdea] = useState<string | null>(null);
   const [loadedCampaign, setLoadedCampaign] = useState<SavedCampaign | null>(null);
+  const [initialImageId, setInitialImageId] = useState<string | null>(null);
 
   const { toast } = useToast();
 
@@ -47,16 +48,30 @@ export default function Home() {
     return () => unsubscribe();
   }, []);
 
-  const handleInitialImageGenerated = (imageUrl: string | null) => {
+  const handleInitialImageGenerated = (imageUrl: string | null, imageId?: string) => {
     if (imageUrl) {
-      setGeneratedImages(prev => [...prev, { id: uuidv4(), url: imageUrl, prompt: 'Initial Topic Image' }]);
+      const newId = uuidv4();
+      setGeneratedImages(prev => [...prev, { id: newId, url: imageUrl, prompt: 'Initial Topic Image' }]);
+      setInitialImageId(newId);
+    } else if (imageId) {
+      // Used for updating a loading image
+      setGeneratedImages(prev => prev.map(img => img.id === imageId ? { ...img, url: imageUrl } : img));
     }
+  };
+  
+  const handleResetSearch = () => {
+    if (initialImageId) {
+      removeImageFromList(initialImageId);
+      setInitialImageId(null);
+    }
+    setLoadedCampaign(null);
   };
 
   const handleCampaignLoad = (campaign: SavedCampaign) => {
     setLoadedCampaign(campaign);
     // Clear any previous images when loading a new campaign
     setGeneratedImages([]);
+    setInitialImageId(null);
     toast({
       title: 'Campaign Loaded',
       description: `The "${campaign.name}" campaign has been loaded.`,
@@ -126,14 +141,18 @@ export default function Home() {
   return (
     <main className="min-h-screen bg-background px-4 sm:px-0">
       <Header />
-      <PromotionGenerator 
-        onImageGenerated={handleInitialImageGenerated} 
-        onIdeaSelect={handleIdeaSelect}
-        campaignToLoad={loadedCampaign}
-      />
+
       <div className="container mx-auto flex justify-center py-4">
         <SavedCampaignsSheet onCampaignLoad={handleCampaignLoad} />
       </div>
+
+      <PromotionGenerator 
+        onImageGenerated={handleInitialImageGenerated} 
+        onIdeaSelect={handleIdeaSelect}
+        onReset={handleResetSearch}
+        campaignToLoad={loadedCampaign}
+      />
+      
       <Gallery
         images={generatedImages}
         onAddImage={addImageToList}

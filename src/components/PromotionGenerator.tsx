@@ -6,7 +6,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { ref, push } from "firebase/database";
-import { Lightbulb, Loader2, CalendarDays, Info, Film, Book, Tv, Gamepad2, Save } from 'lucide-react';
+import { Lightbulb, Loader2, CalendarDays, Info, Film, Book, Tv, Gamepad2, Save, RotateCcw } from 'lucide-react';
 
 import { generatePromotionIdeas } from '@/ai/flows/generate-promotion-ideas';
 import { generateImage } from '@/ai/flows/generate-image-flow';
@@ -36,10 +36,11 @@ const formSchema = z.object({
 interface PromotionGeneratorProps {
   onImageGenerated: (imageUrl: string | null) => void;
   onIdeaSelect: (idea: Idea) => void;
+  onReset: () => void;
   campaignToLoad: SavedCampaign | null;
 }
 
-export function PromotionGenerator({ onImageGenerated, onIdeaSelect, campaignToLoad }: PromotionGeneratorProps) {
+export function PromotionGenerator({ onImageGenerated, onIdeaSelect, onReset, campaignToLoad }: PromotionGeneratorProps) {
   const [ideas, setIdeas] = useState<Idea[]>([]);
   const [relevantDates, setRelevantDates] = useState<RelevantDate[]>([]);
   const [crossMediaConnections, setCrossMediaConnections] = useState<CrossMediaConnection[]>([]);
@@ -60,6 +61,19 @@ export function PromotionGenerator({ onImageGenerated, onIdeaSelect, campaignToL
       topic: '',
     },
   });
+
+  const handleReset = () => {
+    form.reset({ topic: '' });
+    setIdeas([]);
+    setRelevantDates([]);
+    setCrossMediaConnections([]);
+    setCategories([]);
+    setSelectedCategory(null);
+    setCurrentTopic('');
+    setIsLoading(false);
+    setIsGeneratingImage(false);
+    onReset();
+  };
 
   useEffect(() => {
     if (campaignToLoad) {
@@ -240,24 +254,30 @@ export function PromotionGenerator({ onImageGenerated, onIdeaSelect, campaignToL
                     />
                     <Label htmlFor="image-generation-switch" className="text-muted-foreground">Generate AI Image with topic</Label>
                   </div>
-                  <Button type="submit" disabled={isLoading || isGeneratingImage} className="w-full">
-                    {isLoading ? (
-                      <>
-                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                        Generating Ideas...
-                      </>
-                    ) : isGeneratingImage ? (
+                  <div className="flex flex-col sm:flex-row gap-2">
+                    <Button type="submit" disabled={isLoading || isGeneratingImage} className="w-full">
+                      {isLoading ? (
                         <>
-                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                        Generating Ideas & Image...
-                      </>
-                    ) : (
-                      <>
-                        <Lightbulb className="mr-2 h-4 w-4" />
-                        Generate Promotion Ideas
-                      </>
-                    )}
-                  </Button>
+                          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                          Generating Ideas...
+                        </>
+                      ) : isGeneratingImage ? (
+                          <>
+                          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                          Generating Ideas & Image...
+                        </>
+                      ) : (
+                        <>
+                          <Lightbulb className="mr-2 h-4 w-4" />
+                          Generate Promotion Ideas
+                        </>
+                      )}
+                    </Button>
+                     <Button type="button" variant="outline" onClick={handleReset} className="w-full sm:w-auto">
+                      <RotateCcw className="mr-2 h-4 w-4" />
+                      New Search
+                    </Button>
+                  </div>
                 </form>
               </Form>
             </CardContent>
