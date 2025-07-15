@@ -149,7 +149,7 @@ export default function Home() {
           onReset={handleResetSearch}
           campaignToLoad={loadedCampaign}
         />
-        <div className="flex justify-center py-8">
+        <div className="flex justify-center py-4">
           <SavedCampaignsSheet onCampaignLoad={handleCampaignLoad} />
         </div>
       </div>
