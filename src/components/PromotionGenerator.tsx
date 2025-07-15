@@ -366,6 +366,27 @@ export function PromotionGenerator({ onImageGenerated, onIdeaSelect, onReset, ca
 
           <SavedCampaignsList onCampaignLoad={onCampaignLoad} />
 
+          {campaignToLoad && (
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-3 text-lg font-headline">
+                  <Archive className="w-6 h-6 text-primary" />
+                  <span>Currently Loaded Campaign</span>
+                </CardTitle>
+                <CardDescription>
+                  You are viewing ideas and assets from a saved campaign.
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-1 text-sm text-muted-foreground">
+                  <p><span className="font-semibold text-foreground">Name:</span> {campaignToLoad.name}</p>
+                  <p><span className="font-semibold text-foreground">Topic:</span> {campaignToLoad.topic}</p>
+                  <p><span className="font-semibold text-foreground">Saved:</span> {formatDistanceToNow(new Date(campaignToLoad.createdAt), { addSuffix: true })}</p>
+                </div>
+              </CardContent>
+            </Card>
+          )}
+
           <Card>
             <CardContent className="p-6">
                <div className="text-center mb-6">
@@ -436,27 +457,6 @@ export function PromotionGenerator({ onImageGenerated, onIdeaSelect, onReset, ca
               </div>
             </CardContent>
           </Card>
-          
-          {campaignToLoad && (
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-3 text-lg font-headline">
-                  <Archive className="w-6 h-6 text-primary" />
-                  <span>Currently Loaded Campaign</span>
-                </CardTitle>
-                <CardDescription>
-                  You are viewing ideas and assets from a saved campaign.
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-1 text-sm text-muted-foreground">
-                  <p><span className="font-semibold text-foreground">Name:</span> {campaignToLoad.name}</p>
-                  <p><span className="font-semibold text-foreground">Topic:</span> {campaignToLoad.topic}</p>
-                  <p><span className="font-semibold text-foreground">Saved:</span> {formatDistanceToNow(new Date(campaignToLoad.createdAt), { addSuffix: true })}</p>
-                </div>
-              </CardContent>
-            </Card>
-          )}
         </div>
         
 
