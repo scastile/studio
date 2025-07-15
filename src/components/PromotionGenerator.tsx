@@ -233,7 +233,7 @@ export function PromotionGenerator({ onImageGenerated, onIdeaSelect, onReset, ca
         <div className="max-w-xl mx-auto">
           <Card>
             <CardContent className="p-6">
-              <p className="font-bold text-center mb-4 text-lg">What would you like to promote?</p>
+              <p className="font-bold text-left mb-4 text-lg">What would you like to promote?</p>
               <Form {...form}>
                 <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
                   <FormField
@@ -251,7 +251,7 @@ export function PromotionGenerator({ onImageGenerated, onIdeaSelect, onReset, ca
                       </FormItem>
                     )}
                   />
-                  <div className="flex items-center justify-center space-x-2 pt-2">
+                  <div className="flex items-center justify-start space-x-2 pt-2">
                     <Switch
                       id="image-generation-switch"
                       checked={shouldGenerateImage}
@@ -261,7 +261,7 @@ export function PromotionGenerator({ onImageGenerated, onIdeaSelect, onReset, ca
                     <Label htmlFor="image-generation-switch" className="text-muted-foreground">Generate AI Image with topic</Label>
                   </div>
                   {shouldGenerateImage && (
-                    <div className="flex justify-center items-center gap-4">
+                    <div className="flex justify-start items-center gap-4">
                        <Label htmlFor="aspectRatio" className="text-muted-foreground">Aspect Ratio</Label>
                       <Select
                         defaultValue={aspectRatio}
