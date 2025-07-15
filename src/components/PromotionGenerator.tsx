@@ -27,9 +27,9 @@ import type { Idea, RelevantDate, CrossMediaConnection, SavedCampaign, SavedImag
 import { database } from '@/lib/utils';
 import { SaveSetDialog } from './SaveSetDialog';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { SavedCampaignsSheet } from './SavedCampaignsSheet';
 import { SavedImagesSheet } from './SavedImagesSheet';
 import { v4 as uuidv4 } from 'uuid';
+import { SavedCampaignsList } from './SavedCampaignsList';
 
 const promotionFormSchema = z.object({
   topic: z.string().min(3, {
@@ -186,7 +186,7 @@ export function PromotionGenerator({ onImageGenerated, onIdeaSelect, onReset, ca
     setIsGeneratingNewImage(true);
     const newImageId = uuidv4();
     onAddImage({ id: newImageId, url: null, prompt: values.prompt });
-    imageForm.reset();
+    imageForm.reset({ prompt: '', aspectRatio: '1:1' });
 
     try {
       const result = await generateImage({ prompt: values.prompt, aspectRatio: values.aspectRatio });
@@ -362,10 +362,9 @@ export function PromotionGenerator({ onImageGenerated, onIdeaSelect, onReset, ca
                 </form>
               </Form>
             </CardContent>
-            <CardFooter className="flex justify-center">
-               <SavedCampaignsSheet onCampaignLoad={onCampaignLoad} />
-            </CardFooter>
           </Card>
+
+          <SavedCampaignsList onCampaignLoad={onCampaignLoad} />
 
           <Card>
             <CardContent className="p-6">
