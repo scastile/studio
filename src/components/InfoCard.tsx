@@ -23,7 +23,7 @@ export function InfoCard({ title, description, buttonText, onButtonClick }: Info
                 </p>
                 <Button 
                     variant="default" 
-                    className="w-full mt-auto bg-transparent border border-primary text-primary hover:bg-primary hover:text-primary-foreground" 
+                    className="w-full mt-auto bg-transparent border-2 border-primary text-primary hover:bg-primary hover:text-primary-foreground" 
                     onClick={onButtonClick}
                 >
                     {buttonText}
