@@ -150,7 +150,7 @@ export function ImageGenerator({ onAddImage, onUpdateImage, onRemoveImage, onIma
       <div className="flex flex-col">
         <InfoCard 
           title="Image Tips"
-          description="For best results, use descriptive prompts. Mention style, colors, and composition. Use clear, detailed prompts with style cues (e.g., photorealistic, anime), control composition, specify colors, avoid clutter, and refine with edits. Add analogies or references for better results."
+          description="For strong results, use descriptive prompts. Mention style, colors, and composition. Include style cues (e.g., photorealistic, anime), guide composition, and add analogies or references for clarity and tone."
           buttonText="Learn More"
           onButtonClick={() => toast({ title: "Coming Soon!", description: "Advanced image prompting guides will be available in a future update."})}
         />

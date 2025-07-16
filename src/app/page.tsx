@@ -16,7 +16,7 @@ import { useToast } from '@/hooks/use-toast';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Button } from '@/components/ui/button';
-import { Loader2, Copy, Info } from 'lucide-react';
+import { Loader2, Copy, Info, FileDown, Mail } from 'lucide-react';
 import { getIconForCategory } from '@/components/icons';
 import Image from 'next/image';
 import { SavedCampaignsList } from '@/components/SavedCampaignsList';
@@ -309,8 +309,24 @@ export default function Home() {
                   )}
                 </article>
               </ScrollArea>
-              <DialogFooter>
+              <DialogFooter className="gap-2">
                 <Button
+                  onClick={() => toast({ title: "Coming Soon!", description: "PDF export will be available in a future update."})}
+                  disabled={isElaborating || !elaboratedIdea}
+                  variant="outline"
+                >
+                  <FileDown className="mr-2 h-4 w-4" />
+                  Export to PDF
+                </Button>
+                <Button
+                  onClick={() => toast({ title: "Coming Soon!", description: "Email export will be available in a future update."})}
+                  disabled={isElaborating || !elaboratedIdea}
+                  variant="outline"
+                >
+                  <Mail className="mr-2 h-4 w-4" />
+                  Email Plan
+                </Button>
+                 <Button
                   onClick={handleCopyToClipboard}
                   disabled={isElaborating || !elaboratedIdea}
                   variant="outline"
