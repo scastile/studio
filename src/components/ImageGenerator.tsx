@@ -5,7 +5,7 @@ import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { Loader2, Camera, Lightbulb } from 'lucide-react';
+import { Loader2, Camera, ImageIcon } from 'lucide-react';
 import { v4 as uuidv4 } from 'uuid';
 
 import { generateImage } from '@/ai/flows/generate-image-flow';
@@ -137,7 +137,7 @@ export function ImageGenerator({ onAddImage, onUpdateImage, onRemoveImage, onIma
                       </>
                     ) : (
                       <>
-                        <Lightbulb className="mr-2 h-4 w-4" strokeWidth={2.5} />
+                        <ImageIcon className="mr-2 h-4 w-4" strokeWidth={2.5} />
                         Generate New Image
                       </>
                     )}
