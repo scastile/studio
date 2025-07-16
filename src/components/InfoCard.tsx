@@ -12,7 +12,7 @@ interface InfoCardProps {
 
 export function InfoCard({ title, description, buttonText, onButtonClick }: InfoCardProps) {
     return (
-        <Card className="bg-muted/50">
+        <Card className="bg-card">
             <CardContent className="p-6 flex flex-col h-full">
                 <div className="flex items-center gap-2 mb-2">
                     <div className="w-2 h-2 rounded-full bg-primary" />
@@ -21,7 +21,11 @@ export function InfoCard({ title, description, buttonText, onButtonClick }: Info
                 <p className="text-sm text-muted-foreground mb-4 flex-grow">
                     {description}
                 </p>
-                <Button variant="outline" size="sm" className="w-full mt-auto" onClick={onButtonClick}>
+                <Button 
+                    variant="default" 
+                    className="w-full mt-auto bg-transparent border border-primary text-primary hover:bg-primary/10" 
+                    onClick={onButtonClick}
+                >
                     {buttonText}
                 </Button>
             </CardContent>
