@@ -343,7 +343,7 @@ export function PromotionGenerator({ onImageGenerated, onIdeaSelect, onReset, ca
        {campaignToLoad && (
         <Card>
           <CardHeader>
-            <CardTitle className="flex items-center gap-3 text-lg font-headline">
+            <CardTitle className="flex items-center gap-3 text-lg font-sans">
               <Archive className="w-6 h-6 text-primary" />
               <span>Currently Loaded Campaign</span>
             </CardTitle>
