@@ -10,8 +10,8 @@ export function Header() {
               <div className="bg-accent p-2 rounded-lg">
                 <Lightbulb className="h-6 w-6 text-accent-foreground" />
               </div>
-              <h1 className="font-headline text-3xl sm:text-4xl font-bold text-gray-800 dark:text-gray-100">
-                  Library Launchpad
+              <h1 className="font-sans text-3xl sm:text-4xl font-bold text-gray-800 dark:text-gray-100">
+                  <span className="title-gradient">Library Launchpad</span>
               </h1>
           </div>
           <p className="text-base sm:text-lg text-muted-foreground max-w-2xl mx-auto">
