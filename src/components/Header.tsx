@@ -23,7 +23,7 @@ export function Header() {
               <p className="text-sm text-muted-foreground">Ideas Generated</p>
             </div>
             <div className="text-center">
-              <p className="text-3xl sm:text-4xl font-bold text-primary">450+</p>
+              <p className="text-3xl sm:text-4xl font-bold text-primary">1+</p>
               <p className="text-sm text-muted-foreground">Libraries Using</p>
             </div>
             <div className="text-center">
