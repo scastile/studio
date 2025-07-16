@@ -33,7 +33,6 @@ export default function Home() {
   const [isElaborating, setIsElaborating] = useState(false);
   const [elaboratedIdea, setElaboratedIdea] = useState<string | null>(null);
   const [loadedCampaign, setLoadedCampaign] = useState<SavedCampaign | null>(null);
-  const [initialImageId, setInitialImageId] = useState<string | null>(null);
   const [lightboxImage, setLightboxImage] = useState<GeneratedImage | SavedImage | null>(null);
 
   const { toast } = useToast();
@@ -71,26 +70,23 @@ export default function Home() {
   }, []);
 
   const handleInitialImageGenerated = (imageUrl: string | null, imageId?: string, prompt?: string) => {
-    if (imageUrl) {
-      const newId = uuidv4();
-      setGeneratedImages(prev => [...prev, { id: newId, url: imageUrl, prompt: prompt || 'Initial Topic Image' }]);
-      setInitialImageId(newId);
-    } else if (imageId) {
-      // Used for updating a loading image
-       setGeneratedImages(prev => prev.map(img => img.id === imageId ? { ...img, url: imageUrl, prompt: prompt || img.prompt } : img));
-    } else {
-      // Handle the case where we just need to add a placeholder
-      const newId = uuidv4();
-      setGeneratedImages(prev => [...prev, { id: newId, url: null, prompt: prompt || 'Generating...' }]);
-      setInitialImageId(newId);
+    // If an imageId is provided, we're either updating a placeholder or creating a new one.
+    if (imageId) {
+        // If imageUrl is provided, update the existing placeholder.
+        if (imageUrl) {
+            setGeneratedImages(prev => prev.map(img => img.id === imageId ? { ...img, url: imageUrl, prompt: prompt || img.prompt } : img));
+        } else {
+            // If no imageUrl, it's a new placeholder.
+            setGeneratedImages(prev => [...prev, { id: imageId, url: null, prompt: prompt || 'Generating...' }]);
+        }
+    } else if (imageUrl) {
+        // Fallback for cases where an image is generated without a pre-existing placeholder.
+        setGeneratedImages(prev => [...prev, { id: uuidv4(), url: imageUrl, prompt: prompt || 'Initial Topic Image' }]);
     }
   };
   
   const handleResetSearch = () => {
-    if (initialImageId) {
-      removeImageFromList(initialImageId);
-      setInitialImageId(null);
-    }
+    setGeneratedImages([]);
     setLoadedCampaign(null);
   };
 
@@ -98,7 +94,6 @@ export default function Home() {
     setLoadedCampaign(campaign);
     // Clear any previous images when loading a new campaign
     setGeneratedImages([]);
-    setInitialImageId(null);
     toast({
       title: 'Campaign Loaded',
       description: `The "${campaign.name}" campaign has been loaded.`,

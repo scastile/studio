@@ -8,6 +8,7 @@ import { z } from 'zod';
 import { ref, push } from "firebase/database";
 import { Lightbulb, Loader2, CalendarDays, Info, Film, Book, Tv, Gamepad2, Save, RotateCcw, Archive, FileText, Share, AlertCircle, Image as ImageIcon, Search } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
+import { v4 as uuidv4 } from 'uuid';
 
 import { generatePromotionIdeas } from '@/ai/flows/generate-promotion-ideas';
 import { generateImage } from '@/ai/flows/generate-image-flow';
@@ -107,8 +108,11 @@ export function PromotionGenerator({ onImageGenerated, onIdeaSelect, onReset, ca
     onReset(); // Clear loaded campaign state on new search
 
     const imagePrompt = `Create a striking, visually rich promotional image centered around ${values.topic}. Incorporate vivid, symbolic imagery and meaningful visual metaphors that represent or evoke ${values.topic}. Use a bold and cohesive color palette that enhances the theme, and ensure the composition is both dynamic and attention-grabbing. Style the image to be modern, polished, and suitable for use in high-quality promotional materials.`;
-    if(shouldGenerateImage) {
-      onImageGenerated(null, undefined, imagePrompt);
+    
+    let topicImageId: string | undefined = undefined;
+    if (shouldGenerateImage) {
+      topicImageId = uuidv4();
+      onImageGenerated(null, topicImageId, imagePrompt);
     }
     
     try {
@@ -149,7 +153,7 @@ export function PromotionGenerator({ onImageGenerated, onIdeaSelect, onReset, ca
       if (shouldGenerateImage) {
         const imageResult = await imagePromise;
         if(imageResult && imageResult.imageDataUri) {
-          onImageGenerated(imageResult.imageDataUri, undefined, imagePrompt);
+          onImageGenerated(imageResult.imageDataUri, topicImageId, imagePrompt);
         }
         setIsGeneratingTopicImage(false);
       }
