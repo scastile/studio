@@ -12,8 +12,8 @@ interface InfoCardProps {
 
 export function InfoCard({ title, description, buttonText, onButtonClick }: InfoCardProps) {
     return (
-        <Card className="bg-card">
-            <CardContent className="p-6 flex flex-col h-full">
+        <Card>
+            <CardContent className="p-6 flex flex-col">
                 <div className="flex items-center gap-2 mb-2">
                     <div className="w-2 h-2 rounded-full bg-primary" />
                     <h3 className="font-semibold text-foreground text-sm">{title}</h3>
