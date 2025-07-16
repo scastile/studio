@@ -306,7 +306,7 @@ export function PromotionGenerator({ onImageGenerated, onIdeaSelect, onReset, ca
                     )}
                   </div>
                   <div className="flex flex-col sm:flex-row gap-2">
-                    <Button type="submit" disabled={isLoading || isGeneratingTopicImage} className="w-full font-bold bg-gradient-to-r from-[#4f46e5] to-[#7c3aed] text-white py-6 px-7 rounded-xl text-lg shadow-[0_4px_15px_rgba(79,70,229,0.3)] hover:shadow-[0_6px_20px_rgba(79,70,229,0.4)] hover:-translate-y-0.5 transition-all duration-300 active:translate-y-0" size="lg">
+                    <Button type="submit" disabled={isLoading || isGeneratingTopicImage} className="w-full font-bold bg-gradient-to-r from-[#4f46e5] to-[#7c3aed] text-white py-6 px-7 rounded-xl text-lg shadow-[0_4px_15px_rgba(79,70,229,0.3)] hover:shadow-[0_6px_20px_rgba(79,70,229,0.4)] hover:translate-y-0.5 transition-all duration-300 active:translate-y-0" size="lg">
                       {isLoading || isGeneratingTopicImage ? (
                         <>
                           <Loader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -329,7 +329,7 @@ export function PromotionGenerator({ onImageGenerated, onIdeaSelect, onReset, ca
               title="Quick Tips"
               description="Be specific about your content type and target audience for better results."
               buttonText="View Examples"
-              onButtonClick={() => toast({ title: "Coming Soon!", description: "Example prompts will be available in a future update."})}
+              href="/image-tips"
             />
             <InfoCard 
               title="Export Options"

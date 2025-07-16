@@ -162,7 +162,7 @@ export function ImageGenerator({ onAddImage, onUpdateImage, onRemoveImage, onIma
           title="Image Tips"
           description="For strong results, use descriptive prompts. Mention style, colors, and composition. Use clear, detailed prompts with style cues (e.g., photorealistic, anime), Add analogies or references for better results."
           buttonText="Learn More"
-          onButtonClick={() => toast({ title: "Coming Soon!", description: "Advanced image prompting guides will be available in a future update."})}
+          href="/image-tips"
         />
       </div>
     </div>
