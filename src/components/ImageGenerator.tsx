@@ -147,7 +147,7 @@ export function ImageGenerator({ onAddImage, onUpdateImage, onRemoveImage, onIma
             </CardContent>
           </Card>
         </div>
-      <div className="h-full">
+      <div className="flex flex-col">
         <InfoCard 
           title="Image Tips"
           description="For best results, use descriptive prompts. Mention style, colors, and composition."
