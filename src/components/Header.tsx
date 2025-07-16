@@ -19,7 +19,7 @@ export function Header() {
           </p>
           <div className="mt-10 flex justify-center items-center gap-8 sm:gap-16">
             <div className="text-center">
-              <p className="text-3xl sm:text-4xl font-bold text-primary">2,500+</p>
+              <p className="text-3xl sm:text-4xl font-bold text-primary">12,500+</p>
               <p className="text-sm text-muted-foreground">Ideas Generated</p>
             </div>
             <div className="text-center">
