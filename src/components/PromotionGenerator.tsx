@@ -231,77 +231,95 @@ export function PromotionGenerator({ onImageGenerated, onIdeaSelect, onReset, ca
 
   return (
     <>
-      <div className="bg-card rounded-2xl shadow-lg p-8">
-        <p className="font-bold text-left mb-4 text-lg">What would you like to promote?</p>
-        <Form {...promotionForm}>
-          <form onSubmit={promotionForm.handleSubmit(onPromotionSubmit)} className="space-y-6">
-            <FormField
-              control={promotionForm.control}
-              name="topic"
-              render={({ field }) => (
-                <FormItem>
-                  <FormControl>
-                    <Input
-                      placeholder="e.g., 'The Great Gatsby', 'Minecraft', 'Stranger Things'"
-                      {...field}
+       <div className="grid grid-cols-1 md:grid-cols-[1fr_300px] gap-[30px]">
+          <div>
+            <div className="bg-card rounded-2xl shadow-lg p-8">
+              <p className="font-bold text-left mb-4 text-lg">What would you like to promote?</p>
+              <Form {...promotionForm}>
+                <form onSubmit={promotionForm.handleSubmit(onPromotionSubmit)} className="space-y-6">
+                  <FormField
+                    control={promotionForm.control}
+                    name="topic"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormControl>
+                          <Input
+                            placeholder="e.g., 'The Great Gatsby', 'Minecraft', 'Stranger Things'"
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <div className="flex items-center justify-between h-12 w-full rounded-md border border-input bg-background px-3 py-2 text-sm">
+                    <div className="flex items-center gap-2">
+                      <ImageIcon className="h-5 w-5 text-muted-foreground" />
+                      <Label htmlFor="image-generation-switch" className="text-foreground font-bold">
+                        Generate AI Image with topic
+                      </Label>
+                    </div>
+                    <Switch
+                      id="image-generation-switch"
+                      checked={shouldGenerateImage}
+                      onCheckedChange={setShouldGenerateImage}
+                      disabled={isLoading || isGeneratingTopicImage}
                     />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <div className="flex items-center justify-between h-12 w-full rounded-md border border-input bg-background px-3 py-2 text-sm">
-              <div className="flex items-center gap-2">
-                <ImageIcon className="h-5 w-5 text-muted-foreground" />
-                <Label htmlFor="image-generation-switch" className="text-foreground font-bold">
-                  Generate AI Image with topic
-                </Label>
-              </div>
-              <Switch
-                id="image-generation-switch"
-                checked={shouldGenerateImage}
-                onCheckedChange={setShouldGenerateImage}
-                disabled={isLoading || isGeneratingTopicImage}
-              />
-            </div>
+                  </div>
 
-            {shouldGenerateImage && (
-              <div className="flex justify-start items-center gap-4">
-                <Label htmlFor="aspectRatio" className="text-muted-foreground">Aspect Ratio</Label>
-                <Select
-                  defaultValue={topicImageAspectRatio}
-                  onValueChange={setTopicImageAspectRatio}
-                  disabled={isLoading || isGeneratingTopicImage}
-                >
-                  <SelectTrigger id="aspectRatio" className="w-[120px]">
-                    <SelectValue placeholder="Ratio" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="1:1">Square</SelectItem>
-                    <SelectItem value="16:9">Wide</SelectItem>
-                    <SelectItem value="9:16">Tall</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-            )}
-            <div className="flex flex-col sm:flex-row gap-2">
-              <Button type="submit" disabled={isLoading || isGeneratingTopicImage} className="w-full font-bold bg-gradient-to-r from-primary to-[#5C6BC0] hover:from-primary/90 hover:to-[#5C6BC0]/90" size="lg">
-                {isLoading || isGeneratingTopicImage ? (
-                  <>
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    Generating...
-                  </>
-                ) : (
-                  <>
-                    <Lightbulb className="mr-2 h-4 w-4" strokeWidth={2.5} />
-                    Generate Promotion Ideas
-                  </>
-                )}
-              </Button>
+                  {shouldGenerateImage && (
+                    <div className="flex justify-start items-center gap-4">
+                      <Label htmlFor="aspectRatio" className="text-muted-foreground">Aspect Ratio</Label>
+                      <Select
+                        defaultValue={topicImageAspectRatio}
+                        onValueChange={setTopicImageAspectRatio}
+                        disabled={isLoading || isGeneratingTopicImage}
+                      >
+                        <SelectTrigger id="aspectRatio" className="w-[120px]">
+                          <SelectValue placeholder="Ratio" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="1:1">Square</SelectItem>
+                          <SelectItem value="16:9">Wide</SelectItem>
+                          <SelectItem value="9:16">Tall</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  )}
+                  <div className="flex flex-col sm:flex-row gap-2">
+                    <Button type="submit" disabled={isLoading || isGeneratingTopicImage} className="w-full font-bold bg-gradient-to-r from-primary to-[#5C6BC0] hover:from-primary/90 hover:to-[#5C6BC0]/90" size="lg">
+                      {isLoading || isGeneratingTopicImage ? (
+                        <>
+                          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                          Generating...
+                        </>
+                      ) : (
+                        <>
+                          <Lightbulb className="mr-2 h-4 w-4" strokeWidth={2.5} />
+                          Generate Promotion Ideas
+                        </>
+                      )}
+                    </Button>
+                  </div>
+                </form>
+              </Form>
             </div>
-          </form>
-        </Form>
-      </div>
+          </div>
+          <div className="space-y-6">
+            <InfoCard 
+              title="Quick Tips"
+              description="Be specific about your content type and target audience for better results."
+              buttonText="View Examples"
+              onButtonClick={() => toast({ title: "Coming Soon!", description: "Example prompts will be available in a future update."})}
+            />
+            <InfoCard 
+              title="Export Options"
+              description="Save your campaigns as PDF, share via email, or integrate with your calendar."
+              buttonText="View Export Options"
+              onButtonClick={() => toast({ title: "Coming Soon!", description: "Export features will be available in a future update."})}
+            />
+          </div>
+        </div>
       
        {campaignToLoad && (
         <Card>
@@ -464,9 +482,3 @@ export function PromotionGenerator({ onImageGenerated, onIdeaSelect, onReset, ca
     </>
   );
 }
-
-    
-
-    
-
-    

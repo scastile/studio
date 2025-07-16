@@ -245,42 +245,26 @@ export default function Home() {
       <Header />
 
       <div className="container mx-auto px-5 -mt-16">
-        <div className="max-w-[1200px] mx-auto grid grid-cols-1 md:grid-cols-[1fr_300px] gap-[30px]">
-          <div className="space-y-8">
-            <PromotionGenerator 
-              onImageGenerated={handleInitialImageGenerated} 
-              onIdeaSelect={handleIdeaSelect}
-              onReset={handleResetSearch}
-              campaignToLoad={loadedCampaign}
-            />
-            <SavedCampaignsList onCampaignLoad={handleCampaignLoad} />
-            <PinnedIdeasList pinnedIdeas={pinnedIdeas} onIdeaSelect={handleIdeaSelect} />
-            <SavedImagesList 
-                savedImages={savedImages}
-                onImageLoad={(image) => addImageToList({ id: uuidv4(), url: image.url, prompt: image.prompt })}
-                onImageClick={setLightboxImage}
-            />
-            <ImageGenerator 
-              onAddImage={addImageToList}
-              onUpdateImage={updateImageInList}
-              onRemoveImage={removeImageFromList}
+        <div className="max-w-[1200px] mx-auto space-y-8">
+          <PromotionGenerator 
+            onImageGenerated={handleInitialImageGenerated} 
+            onIdeaSelect={handleIdeaSelect}
+            onReset={handleResetSearch}
+            campaignToLoad={loadedCampaign}
+          />
+          <SavedCampaignsList onCampaignLoad={handleCampaignLoad} />
+          <PinnedIdeasList pinnedIdeas={pinnedIdeas} onIdeaSelect={handleIdeaSelect} />
+          <SavedImagesList 
+              savedImages={savedImages}
+              onImageLoad={(image) => addImageToList({ id: uuidv4(), url: image.url, prompt: image.prompt })}
               onImageClick={setLightboxImage}
-            />
-          </div>
-          <div className="space-y-6">
-            <InfoCard 
-              title="Quick Tips"
-              description="Be specific about your content type and target audience for better results."
-              buttonText="View Examples"
-              onButtonClick={() => toast({ title: "Coming Soon!", description: "Example prompts will be available in a future update."})}
-            />
-            <InfoCard 
-              title="Export Options"
-              description="Save your campaigns as PDF, share via email, or integrate with your calendar."
-              buttonText="View Export Options"
-              onButtonClick={() => toast({ title: "Coming Soon!", description: "Export features will be available in a future update."})}
-            />
-          </div>
+          />
+          <ImageGenerator 
+            onAddImage={addImageToList}
+            onUpdateImage={updateImageInList}
+            onRemoveImage={removeImageFromList}
+            onImageClick={setLightboxImage}
+          />
         </div>
       </div>
       
