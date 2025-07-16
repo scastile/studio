@@ -104,7 +104,7 @@ export function PromotionGenerator({ onImageGenerated, onIdeaSelect, onReset, ca
     setCrossMediaConnections([]);
     setCategories([]);
     setSelectedCategory(null);
-    const imagePrompt = `Create a vibrant, eye-catching promotional image about ${values.topic}. Include visual elements and or symbols that naturally connect to ${values.topic}. Use a rich, engaging color palette that complements the ${values.topic} theme. `;
+    const imagePrompt = `Create a striking, visually rich promotional image centered around ${values.topic}. Incorporate vivid, symbolic imagery and meaningful visual metaphors that represent or evoke ${values.topic}. Use a bold and cohesive color palette that enhances the theme, and ensure the composition is both dynamic and attention-grabbing. Style the image to be modern, polished, and suitable for use in high-quality promotional materials.`;
     if(shouldGenerateImage) {
       onImageGenerated(null, undefined, imagePrompt);
     }
