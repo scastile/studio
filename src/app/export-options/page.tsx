@@ -103,8 +103,8 @@ export default function ExportOptionsPage() {
       </div>
        <footer className="text-center py-6 text-primary-foreground">
         <div className="container mx-auto">
-          <p className="font-sans font-bold text-white mb-2">Powered by PaperLabs</p>
           <p>&copy; {new Date().getFullYear()} LibraryLaunchpad. All rights reserved.</p>
+          <p className="font-sans font-bold text-white mt-2">Powered by <span className="italic">P</span>aperLab</p>
         </div>
       </footer>
     </main>
