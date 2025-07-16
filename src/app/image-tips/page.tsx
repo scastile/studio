@@ -8,7 +8,7 @@ import { CheckCircle2, Pencil, Sparkles, Camera } from 'lucide-react';
 export default function ImageTipsPage() {
   return (
     <main className="min-h-screen">
-      <Header />
+      <Header isSimple={true} />
 
       <div className="container mx-auto px-5 -mt-16">
         <div className="max-w-[1200px] mx-auto space-y-8">

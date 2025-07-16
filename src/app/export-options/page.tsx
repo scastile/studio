@@ -12,7 +12,7 @@ export default function ExportOptionsPage() {
 
   return (
     <main className="min-h-screen">
-      <Header />
+      <Header isSimple={true} />
 
       <div className="container mx-auto px-5 -mt-16">
         <div className="max-w-[1200px] mx-auto space-y-8">
