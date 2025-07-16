@@ -6,7 +6,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { ref, push } from "firebase/database";
-import { Lightbulb, Loader2, CalendarDays, Info, Film, Book, Tv, Gamepad2, Save, RotateCcw, Archive, FileText, Share, AlertCircle, Image as ImageIcon } from 'lucide-react';
+import { Lightbulb, Loader2, CalendarDays, Info, Film, Book, Tv, Gamepad2, Save, RotateCcw, Archive, FileText, Share, AlertCircle, Image as ImageIcon, Search } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
 
 import { generatePromotionIdeas } from '@/ai/flows/generate-promotion-ideas';
@@ -104,6 +104,8 @@ export function PromotionGenerator({ onImageGenerated, onIdeaSelect, onReset, ca
     setCrossMediaConnections([]);
     setCategories([]);
     setSelectedCategory(null);
+    onReset(); // Clear loaded campaign state on new search
+
     const imagePrompt = `Create a striking, visually rich promotional image centered around ${values.topic}. Incorporate vivid, symbolic imagery and meaningful visual metaphors that represent or evoke ${values.topic}. Use a bold and cohesive color palette that enhances the theme, and ensure the composition is both dynamic and attention-grabbing. Style the image to be modern, polished, and suitable for use in high-quality promotional materials.`;
     if(shouldGenerateImage) {
       onImageGenerated(null, undefined, imagePrompt);
@@ -238,6 +240,8 @@ export function PromotionGenerator({ onImageGenerated, onIdeaSelect, onReset, ca
     </li>
   );
 
+  const showResults = !isLoading && (ideas.length > 0 || relevantDates.length > 0 || crossMediaConnections.length > 0);
+
   return (
     <>
        <div className="grid grid-cols-1 md:grid-cols-[1fr_300px] gap-[30px]">
@@ -353,6 +357,35 @@ export function PromotionGenerator({ onImageGenerated, onIdeaSelect, onReset, ca
         </Card>
       )}
 
+      {!campaignToLoad && showResults && (
+         <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-3 text-lg font-headline">
+              <Search className="w-6 h-6 text-primary" />
+              <span>Current Search</span>
+            </CardTitle>
+             <CardDescription>
+              The following ideas and assets were generated for your search topic. Don't forget to save the set if you'd like to use it later!
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-1 text-sm text-muted-foreground">
+              <p><span className="font-semibold text-foreground">Topic:</span> {currentTopic}</p>
+            </div>
+          </CardContent>
+          <CardFooter>
+            <Button
+              onClick={() => setIsSaveSetDialogOpen(true)}
+              size="lg"
+              variant="outline"
+            >
+              <Save className="mr-2 h-5 w-5" />
+              Save Idea Set
+            </Button>
+          </CardFooter>
+        </Card>
+      )}
+
       {(isLoading || isGeneratingTopicImage) && (
         <div className="mt-12">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -370,7 +403,7 @@ export function PromotionGenerator({ onImageGenerated, onIdeaSelect, onReset, ca
         </div>
       )}
 
-      { !isLoading && (ideas.length > 0 || relevantDates.length > 0 || crossMediaConnections.length > 0) && (
+      { showResults && (
         <div className="mt-12">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             {relevantDates.length > 0 && (
@@ -447,16 +480,6 @@ export function PromotionGenerator({ onImageGenerated, onIdeaSelect, onReset, ca
                 {filteredIdeas.map((idea, index) => (
                   <IdeaCard key={index} idea={idea} onSelect={onIdeaSelect} onPin={handlePinIdea} />
                 ))}
-              </div>
-              <div className="mt-12 text-center">
-                <Button
-                  onClick={() => setIsSaveSetDialogOpen(true)}
-                  size="lg"
-                  variant="outline"
-                >
-                  <Save className="mr-2 h-5 w-5" />
-                  Save Idea Set
-                </Button>
               </div>
             </>
           )}
