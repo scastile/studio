@@ -231,87 +231,85 @@ export function PromotionGenerator({ onImageGenerated, onIdeaSelect, onReset, ca
 
   return (
     <>
-      <div className="bg-card rounded-2xl shadow-lg p-8">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          <div className="md:col-span-2">
-            <p className="font-bold text-left mb-4 text-lg">What would you like to promote?</p>
-            <Form {...promotionForm}>
-              <form onSubmit={promotionForm.handleSubmit(onPromotionSubmit)} className="space-y-6">
-                <FormField
-                  control={promotionForm.control}
-                  name="topic"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormControl>
-                        <Input
-                          placeholder="e.g., 'The Great Gatsby', 'Minecraft', 'Stranger Things'"
-                          {...field}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <div className="flex items-center justify-start space-x-2 pt-2">
-                  <Switch
-                    id="image-generation-switch"
-                    checked={shouldGenerateImage}
-                    onCheckedChange={setShouldGenerateImage}
-                    disabled={isLoading || isGeneratingTopicImage}
-                  />
-                  <Label htmlFor="image-generation-switch" className="text-muted-foreground">Generate AI Image with topic</Label>
-                </div>
-                {shouldGenerateImage && (
-                  <div className="flex justify-start items-center gap-4">
-                    <Label htmlFor="aspectRatio" className="text-muted-foreground">Aspect Ratio</Label>
-                    <Select
-                      defaultValue={topicImageAspectRatio}
-                      onValueChange={setTopicImageAspectRatio}
-                      disabled={isLoading || isGeneratingTopicImage}
-                    >
-                      <SelectTrigger id="aspectRatio" className="w-[120px]">
-                        <SelectValue placeholder="Ratio" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="1:1">Square</SelectItem>
-                        <SelectItem value="16:9">Wide</SelectItem>
-                        <SelectItem value="9:16">Tall</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div className="md:col-span-2 bg-card rounded-2xl shadow-lg p-8">
+          <p className="font-bold text-left mb-4 text-lg">What would you like to promote?</p>
+          <Form {...promotionForm}>
+            <form onSubmit={promotionForm.handleSubmit(onPromotionSubmit)} className="space-y-6">
+              <FormField
+                control={promotionForm.control}
+                name="topic"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormControl>
+                      <Input
+                        placeholder="e.g., 'The Great Gatsby', 'Minecraft', 'Stranger Things'"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
                 )}
-                <div className="flex flex-col sm:flex-row gap-2">
-                  <Button type="submit" disabled={isLoading || isGeneratingTopicImage} className="w-full" size="lg">
-                    {isLoading || isGeneratingTopicImage ? (
-                      <>
-                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                        Generating...
-                      </>
-                    ) : (
-                      <>
-                        <Lightbulb className="mr-2 h-4 w-4" />
-                        Generate Promotion Ideas
-                      </>
-                    )}
-                  </Button>
+              />
+              <div className="flex items-center justify-start space-x-2 pt-2">
+                <Switch
+                  id="image-generation-switch"
+                  checked={shouldGenerateImage}
+                  onCheckedChange={setShouldGenerateImage}
+                  disabled={isLoading || isGeneratingTopicImage}
+                />
+                <Label htmlFor="image-generation-switch" className="text-muted-foreground">Generate AI Image with topic</Label>
+              </div>
+              {shouldGenerateImage && (
+                <div className="flex justify-start items-center gap-4">
+                  <Label htmlFor="aspectRatio" className="text-muted-foreground">Aspect Ratio</Label>
+                  <Select
+                    defaultValue={topicImageAspectRatio}
+                    onValueChange={setTopicImageAspectRatio}
+                    disabled={isLoading || isGeneratingTopicImage}
+                  >
+                    <SelectTrigger id="aspectRatio" className="w-[120px]">
+                      <SelectValue placeholder="Ratio" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="1:1">Square</SelectItem>
+                      <SelectItem value="16:9">Wide</SelectItem>
+                      <SelectItem value="9:16">Tall</SelectItem>
+                    </SelectContent>
+                  </Select>
                 </div>
-              </form>
-            </Form>
-          </div>
-          <div className="space-y-6">
-              <InfoCard 
-                title="Quick Tips"
-                description="Be specific about your content type and target audience for better results."
-                buttonText="View Examples"
-                onButtonClick={() => toast({ title: "Coming Soon!", description: "Example prompts will be available in a future update."})}
-              />
-              <InfoCard 
-                title="Export Options"
-                description="Save your campaigns as PDF, share via email, or integrate with your calendar."
-                buttonText="View Export Options"
-                onButtonClick={() => toast({ title: "Coming Soon!", description: "Export features will be available in a future update."})}
-              />
-          </div>
+              )}
+              <div className="flex flex-col sm:flex-row gap-2">
+                <Button type="submit" disabled={isLoading || isGeneratingTopicImage} className="w-full" size="lg">
+                  {isLoading || isGeneratingTopicImage ? (
+                    <>
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      Generating...
+                    </>
+                  ) : (
+                    <>
+                      <Lightbulb className="mr-2 h-4 w-4" />
+                      Generate Promotion Ideas
+                    </>
+                  )}
+                </Button>
+              </div>
+            </form>
+          </Form>
+        </div>
+        <div className="space-y-6">
+            <InfoCard 
+              title="Quick Tips"
+              description="Be specific about your content type and target audience for better results."
+              buttonText="View Examples"
+              onButtonClick={() => toast({ title: "Coming Soon!", description: "Example prompts will be available in a future update."})}
+            />
+            <InfoCard 
+              title="Export Options"
+              description="Save your campaigns as PDF, share via email, or integrate with your calendar."
+              buttonText="View Export Options"
+              onButtonClick={() => toast({ title: "Coming Soon!", description: "Export features will be available in a future update."})}
+            />
         </div>
       </div>
       
@@ -476,3 +474,5 @@ export function PromotionGenerator({ onImageGenerated, onIdeaSelect, onReset, ca
     </>
   );
 }
+
+    
