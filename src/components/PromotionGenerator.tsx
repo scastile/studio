@@ -280,7 +280,7 @@ export function PromotionGenerator({ onImageGenerated, onIdeaSelect, onReset, ca
                 </div>
               )}
               <div className="flex flex-col sm:flex-row gap-2">
-                <Button type="submit" disabled={isLoading || isGeneratingTopicImage} className="w-full" size="lg">
+                <Button type="submit" disabled={isLoading || isGeneratingTopicImage} className="w-full font-bold bg-gradient-to-r from-primary to-[#5C6BC0] hover:from-primary/90 hover:to-[#5C6BC0]/90" size="lg">
                   {isLoading || isGeneratingTopicImage ? (
                     <>
                       <Loader2 className="mr-2 h-4 w-4 animate-spin" />
