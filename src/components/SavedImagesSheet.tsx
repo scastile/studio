@@ -36,11 +36,12 @@ interface SavedImagesSheetProps {
   savedImages: SavedImage[];
   onImageLoad: (image: SavedImage) => void;
   onImageClick: (image: SavedImage) => void;
+  isSheetOpen: boolean;
+  setIsSheetOpen: (isOpen: boolean) => void;
 }
 
-export function SavedImagesSheet({ savedImages, onImageLoad, onImageClick }: SavedImagesSheetProps) {
+export function SavedImagesSheet({ savedImages, onImageLoad, onImageClick, isSheetOpen, setIsSheetOpen }: SavedImagesSheetProps) {
   const { toast } = useToast();
-  const [isSheetOpen, setIsSheetOpen] = useState(false);
   const [imageToDelete, setImageToDelete] = useState<SavedImage | null>(null);
 
 
@@ -73,10 +74,8 @@ export function SavedImagesSheet({ savedImages, onImageLoad, onImageClick }: Sav
     <>
       <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
         <SheetTrigger asChild>
-          <Button variant="outline">
-            <ImageIcon className="mr-2 h-4 w-4" />
-            Saved Images ({savedImages.length})
-          </Button>
+          {/* This button is now visually represented by the InfoCard, but the trigger is still needed */}
+          <button className="sr-only">Open Saved Images</button>
         </SheetTrigger>
         <SheetContent className="sm:max-w-md w-full">
           <SheetHeader>

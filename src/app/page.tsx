@@ -216,10 +216,12 @@ export default function Home() {
               onReset={handleResetSearch}
               campaignToLoad={loadedCampaign}
             />
+
             <div className="space-y-8">
                 <SavedCampaignsList onCampaignLoad={handleCampaignLoad} />
                 <PinnedIdeasList pinnedIdeas={pinnedIdeas} onIdeaSelect={handleIdeaSelect} />
             </div>
+            
             <ImageGenerator 
               onAddImage={addImageToList}
               onUpdateImage={updateImageInList}
@@ -306,7 +308,3 @@ export default function Home() {
     </main>
   );
 }
-
-    
-
-    

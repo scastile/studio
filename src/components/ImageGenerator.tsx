@@ -18,6 +18,7 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { SavedImagesSheet } from './SavedImagesSheet';
 import type { SavedImage } from '@/lib/types';
+import { InfoCard } from './InfoCard';
 
 const imageFormSchema = z.object({
   prompt: z.string().min(3, {
@@ -37,6 +38,7 @@ interface ImageGeneratorProps {
 
 export function ImageGenerator({ onAddImage, onUpdateImage, onRemoveImage, savedImages, onLoadSavedImage, onImageClick }: ImageGeneratorProps) {
   const [isGeneratingNewImage, setIsGeneratingNewImage] = useState(false);
+  const [isSheetOpen, setIsSheetOpen] = useState(false);
   const { toast } = useToast();
 
   const imageForm = useForm<z.infer<typeof imageFormSchema>>({
@@ -74,79 +76,99 @@ export function ImageGenerator({ onAddImage, onUpdateImage, onRemoveImage, saved
   }
 
   return (
-    <section id="image-generator" className="py-12 sm:py-16">
-      <div className="max-w-xl mx-auto space-y-8">
+    <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+      <div className="md:col-span-2">
         <Card>
-          <CardContent className="p-6">
-             <div className="text-center mb-6">
-              <h2 className="font-headline text-2xl sm:text-3xl font-bold text-gray-800 dark:text-gray-100 flex items-center justify-center gap-3">
-                <Camera className="w-7 h-7 text-primary" />
-                Image Generation
-              </h2>
-              <p className="mt-2 text-md text-muted-foreground">
-                Generate and manage unique AI images for your promotional campaigns.
-              </p>
-            </div>
+            <CardContent className="p-6">
+              <div className="text-center mb-6">
+                <h2 className="font-headline text-2xl sm:text-3xl font-bold text-gray-800 dark:text-gray-100 flex items-center justify-center gap-3">
+                  <Camera className="w-7 h-7 text-primary" />
+                  Image Generation
+                </h2>
+                <p className="mt-2 text-md text-muted-foreground">
+                  Generate unique AI images for your promotional campaigns.
+                </p>
+              </div>
 
-            <Form {...imageForm}>
-              <form onSubmit={imageForm.handleSubmit(onImageSubmit)} className="space-y-4">
-                <FormField
-                  control={imageForm.control}
-                  name="prompt"
-                   render={({ field }) => (
-                      <FormItem>
-                        <FormControl>
-                          <Input 
-                            placeholder="Enter a prompt for a new image..." 
-                            {...field}
-                            disabled={isGeneratingNewImage}
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                />
-                <div className="flex items-center gap-4">
-                    <Label htmlFor="aspectRatioGallery" className="text-muted-foreground">Aspect Ratio</Label>
-                    <FormField
-                        control={imageForm.control}
-                        name="aspectRatio"
-                        render={({ field }) => (
-                          <Select
-                            onValueChange={field.onChange}
-                            defaultValue={field.value}
-                            disabled={isGeneratingNewImage}
-                          >
-                            <FormControl>
-                              <SelectTrigger id="aspectRatioGallery" className="w-[120px]">
-                                <SelectValue placeholder="Ratio" />
-                              </SelectTrigger>
-                            </FormControl>
-                            <SelectContent>
-                              <SelectItem value="1:1">Square</SelectItem>
-                              <SelectItem value="16:9">Wide</SelectItem>
-                              <SelectItem value="9:16">Tall</SelectItem>
-                            </SelectContent>
-                          </Select>
-                       )}
-                    />
-                </div>
-                 <Button type="submit" disabled={isGeneratingNewImage} className="w-full">
-                  {isGeneratingNewImage ? (
-                    <>
-                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                      Generating...
-                    </>
-                  ) : 'Generate New Image'}
-                 </Button>
-              </form>
-            </Form>
-            <div className="flex justify-center mt-4">
-              <SavedImagesSheet savedImages={savedImages} onImageLoad={onLoadSavedImage} onImageClick={onImageClick} />
-            </div>
-          </CardContent>
-        </Card>
+              <Form {...imageForm}>
+                <form onSubmit={imageForm.handleSubmit(onImageSubmit)} className="space-y-4">
+                  <FormField
+                    control={imageForm.control}
+                    name="prompt"
+                    render={({ field }) => (
+                        <FormItem>
+                          <FormControl>
+                            <Input 
+                              placeholder="Enter a prompt for a new image..." 
+                              {...field}
+                              disabled={isGeneratingNewImage}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                  />
+                  <div className="flex items-center gap-4">
+                      <Label htmlFor="aspectRatioGallery" className="text-muted-foreground">Aspect Ratio</Label>
+                      <FormField
+                          control={imageForm.control}
+                          name="aspectRatio"
+                          render={({ field }) => (
+                            <Select
+                              onValueChange={field.onChange}
+                              defaultValue={field.value}
+                              disabled={isGeneratingNewImage}
+                            >
+                              <FormControl>
+                                <SelectTrigger id="aspectRatioGallery" className="w-[120px]">
+                                  <SelectValue placeholder="Ratio" />
+                                </SelectTrigger>
+                              </FormControl>
+                              <SelectContent>
+                                <SelectItem value="1:1">Square</SelectItem>
+                                <SelectItem value="16:9">Wide</SelectItem>
+                                <SelectItem value="9:16">Tall</SelectItem>
+                              </SelectContent>
+                            </Select>
+                        )}
+                      />
+                  </div>
+                  <Button type="submit" disabled={isGeneratingNewImage} className="w-full font-bold bg-gradient-to-r from-primary to-[#5C6BC0] hover:from-primary/90 hover:to-[#5C6BC0]/90" size="lg">
+                    {isGeneratingNewImage ? (
+                      <>
+                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                        Generating...
+                      </>
+                    ) : 'Generate New Image'}
+                  </Button>
+                </form>
+              </Form>
+            </CardContent>
+          </Card>
+        </div>
+      <div className="space-y-6">
+        <InfoCard 
+          title="Image Tips"
+          description="For best results, use descriptive prompts. Mention style, colors, and composition."
+          buttonText="Learn More"
+          onButtonClick={() => toast({ title: "Coming Soon!", description: "Advanced image prompting guides will be available in a future update."})}
+        />
+        <div className="relative">
+          <InfoCard 
+            title="Your Collection"
+            description="Manage all your saved images. You can view, load into the gallery, or delete them."
+            buttonText="Open Collection"
+            onButtonClick={() => setIsSheetOpen(true)}
+          />
+          <SavedImagesSheet 
+            savedImages={savedImages} 
+            onImageLoad={onLoadSavedImage} 
+            onImageClick={onImageClick}
+            isSheetOpen={isSheetOpen}
+            setIsSheetOpen={setIsSheetOpen}
+          />
+        </div>
       </div>
-    </section>
+    </div>
   );
 }
