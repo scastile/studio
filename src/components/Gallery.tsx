@@ -1,7 +1,7 @@
 
 import Image from 'next/image';
 import { Card, CardContent, CardFooter } from '@/components/ui/card';
-import { Loader2, Save, Trash2 } from 'lucide-react';
+import { Loader2, Save, Trash2, Copy, Download } from 'lucide-react';
 import { Skeleton } from './ui/skeleton';
 import { Button } from './ui/button';
 import type { SavedImage } from '@/lib/types';
@@ -23,9 +23,11 @@ interface GalleryProps {
   onSaveImage: (image: GeneratedImage) => void;
   onRemoveImage: (id: string) => void;
   onImageClick: (image: GeneratedImage) => void;
+  onCopyImage: (image: GeneratedImage) => void;
+  onDownloadImage: (image: GeneratedImage) => void;
 }
 
-export function Gallery({ images, onSaveImage, onRemoveImage, onImageClick }: GalleryProps) {
+export function Gallery({ images, onSaveImage, onRemoveImage, onImageClick, onCopyImage, onDownloadImage }: GalleryProps) {
 
   if (images.length === 0) {
     return null;
@@ -58,6 +60,33 @@ export function Gallery({ images, onSaveImage, onRemoveImage, onImageClick }: Ga
                     {image.prompt}
                   </p>
                   <div className="flex items-center gap-1">
+                     <TooltipProvider>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                           <Button variant="outline" size="icon" onClick={() => onCopyImage(image)} disabled={!image.url}>
+                              <Copy className="h-4 w-4" />
+                              <span className="sr-only">Copy Image</span>
+                            </Button>
+                        </TooltipTrigger>
+                        <TooltipContent>
+                          <p>Copy Image</p>
+                        </TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
+
+                     <TooltipProvider>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                           <Button variant="outline" size="icon" onClick={() => onDownloadImage(image)} disabled={!image.url}>
+                              <Download className="h-4 w-4" />
+                              <span className="sr-only">Download Image</span>
+                            </Button>
+                        </TooltipTrigger>
+                        <TooltipContent>
+                          <p>Download Image</p>
+                        </TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
                      <TooltipProvider>
                       <Tooltip>
                         <TooltipTrigger asChild>
