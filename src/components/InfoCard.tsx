@@ -12,7 +12,7 @@ interface InfoCardProps {
 
 export function InfoCard({ title, description, buttonText, onButtonClick }: InfoCardProps) {
     return (
-        <Card className="bg-card">
+        <Card className="bg-card h-full">
             <CardContent className="p-6 flex flex-col h-full">
                 <div className="flex items-center gap-2 mb-2">
                     <div className="w-2 h-2 rounded-full bg-primary" />
