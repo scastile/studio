@@ -234,7 +234,7 @@ export function PromotionGenerator({ onImageGenerated, onIdeaSelect, onReset, ca
        <div className="grid grid-cols-1 md:grid-cols-[1fr_300px] gap-[30px]">
           <div className="flex flex-col">
             <div className="bg-card rounded-2xl shadow-lg p-8 flex-grow flex flex-col h-full">
-              <p className="font-bold text-left mb-4 text-lg">What would you like to promote?</p>
+              <p className="font-semibold text-left mb-4 text-lg">What would you like to promote?</p>
               <Form {...promotionForm}>
                 <form onSubmit={promotionForm.handleSubmit(onPromotionSubmit)} className="space-y-6 flex-grow flex flex-col">
                   <div className="flex-grow">
