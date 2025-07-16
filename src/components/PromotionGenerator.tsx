@@ -6,7 +6,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { ref, push } from "firebase/database";
-import { Lightbulb, Loader2, CalendarDays, Info, Film, Book, Tv, Gamepad2, Save, RotateCcw, Archive, FileText, Share, AlertCircle } from 'lucide-react';
+import { Lightbulb, Loader2, CalendarDays, Info, Film, Book, Tv, Gamepad2, Save, RotateCcw, Archive, FileText, Share, AlertCircle, Image as ImageIcon } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
 
 import { generatePromotionIdeas } from '@/ai/flows/generate-promotion-ideas';
@@ -251,15 +251,21 @@ export function PromotionGenerator({ onImageGenerated, onIdeaSelect, onReset, ca
                   </FormItem>
                 )}
               />
-              <div className="flex items-center justify-start space-x-2 pt-2">
+              <div className="flex items-center justify-between h-12 w-full rounded-md border border-input bg-background px-3 py-2 text-sm">
+                <div className="flex items-center gap-2">
+                  <ImageIcon className="h-5 w-5 text-muted-foreground" />
+                  <Label htmlFor="image-generation-switch" className="text-foreground">
+                    Generate AI Image with topic
+                  </Label>
+                </div>
                 <Switch
                   id="image-generation-switch"
                   checked={shouldGenerateImage}
                   onCheckedChange={setShouldGenerateImage}
                   disabled={isLoading || isGeneratingTopicImage}
                 />
-                <Label htmlFor="image-generation-switch" className="text-muted-foreground">Generate AI Image with topic</Label>
               </div>
+
               {shouldGenerateImage && (
                 <div className="flex justify-start items-center gap-4">
                   <Label htmlFor="aspectRatio" className="text-muted-foreground">Aspect Ratio</Label>
@@ -474,5 +480,7 @@ export function PromotionGenerator({ onImageGenerated, onIdeaSelect, onReset, ca
     </>
   );
 }
+
+    
 
     
