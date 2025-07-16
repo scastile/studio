@@ -1,3 +1,4 @@
+
 'use client';
 import { Button } from "./ui/button";
 import { Card, CardContent } from "./ui/card";
@@ -12,16 +13,6 @@ interface InfoCardProps {
 }
 
 export function InfoCard({ title, description, buttonText, onButtonClick, href }: InfoCardProps) {
-    const buttonElement = (
-        <Button 
-            variant="default" 
-            className="w-full mt-auto bg-transparent border-2 border-primary text-primary hover:bg-primary hover:text-primary-foreground" 
-            onClick={onButtonClick}
-        >
-            {buttonText}
-        </Button>
-    );
-
     return (
         <Card className="flex-grow">
             <CardContent className="p-6 flex flex-col h-full">
@@ -34,11 +25,22 @@ export function InfoCard({ title, description, buttonText, onButtonClick, href }
                 </p>
                 <div className="w-full mt-auto">
                     {href ? (
-                        <Link href={href} asChild>
-                            {buttonElement}
+                        <Link href={href} passHref>
+                          <Button 
+                              variant="default" 
+                              className="w-full mt-auto bg-transparent border-2 border-primary text-primary hover:bg-primary hover:text-primary-foreground" 
+                          >
+                              {buttonText}
+                          </Button>
                         </Link>
                     ) : (
-                        buttonElement
+                        <Button 
+                            variant="default" 
+                            className="w-full mt-auto bg-transparent border-2 border-primary text-primary hover:bg-primary hover:text-primary-foreground" 
+                            onClick={onButtonClick}
+                        >
+                            {buttonText}
+                        </Button>
                     )}
                 </div>
             </CardContent>
