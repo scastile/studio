@@ -84,8 +84,9 @@ export default function ImageTipsPage() {
                              <p><strong className="text-foreground">Artist Inspiration:</strong> Reference the style of famous artists, e.g., <span className="text-muted-foreground">in the style of Van Gogh.</span></p>
                         </CardContent>
                     </Card>
-
-                     <Card>
+                </div>
+                 <div className="space-y-8">
+                    <Card>
                         <CardHeader>
                             <CardTitle className="font-sans text-2xl flex items-center gap-3">
                                 <Camera className="w-7 h-7 text-primary" />
@@ -98,8 +99,6 @@ export default function ImageTipsPage() {
                             <p><strong className="text-foreground">Angle:</strong> <span className="text-muted-foreground">low-angle view, bird&apos;s-eye view, eye-level shot, Dutch angle.</span></p>
                         </CardContent>
                     </Card>
-                </div>
-                 <div>
                     <Card>
                          <CardHeader>
                             <CardTitle className="font-sans text-2xl flex items-center gap-3">
