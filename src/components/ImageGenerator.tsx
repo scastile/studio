@@ -49,12 +49,22 @@ export function ImageGenerator({ onAddImage, onUpdateImage, onRemoveImage, onIma
     setIsGeneratingNewImage(true);
     const newImageId = uuidv4();
     onAddImage({ id: newImageId, url: null, prompt: values.prompt });
-    imageForm.reset({ prompt: '', aspectRatio: '1:1' });
+    
 
     try {
-      const result = await generateImage({ prompt: values.prompt, aspectRatio: values.aspectRatio });
+      let promptWithRatio = values.prompt;
+      if (values.aspectRatio === '1:1') {
+        promptWithRatio += ' --square aspect ratio 1:1';
+      } else if (values.aspectRatio === '16:9') {
+        promptWithRatio += ' --wide-aspect ratio 16:9';
+      } else if (values.aspectRatio === '9:16') {
+        promptWithRatio += ' --portrait-aspect-ratio-tall';
+      }
+      
+      const result = await generateImage({ prompt: promptWithRatio });
       if (result && result.imageDataUri) {
         onUpdateImage(newImageId, result.imageDataUri);
+        imageForm.reset({ prompt: '', aspectRatio: '1:1' });
       } else {
         throw new Error('Image generation failed to return a valid image.');
       }

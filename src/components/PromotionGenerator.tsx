@@ -112,8 +112,17 @@ export function PromotionGenerator({ onImageGenerated, onIdeaSelect, onReset, ca
     try {
       const ideasPromise = generatePromotionIdeas({ topic: values.topic });
 
+      let promptWithRatio = imagePrompt;
+      if (topicImageAspectRatio === '1:1') {
+        promptWithRatio += ' --square aspect ratio 1:1';
+      } else if (topicImageAspectRatio === '16:9') {
+        promptWithRatio += ' --wide-aspect ratio 16:9';
+      } else if (topicImageAspectRatio === '9:16') {
+        promptWithRatio += ' --portrait-aspect-ratio-tall';
+      }
+
       const imagePromise = shouldGenerateImage 
-        ? generateImage({ prompt: imagePrompt, aspectRatio: topicImageAspectRatio })
+        ? generateImage({ prompt: promptWithRatio })
         : Promise.resolve(null);
       
       const ideasResult = await ideasPromise;
