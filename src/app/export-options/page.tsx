@@ -19,7 +19,7 @@ export default function ExportOptionsPage() {
             <Card>
                 <CardHeader>
                     <CardTitle className="text-3xl sm:text-4xl font-sans font-bold text-gray-800 dark:text-gray-100 flex items-center gap-4">
-                        <span>Export & Share Your Campaigns</span> <Rocket className="w-8 h-8 text-primary" />
+                        <span className="title-gradient">Export & Share Your Campaigns</span> <Rocket className="w-8 h-8 text-primary" />
                     </CardTitle>
                 </CardHeader>
                 <CardContent>
