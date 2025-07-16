@@ -3,7 +3,7 @@
 
 import { Header } from '@/components/Header';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from '@/components/ui/card';
-import { FileDown, Mail, Copy, CalendarPlus, Share2 } from 'lucide-react';
+import { FileDown, Mail, Copy, Rocket } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
 
@@ -19,7 +19,7 @@ export default function ExportOptionsPage() {
             <Card>
                 <CardHeader>
                     <CardTitle className="text-3xl sm:text-4xl font-sans font-bold text-gray-800 dark:text-gray-100 flex items-center gap-4">
-                        Export & Share Your Campaigns 🚀
+                        <span>Export & Share Your Campaigns</span> <Rocket className="w-8 h-8 text-primary" />
                     </CardTitle>
                 </CardHeader>
                 <CardContent>
