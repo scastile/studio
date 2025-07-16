@@ -218,7 +218,6 @@ export default function Home() {
             />
             <SavedCampaignsList onCampaignLoad={handleCampaignLoad} />
             <PinnedIdeasList pinnedIdeas={pinnedIdeas} onIdeaSelect={handleIdeaSelect} />
-        
             <ImageGenerator 
               onAddImage={addImageToList}
               onUpdateImage={updateImageInList}
