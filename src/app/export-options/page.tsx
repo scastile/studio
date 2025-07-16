@@ -14,12 +14,12 @@ export default function ExportOptionsPage() {
     <main className="min-h-screen">
       <Header isSimple={true} />
 
-      <div className="container mx-auto px-5 -mt-16">
+      <div className="container mx-auto px-5">
         <div className="max-w-[1200px] mx-auto space-y-8">
             <Card>
                 <CardHeader>
                     <CardTitle className="text-3xl sm:text-4xl font-sans font-bold text-gray-800 dark:text-gray-100 flex items-center gap-4">
-                        <span className="title-gradient">Export & Share Your Campaigns 🚀</span>
+                        <span>Export & Share Your Campaigns 🚀</span>
                     </CardTitle>
                 </CardHeader>
                 <CardContent>

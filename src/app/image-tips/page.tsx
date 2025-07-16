@@ -10,12 +10,12 @@ export default function ImageTipsPage() {
     <main className="min-h-screen">
       <Header isSimple={true} />
 
-      <div className="container mx-auto px-5 -mt-16">
+      <div className="container mx-auto px-5">
         <div className="max-w-[1200px] mx-auto space-y-8">
             <Card>
                 <CardHeader>
                     <CardTitle className="text-3xl sm:text-4xl font-sans font-bold text-gray-800 dark:text-gray-100 flex items-center gap-4">
-                        <span className="title-gradient">Gemini Flash 2.0: A Quick Guide to Image Prompting 🖼️</span>
+                        <span>Gemini Flash 2.0: A Quick Guide to Image Prompting 🖼️</span>
                     </CardTitle>
                 </CardHeader>
                 <CardContent>
@@ -97,7 +97,7 @@ export default function ImageTipsPage() {
                              <p className="text-muted-foreground">Direct the &quot;camera&quot; to get the exact framing you want.</p>
                             <p><strong className="text-foreground">Shot Type:</strong> <span className="text-muted-foreground">close-up shot, medium shot, full-body shot, extreme wide shot.</span></p>
                             <p><strong className="text-foreground">Angle:</strong> <span className="text-muted-foreground">low-angle view, bird&apos;s-eye view, eye-level shot, Dutch angle.</span></p>
-                        </CardContent>
+                        </Content>
                     </Card>
                     <Card>
                          <CardHeader>
