@@ -237,7 +237,7 @@ export default function Home() {
         onRemoveImage={removeImageFromList}
         onImageClick={setLightboxImage}
       />
-      <footer className="text-center py-6 text-muted-foreground">
+      <footer className="text-center py-6 text-primary-foreground">
         <div className="container mx-auto">
           <p>&copy; {new Date().getFullYear()} LibraryLaunchpad. All rights reserved.</p>
         </div>
@@ -306,5 +306,7 @@ export default function Home() {
     </main>
   );
 }
+
+    
 
     
