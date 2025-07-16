@@ -33,7 +33,7 @@ export default function ImageTipsPage() {
                     </CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
-                    <p className="text-muted-foreground">For a solid start, structure your prompt around three key elements. You don&apos;t need to follow this order rigidly, but ensure these components are present for best results.</p>
+                    <p className="text-muted-foreground">For a solid start, structure your prompt around three key elements. You don't need to follow this order rigidly, but ensure these components are present for best results.</p>
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                         <div className="p-4 bg-background rounded-lg border">
                             <h3 className="font-semibold text-lg text-foreground">Subject</h3>
