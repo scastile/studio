@@ -13,7 +13,7 @@ interface InfoCardProps {
 }
 
 export function InfoCard({ title, description, buttonText, onButtonClick, href }: InfoCardProps) {
-    const buttonContent = (
+    const button = (
         <Button 
             variant="default" 
             className="w-full mt-auto bg-transparent border-2 border-primary text-primary hover:bg-primary hover:text-primary-foreground" 
@@ -34,11 +34,13 @@ export function InfoCard({ title, description, buttonText, onButtonClick, href }
                     {description}
                 </p>
                 {href ? (
-                    <Link href={href} passHref>
-                        {buttonContent}
+                    <Link href={href} passHref legacyBehavior>
+                      <a className="w-full mt-auto no-underline">
+                        {button}
+                      </a>
                     </Link>
                 ) : (
-                    buttonContent
+                    button
                 )}
             </CardContent>
         </Card>
