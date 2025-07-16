@@ -16,7 +16,7 @@ export function InfoCard({ title, description, buttonText, onButtonClick }: Info
             <CardContent className="p-6 flex flex-col h-full">
                 <div className="flex items-center gap-2 mb-2">
                     <div className="w-2 h-2 rounded-full bg-primary" />
-                    <h3 className="font-semibold text-foreground text-sm">{title}</h3>
+                    <h3 className="font-semibold text-foreground text-[19px]">{title}</h3>
                 </div>
                 <p className="text-sm text-muted-foreground mb-4 flex-grow">
                     {description}
