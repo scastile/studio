@@ -21,6 +21,7 @@ import { getIconForCategory } from '@/components/icons';
 import Image from 'next/image';
 import { SavedCampaignsList } from '@/components/SavedCampaignsList';
 import { SavedImagesList } from '@/components/SavedImagesList';
+import { InfoCard } from '@/components/InfoCard';
 
 
 export default function Home() {
@@ -243,31 +244,43 @@ export default function Home() {
     <main className="min-h-screen">
       <Header />
 
-      <div className="container mx-auto px-4 sm:px-0 -mt-16">
-        <div className="max-w-4xl mx-auto space-y-8">
+      <div className="container mx-auto px-5 -mt-16">
+        <div className="max-w-[1200px] mx-auto grid grid-cols-1 md:grid-cols-[1fr_300px] gap-[30px]">
+          <div className="space-y-8">
             <PromotionGenerator 
               onImageGenerated={handleInitialImageGenerated} 
               onIdeaSelect={handleIdeaSelect}
               onReset={handleResetSearch}
               campaignToLoad={loadedCampaign}
             />
-
-            <div className="space-y-8">
-                <SavedCampaignsList onCampaignLoad={handleCampaignLoad} />
-                <PinnedIdeasList pinnedIdeas={pinnedIdeas} onIdeaSelect={handleIdeaSelect} />
-                <SavedImagesList 
-                    savedImages={savedImages}
-                    onImageLoad={(image) => addImageToList({ id: uuidv4(), url: image.url, prompt: image.prompt })}
-                    onImageClick={setLightboxImage}
-                />
-            </div>
-            
+            <SavedCampaignsList onCampaignLoad={handleCampaignLoad} />
+            <PinnedIdeasList pinnedIdeas={pinnedIdeas} onIdeaSelect={handleIdeaSelect} />
+            <SavedImagesList 
+                savedImages={savedImages}
+                onImageLoad={(image) => addImageToList({ id: uuidv4(), url: image.url, prompt: image.prompt })}
+                onImageClick={setLightboxImage}
+            />
             <ImageGenerator 
               onAddImage={addImageToList}
               onUpdateImage={updateImageInList}
               onRemoveImage={removeImageFromList}
               onImageClick={setLightboxImage}
             />
+          </div>
+          <div className="space-y-6">
+            <InfoCard 
+              title="Quick Tips"
+              description="Be specific about your content type and target audience for better results."
+              buttonText="View Examples"
+              onButtonClick={() => toast({ title: "Coming Soon!", description: "Example prompts will be available in a future update."})}
+            />
+            <InfoCard 
+              title="Export Options"
+              description="Save your campaigns as PDF, share via email, or integrate with your calendar."
+              buttonText="View Export Options"
+              onButtonClick={() => toast({ title: "Coming Soon!", description: "Export features will be available in a future update."})}
+            />
+          </div>
         </div>
       </div>
       
