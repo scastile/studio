@@ -1,29 +1,27 @@
 
 'use client';
-import type { LucideIcon } from "lucide-react";
 import { Button } from "./ui/button";
 import { Card, CardContent } from "./ui/card";
 
 interface InfoCardProps {
-    Icon: LucideIcon;
     title: string;
     description: string;
     buttonText: string;
     onButtonClick: () => void;
 }
 
-export function InfoCard({ Icon, title, description, buttonText, onButtonClick }: InfoCardProps) {
+export function InfoCard({ title, description, buttonText, onButtonClick }: InfoCardProps) {
     return (
         <Card className="bg-muted/50">
-            <CardContent className="p-6">
-                <div className="flex items-center gap-3 mb-2">
-                    <Icon className="w-5 h-5 text-primary" />
-                    <h3 className="font-semibold text-foreground">{title}</h3>
+            <CardContent className="p-6 flex flex-col h-full">
+                <div className="flex items-center gap-2 mb-2">
+                    <div className="w-2 h-2 rounded-full bg-primary" />
+                    <h3 className="font-semibold text-foreground text-sm">{title}</h3>
                 </div>
-                <p className="text-sm text-muted-foreground mb-4">
+                <p className="text-sm text-muted-foreground mb-4 flex-grow">
                     {description}
                 </p>
-                <Button variant="outline" size="sm" className="w-full" onClick={onButtonClick}>
+                <Button variant="outline" size="sm" className="w-full mt-auto" onClick={onButtonClick}>
                     {buttonText}
                 </Button>
             </CardContent>

@@ -300,14 +300,12 @@ export function PromotionGenerator({ onImageGenerated, onIdeaSelect, onReset, ca
           </div>
           <div className="space-y-6">
               <InfoCard 
-                Icon={AlertCircle}
                 title="Quick Tips"
                 description="Be specific about your content type and target audience for better results."
                 buttonText="View Examples"
                 onButtonClick={() => toast({ title: "Coming Soon!", description: "Example prompts will be available in a future update."})}
               />
               <InfoCard 
-                Icon={FileText}
                 title="Export Options"
                 description="Save your campaigns as PDF, share via email, or integrate with your calendar."
                 buttonText="View Export Options"
