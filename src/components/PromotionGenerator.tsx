@@ -233,7 +233,7 @@ export function PromotionGenerator({ onImageGenerated, onIdeaSelect, onReset, ca
     <>
        <div className="grid grid-cols-1 md:grid-cols-[1fr_300px] gap-[30px]">
           <div className="flex flex-col">
-            <div className="bg-card rounded-2xl shadow-lg p-8 flex-grow flex flex-col">
+            <div className="bg-card rounded-2xl shadow-lg p-8 flex-grow flex flex-col h-full">
               <p className="font-bold text-left mb-4 text-lg">What would you like to promote?</p>
               <Form {...promotionForm}>
                 <form onSubmit={promotionForm.handleSubmit(onPromotionSubmit)} className="space-y-6 flex-grow flex flex-col">
@@ -289,7 +289,7 @@ export function PromotionGenerator({ onImageGenerated, onIdeaSelect, onReset, ca
                     )}
                   </div>
                   <div className="flex flex-col sm:flex-row gap-2">
-                    <Button type="submit" disabled={isLoading || isGeneratingTopicImage} className="w-full font-bold bg-gradient-to-r from-primary to-[#5C6BC0] hover:from-primary/90 hover:to-[#5C6BC0]/90" size="lg">
+                    <Button type="submit" disabled={isLoading || isGeneratingTopicImage} className="w-full font-bold bg-gradient-to-r from-[#4f46e5] to-[#7c3aed] text-white py-6 px-7 rounded-xl text-lg shadow-[0_4px_15px_rgba(79,70,229,0.3)] hover:shadow-[0_6px_20px_rgba(79,70,229,0.4)] hover:-translate-y-0.5 transition-all duration-300 active:translate-y-0" size="lg">
                       {isLoading || isGeneratingTopicImage ? (
                         <>
                           <Loader2 className="mr-2 h-4 w-4 animate-spin" />

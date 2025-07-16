@@ -77,7 +77,7 @@ export function ImageGenerator({ onAddImage, onUpdateImage, onRemoveImage, onIma
         <Card>
             <CardContent className="p-6">
               <div className="mb-6">
-                <h2 className="font-sans text-2xl sm:text-3xl font-bold text-gray-800 dark:text-gray-100 flex items-center gap-3">
+                <h2 className="font-sans text-2xl sm:text-3xl font-bold text-gray-800 dark:text-gray-100 flex items-center gap-3 justify-start">
                   <Camera className="w-7 h-7 text-primary" />
                   Image Generation
                 </h2>
@@ -129,7 +129,7 @@ export function ImageGenerator({ onAddImage, onUpdateImage, onRemoveImage, onIma
                         )}
                       />
                   </div>
-                  <Button type="submit" disabled={isGeneratingNewImage} className="w-full font-bold bg-gradient-to-r from-primary to-[#5C6BC0] hover:from-primary/90 hover:to-[#5C6BC0]/90" size="lg">
+                  <Button type="submit" disabled={isGeneratingNewImage} className="w-full font-bold bg-gradient-to-r from-[#4f46e5] to-[#7c3aed] text-white py-6 px-7 rounded-xl text-lg shadow-[0_4px_15px_rgba(79,70,229,0.3)] hover:shadow-[0_6px_20px_rgba(79,70,229,0.4)] hover:-translate-y-0.5 transition-all duration-300 active:translate-y-0" size="lg">
                     {isGeneratingNewImage ? (
                       <>
                         <Loader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -150,7 +150,7 @@ export function ImageGenerator({ onAddImage, onUpdateImage, onRemoveImage, onIma
       <div className="flex flex-col">
         <InfoCard 
           title="Image Tips"
-          description="For strong results, use descriptive prompts. Mention style, colors, and composition. Include style cues (e.g., photorealistic, anime), guide composition, analogies or references for clarity."
+          description="For strong results, use descriptive prompts. Mention style, colors, and composition. Use clear, detailed prompts with style cues (e.g., photorealistic, anime), control composition, specify colors, avoid clutter, and refine with edits. Add analogies or references for better results."
           buttonText="Learn More"
           onButtonClick={() => toast({ title: "Coming Soon!", description: "Advanced image prompting guides will be available in a future update."})}
         />
