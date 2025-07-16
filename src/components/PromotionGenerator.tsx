@@ -364,7 +364,7 @@ export function PromotionGenerator({ onImageGenerated, onIdeaSelect, onReset, ca
       {!campaignToLoad && showResults && (
          <Card>
           <CardHeader>
-            <CardTitle className="flex items-center gap-3 text-lg font-headline">
+            <CardTitle className="flex items-center gap-3 text-lg font-sans">
               <Search className="w-6 h-6 text-primary" />
               <span>Current Search</span>
             </CardTitle>
