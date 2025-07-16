@@ -335,7 +335,7 @@ export function PromotionGenerator({ onImageGenerated, onIdeaSelect, onReset, ca
               title="Export Options"
               description="Save your campaigns as PDF, share via email, or integrate with your calendar."
               buttonText="View Export Options"
-              onButtonClick={() => toast({ title: "Coming Soon!", description: "Export features will be available in a future update."})}
+              href="/export-options"
             />
           </div>
         </div>
