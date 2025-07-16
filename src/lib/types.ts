@@ -1,4 +1,5 @@
 
+
 export type Idea = {
   topic: string;
   category: string;
@@ -35,4 +36,10 @@ export type SavedImage = {
   prompt: string;
   url: string;
   createdAt: string;
+}
+
+export type GeneratedImage = {
+  id: string;
+  url: string | null; // null while loading
+  prompt: string;
 }

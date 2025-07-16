@@ -16,8 +16,7 @@ import { useToast } from '@/hooks/use-toast';
 import { Card, CardContent } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { SavedImagesSheet } from './SavedImagesSheet';
-import type { SavedImage } from '@/lib/types';
+import type { SavedImage, GeneratedImage } from '@/lib/types';
 import { InfoCard } from './InfoCard';
 
 const imageFormSchema = z.object({
@@ -31,14 +30,11 @@ interface ImageGeneratorProps {
   onAddImage: (image: { id: string, url: string | null, prompt: string }) => void;
   onUpdateImage: (id: string, url: string) => void;
   onRemoveImage: (id: string) => void;
-  savedImages: SavedImage[];
-  onLoadSavedImage: (image: SavedImage) => void;
-  onImageClick: (image: SavedImage) => void;
+  onImageClick: (image: GeneratedImage | SavedImage) => void;
 }
 
-export function ImageGenerator({ onAddImage, onUpdateImage, onRemoveImage, savedImages, onLoadSavedImage, onImageClick }: ImageGeneratorProps) {
+export function ImageGenerator({ onAddImage, onUpdateImage, onRemoveImage, onImageClick }: ImageGeneratorProps) {
   const [isGeneratingNewImage, setIsGeneratingNewImage] = useState(false);
-  const [isSheetOpen, setIsSheetOpen] = useState(false);
   const { toast } = useToast();
 
   const imageForm = useForm<z.infer<typeof imageFormSchema>>({
@@ -158,21 +154,6 @@ export function ImageGenerator({ onAddImage, onUpdateImage, onRemoveImage, saved
           buttonText="Learn More"
           onButtonClick={() => toast({ title: "Coming Soon!", description: "Advanced image prompting guides will be available in a future update."})}
         />
-        <div className="relative">
-          <InfoCard 
-            title="Your Collection"
-            description="Manage all your saved images. You can view, load into the gallery, or delete them."
-            buttonText="Open Collection"
-            onButtonClick={() => setIsSheetOpen(true)}
-          />
-          <SavedImagesSheet 
-            savedImages={savedImages} 
-            onImageLoad={onLoadSavedImage} 
-            onImageClick={onImageClick}
-            isSheetOpen={isSheetOpen}
-            setIsSheetOpen={setIsSheetOpen}
-          />
-        </div>
       </div>
     </div>
   );

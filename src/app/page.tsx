@@ -20,6 +20,7 @@ import { Loader2, Copy, Info } from 'lucide-react';
 import { getIconForCategory } from '@/components/icons';
 import Image from 'next/image';
 import { SavedCampaignsList } from '@/components/SavedCampaignsList';
+import { SavedImagesList } from '@/components/SavedImagesList';
 
 
 export default function Home() {
@@ -220,14 +221,17 @@ export default function Home() {
             <div className="space-y-8">
                 <SavedCampaignsList onCampaignLoad={handleCampaignLoad} />
                 <PinnedIdeasList pinnedIdeas={pinnedIdeas} onIdeaSelect={handleIdeaSelect} />
+                <SavedImagesList 
+                    savedImages={savedImages}
+                    onImageLoad={(image) => addImageToList({ id: uuidv4(), url: image.url, prompt: image.prompt })}
+                    onImageClick={setLightboxImage}
+                />
             </div>
             
             <ImageGenerator 
               onAddImage={addImageToList}
               onUpdateImage={updateImageInList}
               onRemoveImage={removeImageFromList}
-              savedImages={savedImages}
-              onLoadSavedImage={(image) => addImageToList({ id: uuidv4(), url: image.url, prompt: image.prompt})}
               onImageClick={setLightboxImage}
             />
         </div>
