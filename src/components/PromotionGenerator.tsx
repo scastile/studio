@@ -254,7 +254,7 @@ export function PromotionGenerator({ onImageGenerated, onIdeaSelect, onReset, ca
               <div className="flex items-center justify-between h-12 w-full rounded-md border border-input bg-background px-3 py-2 text-sm">
                 <div className="flex items-center gap-2">
                   <ImageIcon className="h-5 w-5 text-muted-foreground" />
-                  <Label htmlFor="image-generation-switch" className="text-foreground">
+                  <Label htmlFor="image-generation-switch" className="text-foreground font-bold">
                     Generate AI Image with topic
                   </Label>
                 </div>
@@ -480,6 +480,8 @@ export function PromotionGenerator({ onImageGenerated, onIdeaSelect, onReset, ca
     </>
   );
 }
+
+    
 
     
 
