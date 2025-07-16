@@ -4,7 +4,7 @@ import { Lightbulb } from 'lucide-react';
 export function Header() {
   return (
     <header className="py-16 sm:py-24 text-center relative">
-      <div className="container mx-auto px-4 sm:px-0">
+      <div className="container mx-auto px-5">
         <div className="bg-card rounded-2xl shadow-lg max-w-[1200px] mx-auto p-8 sm:p-12">
           <div className="flex justify-center items-center gap-4 mb-4">
               <div className="bg-accent p-2 rounded-lg">
