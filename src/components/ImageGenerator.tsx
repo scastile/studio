@@ -88,7 +88,7 @@ export function ImageGenerator({ onAddImage, onUpdateImage, onRemoveImage, onIma
             <CardContent className="p-6">
               <div className="mb-6">
                 <h2 className="font-sans text-2xl sm:text-3xl font-bold text-gray-800 dark:text-gray-100 flex items-center gap-3 justify-start">
-                  <Camera className="w-7 h-7 text-primary" />
+                  <ImageIcon className="w-7 h-7 text-primary" />
                   Image Generation
                 </h2>
                 <p className="mt-2 text-md text-muted-foreground">
