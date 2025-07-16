@@ -209,7 +209,7 @@ export default function Home() {
       <Header />
 
       <div className="container mx-auto px-4 sm:px-0">
-        <div className="max-w-xl mx-auto space-y-8">
+        <div className="max-w-4xl mx-auto space-y-8">
             <PromotionGenerator 
               onImageGenerated={handleInitialImageGenerated} 
               onIdeaSelect={handleIdeaSelect}
@@ -218,16 +218,16 @@ export default function Home() {
             />
             <SavedCampaignsList onCampaignLoad={handleCampaignLoad} />
             <PinnedIdeasList pinnedIdeas={pinnedIdeas} onIdeaSelect={handleIdeaSelect} />
-        </div>
         
-        <ImageGenerator 
-          onAddImage={addImageToList}
-          onUpdateImage={updateImageInList}
-          onRemoveImage={removeImageFromList}
-          savedImages={savedImages}
-          onLoadSavedImage={(image) => addImageToList({ id: uuidv4(), url: image.url, prompt: image.prompt})}
-          onImageClick={setLightboxImage}
-        />
+            <ImageGenerator 
+              onAddImage={addImageToList}
+              onUpdateImage={updateImageInList}
+              onRemoveImage={removeImageFromList}
+              savedImages={savedImages}
+              onLoadSavedImage={(image) => addImageToList({ id: uuidv4(), url: image.url, prompt: image.prompt})}
+              onImageClick={setLightboxImage}
+            />
+        </div>
       </div>
       
       <Gallery
