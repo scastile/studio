@@ -3,7 +3,7 @@ import { Lightbulb } from 'lucide-react';
 
 export function Header() {
   return (
-    <header className="bg-gradient-to-r from-primary to-[#5C6BC0] py-16 sm:py-24 text-center relative">
+    <header className="py-16 sm:py-24 text-center relative">
       <div className="container mx-auto px-4 sm:px-0">
         <div className="bg-card rounded-2xl shadow-lg max-w-4xl mx-auto p-8 sm:p-12">
           <div className="flex justify-center items-center gap-4 mb-4">

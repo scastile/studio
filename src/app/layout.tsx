@@ -1,3 +1,4 @@
+
 import type {Metadata} from 'next';
 import './globals.css';
 import { Toaster } from "@/components/ui/toaster";
@@ -21,7 +22,7 @@ export default function RootLayout({
         <script src="https://www.gstatic.com/firebasejs/ui/6.1.0/firebase-ui-auth.js"></script>
         <link type="text/css" rel="stylesheet" href="https://www.gstatic.com/firebasejs/ui/6.1.0/firebase-ui-auth.css" />
       </head>
-      <body className="font-body antialiased">
+      <body className="font-body antialiased bg-gradient-to-r from-primary to-[#5C6BC0]">
         {children}
         <Toaster />
       </body>
