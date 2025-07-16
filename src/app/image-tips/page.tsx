@@ -97,7 +97,7 @@ export default function ImageTipsPage() {
                              <p className="text-muted-foreground">Direct the &quot;camera&quot; to get the exact framing you want.</p>
                             <p><strong className="text-foreground">Shot Type:</strong> <span className="text-muted-foreground">close-up shot, medium shot, full-body shot, extreme wide shot.</span></p>
                             <p><strong className="text-foreground">Angle:</strong> <span className="text-muted-foreground">low-angle view, bird&apos;s-eye view, eye-level shot, Dutch angle.</span></p>
-                        </Content>
+                        </CardContent>
                     </Card>
                     <Card>
                          <CardHeader>
