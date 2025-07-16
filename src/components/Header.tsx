@@ -10,8 +10,8 @@ interface HeaderProps {
 export function Header({ isSimple = false }: HeaderProps) {
   return (
     <header className={cn(
-      "pt-16 pb-24 sm:py-24 text-center relative",
-      isSimple && "pt-12 pb-8 sm:pt-16 sm:pb-8"
+      "pt-16 pb-24 text-center relative",
+      isSimple ? "py-12 sm:py-16 sm:pb-8" : "sm:py-24"
     )}>
       <div className="container mx-auto px-5">
         <div className={cn(

@@ -3,7 +3,7 @@
 
 import { Header } from '@/components/Header';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { CheckCircle2, Pencil, Sparkles, Camera } from 'lucide-react';
+import { CheckCircle2, Pencil, Sparkles, Image as ImageIcon } from 'lucide-react';
 
 export default function ImageTipsPage() {
   return (
@@ -89,7 +89,7 @@ export default function ImageTipsPage() {
                     <Card>
                         <CardHeader>
                             <CardTitle className="font-sans text-2xl flex items-center gap-3">
-                                <Camera className="w-7 h-7 text-primary" />
+                                <ImageIcon className="w-7 h-7 text-primary" />
                                 Control the Composition
                             </CardTitle>
                         </CardHeader>
