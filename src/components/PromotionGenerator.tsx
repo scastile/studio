@@ -152,7 +152,7 @@ export function PromotionGenerator({ onImageGenerated, onIdeaSelect, onReset, ca
 
       if (shouldGenerateImage) {
         const imageResult = await imagePromise;
-        if(imageResult && imageResult.imageDataUri) {
+        if(imageResult && imageResult.imageDataUri && topicImageId) {
           onImageGenerated(imageResult.imageDataUri, topicImageId, imagePrompt);
         }
         setIsGeneratingTopicImage(false);
@@ -413,7 +413,7 @@ export function PromotionGenerator({ onImageGenerated, onIdeaSelect, onReset, ca
             {relevantDates.length > 0 && (
               <Card>
                 <CardHeader>
-                  <CardTitle className="flex items-center gap-3 text-lg font-headline">
+                  <CardTitle className="flex items-center gap-3 text-lg font-sans">
                     <CalendarDays className="w-6 h-6 text-primary" />
                     <span>Relevant Dates</span>
                   </CardTitle>
@@ -432,7 +432,7 @@ export function PromotionGenerator({ onImageGenerated, onIdeaSelect, onReset, ca
              {crossMediaConnections.length > 0 && (
               <Card className="flex flex-col">
                 <CardHeader>
-                  <CardTitle className="flex items-center gap-3 text-lg font-headline">
+                  <CardTitle className="flex items-center gap-3 text-lg font-sans">
                     <Film className="w-6 h-6 text-primary" />
                     <span>Media Connections</span>
                   </CardTitle>

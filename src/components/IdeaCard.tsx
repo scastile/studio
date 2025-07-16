@@ -21,7 +21,7 @@ export function IdeaCard({ idea, onSelect, onPin }: IdeaCardProps) {
   return (
     <Card className="flex flex-col h-full transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
       <CardHeader>
-        <CardTitle className="flex items-center justify-between text-lg font-headline">
+        <CardTitle className="flex items-center justify-between text-lg">
           <div className="flex items-center gap-3">
             <Icon className="w-6 h-6 text-accent" />
             <span>{idea.category}</span>
