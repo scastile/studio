@@ -31,7 +31,7 @@ export function CollapsibleCard({ title, count, description, Icon, children }: C
     return (
         <Card>
             <CardHeader>
-                <CardTitle className="text-2xl font-headline flex items-center gap-3">
+                <CardTitle className="text-2xl font-sans flex items-center gap-3">
                     <Icon className="w-6 h-6 text-primary" />
                     {title}
                 </CardTitle>
@@ -49,7 +49,7 @@ export function CollapsibleCard({ title, count, description, Icon, children }: C
             <AccordionItem value="item-1" className="border-b-0">
                 <AccordionTrigger className="p-6 hover:no-underline">
                     <div className="flex flex-col text-left">
-                        <CardTitle className="text-2xl font-headline flex items-center gap-3">
+                        <CardTitle className="text-2xl font-sans flex items-center gap-3">
                           <Icon className="w-6 h-6 text-primary" />
                           {title} ({count})
                         </CardTitle>

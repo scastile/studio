@@ -77,7 +77,7 @@ export function ImageGenerator({ onAddImage, onUpdateImage, onRemoveImage, onIma
         <Card>
             <CardContent className="p-6">
               <div className="text-center mb-6">
-                <h2 className="font-headline text-2xl sm:text-3xl font-bold text-gray-800 dark:text-gray-100 flex items-center justify-center gap-3">
+                <h2 className="font-sans text-2xl sm:text-3xl font-bold text-gray-800 dark:text-gray-100 flex items-center justify-center gap-3">
                   <Camera className="w-7 h-7 text-primary" />
                   Image Generation
                 </h2>
