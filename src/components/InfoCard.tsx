@@ -13,15 +13,6 @@ interface InfoCardProps {
 }
 
 export function InfoCard({ title, description, buttonText, onButtonClick, href }: InfoCardProps) {
-    const button = (
-        <Button 
-            variant="default" 
-            className="w-full mt-auto bg-transparent border-2 border-primary text-primary hover:bg-primary hover:text-primary-foreground" 
-            onClick={onButtonClick}
-        >
-            {buttonText}
-        </Button>
-    );
     
     return (
         <Card className="flex-grow">
@@ -34,13 +25,22 @@ export function InfoCard({ title, description, buttonText, onButtonClick, href }
                     {description}
                 </p>
                 {href ? (
-                    <Link href={href} passHref legacyBehavior>
-                      <a className="w-full mt-auto no-underline">
-                        {button}
-                      </a>
+                    <Link href={href} passHref className="w-full mt-auto no-underline">
+                        <Button 
+                            variant="default" 
+                            className="w-full mt-auto bg-transparent border-2 border-primary text-primary hover:bg-primary hover:text-primary-foreground" 
+                        >
+                            {buttonText}
+                        </Button>
                     </Link>
                 ) : (
-                    button
+                    <Button 
+                        variant="default" 
+                        className="w-full mt-auto bg-transparent border-2 border-primary text-primary hover:bg-primary hover:text-primary-foreground" 
+                        onClick={onButtonClick}
+                    >
+                        {buttonText}
+                    </Button>
                 )}
             </CardContent>
         </Card>
