@@ -294,7 +294,7 @@ export function PromotionGenerator({ onImageGenerated, onIdeaSelect, onReset, ca
                     </>
                   ) : (
                     <>
-                      <Lightbulb className="mr-2 h-4 w-4" />
+                      <Lightbulb className="mr-2 h-4 w-4" strokeWidth={2.5} />
                       Generate Promotion Ideas
                     </>
                   )}
