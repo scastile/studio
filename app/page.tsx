@@ -164,12 +164,34 @@ export default function Home() {
     document.body.removeChild(link);
   };
   
-  const handleCopyImage = (image: GeneratedImage | SavedImage) => {
-    if (image.url) {
+  const handleCopyImage = async (image: GeneratedImage | SavedImage) => {
+    if (!image.url) {
+      toast({
+        title: 'Cannot copy a loading image.',
+        description: 'Please wait for the image to finish generating.',
+        variant: 'destructive'
+      });
+      return;
+    }
+    try {
+        const response = await fetch(image.url);
+        const blob = await response.blob();
+        await navigator.clipboard.write([
+            new ClipboardItem({
+                [blob.type]: blob,
+            }),
+        ]);
+        toast({
+            title: 'Image Copied!',
+            description: 'The image has been copied to your clipboard.',
+        });
+    } catch (error) {
+        console.error('Failed to copy image:', error);
+        // Fallback for older browsers or if the API fails
         navigator.clipboard.writeText(image.url);
         toast({
             title: 'Image URL Copied!',
-            description: 'The image Data URL has been copied to your clipboard.',
+            description: 'Could not copy image directly, so the URL was copied instead.',
         });
     }
   };
