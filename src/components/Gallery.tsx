@@ -138,3 +138,5 @@ export function Gallery({ images, onSaveImage, onRemoveImage, onImageClick, onDo
     </section>
   );
 }
+
+    
