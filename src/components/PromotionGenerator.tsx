@@ -63,7 +63,7 @@ export function PromotionGenerator({ onImageGenerated, onIdeaSelect, onReset, ca
   const [isSaveSetDialogOpen, setIsSaveSetDialogOpen] = useState(false);
   const [currentTopic, setCurrentTopic] = useState('');
   const [isListening, setIsListening] = useState(false);
-  const recognitionRef = useRef<any>(null); // Using any to avoid type conflicts with webkitSpeechRecognition
+  const recognitionRef = useRef<any>(null); // To hold the recognition instance
   
   const { toast } = useToast();
 
@@ -74,58 +74,17 @@ export function PromotionGenerator({ onImageGenerated, onIdeaSelect, onReset, ca
     },
   });
 
-  useEffect(() => {
-    const SpeechRecognition = window.SpeechRecognition || (window as any).webkitSpeechRecognition;
-    if (SpeechRecognition) {
-      const recognitionInstance = new SpeechRecognition();
-      recognitionInstance.continuous = false;
-      recognitionInstance.interimResults = false;
-      recognitionInstance.lang = 'en-US';
-
-      recognitionInstance.onresult = (event: any) => {
-        const transcript = event.results[event.results.length - 1][0].transcript;
-        promotionForm.setValue('topic', transcript);
-      };
-
-      recognitionInstance.onerror = (event: any) => {
-        console.error('Speech recognition error', event.error);
-        let description = 'An unknown error occurred.';
-        switch (event.error) {
-            case 'network':
-                description = 'Network error. Please check your internet connection.';
-                break;
-            case 'not-allowed':
-            case 'service-not-allowed':
-                description = 'Microphone access denied. Please allow microphone access in your browser settings.';
-                break;
-            case 'no-speech':
-                description = 'No speech was detected. Please try again.';
-                break;
-            case 'audio-capture':
-                description = 'Could not capture audio. Please check your microphone.';
-                break;
-            default:
-                description = `An unexpected error occurred: ${event.error}`;
-        }
-        toast({
-            variant: 'destructive',
-            title: 'Speech Recognition Error',
-            description: description,
-        });
-        setIsListening(false);
-      };
-
-      recognitionInstance.onend = () => {
-        setIsListening(false);
-      };
-
-      recognitionRef.current = recognitionInstance;
-    }
-  }, [promotionForm, toast]);
-
-
   const handleListen = () => {
-    if (!recognitionRef.current) {
+    if (isListening) {
+      if (recognitionRef.current) {
+        recognitionRef.current.stop();
+      }
+      setIsListening(false);
+      return;
+    }
+  
+    const SpeechRecognition = window.SpeechRecognition || (window as any).webkitSpeechRecognition;
+    if (!SpeechRecognition) {
       toast({
         variant: 'destructive',
         title: 'Not Supported',
@@ -133,15 +92,60 @@ export function PromotionGenerator({ onImageGenerated, onIdeaSelect, onReset, ca
       });
       return;
     }
-
-    if (isListening) {
-      recognitionRef.current.stop();
+  
+    const recognitionInstance = new SpeechRecognition();
+    recognitionRef.current = recognitionInstance;
+  
+    recognitionInstance.continuous = false;
+    recognitionInstance.interimResults = false;
+    recognitionInstance.lang = 'en-US';
+  
+    promotionForm.setValue('topic', 'Listening...');
+    setIsListening(true);
+  
+    recognitionInstance.onresult = (event: any) => {
+      const transcript = event.results[0][0].transcript;
+      promotionForm.setValue('topic', transcript);
+    };
+  
+    recognitionInstance.onerror = (event: any) => {
+      console.error('Speech recognition error', event.error);
+      let description = 'An unknown error occurred.';
+      switch (event.error) {
+        case 'network':
+          description = 'Network error. Please check your internet connection.';
+          break;
+        case 'not-allowed':
+        case 'service-not-allowed':
+          description = 'Microphone access denied. Please allow microphone access in your browser settings.';
+          break;
+        case 'no-speech':
+          description = 'No speech was detected. Please try again.';
+          break;
+        case 'audio-capture':
+          description = 'Could not capture audio. Please check your microphone.';
+          break;
+        default:
+          description = `An unexpected error occurred: ${event.error}`;
+      }
+      toast({
+        variant: 'destructive',
+        title: 'Speech Recognition Error',
+        description: description,
+      });
+      if (promotionForm.getValues('topic') === 'Listening...') {
+        promotionForm.setValue('topic', '');
+      }
+    };
+  
+    recognitionInstance.onend = () => {
       setIsListening(false);
-    } else {
-      promotionForm.setValue('topic', '');
-      recognitionRef.current.start();
-      setIsListening(true);
-    }
+      if (promotionForm.getValues('topic') === 'Listening...') {
+        promotionForm.setValue('topic', '');
+      }
+    };
+    
+    recognitionInstance.start();
   };
 
 
@@ -613,5 +617,7 @@ export function PromotionGenerator({ onImageGenerated, onIdeaSelect, onReset, ca
     </>
   );
 }
+
+    
 
     
