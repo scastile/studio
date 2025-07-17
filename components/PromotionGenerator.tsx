@@ -401,7 +401,7 @@ export function PromotionGenerator({ onImageGenerated, onIdeaSelect, onReset, ca
               title="Quick Tips"
               description="Be specific about your content type and target audience for better results."
               buttonText="View Examples"
-              onButtonClick={() => toast({ title: "Coming Soon!", description: "Examples will be available in a future update."})}
+              href="/prompting-tips"
             />
             <InfoCard 
               title="Export Options"
@@ -593,3 +593,5 @@ export function PromotionGenerator({ onImageGenerated, onIdeaSelect, onReset, ca
     </>
   );
 }
+
+    
