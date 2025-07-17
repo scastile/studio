@@ -1,7 +1,9 @@
 
+'use client';
+
 import Image from 'next/image';
 import { Card, CardContent, CardFooter } from '@/components/ui/card';
-import { Loader2, Save, Trash2, Copy, Download } from 'lucide-react';
+import { Loader2, Save, Trash2, Copy, Download, Wand2 } from 'lucide-react';
 import { Skeleton } from './ui/skeleton';
 import { Button } from './ui/button';
 import type { SavedImage } from '@/lib/types';
@@ -11,6 +13,8 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip"
+import { Input } from './ui/input';
+import { FormEvent } from 'react';
 
 export type GeneratedImage = {
   id: string;
@@ -25,13 +29,25 @@ interface GalleryProps {
   onImageClick: (image: GeneratedImage) => void;
   onCopyImage: (image: GeneratedImage) => void;
   onDownloadImage: (image: GeneratedImage) => void;
+  onRefineImage: (image: GeneratedImage, refinementPrompt: string) => void;
 }
 
-export function Gallery({ images, onSaveImage, onRemoveImage, onImageClick, onCopyImage, onDownloadImage }: GalleryProps) {
+export function Gallery({ images, onSaveImage, onRemoveImage, onImageClick, onCopyImage, onDownloadImage, onRefineImage }: GalleryProps) {
 
   if (images.length === 0) {
     return null;
   }
+
+  const handleRefineSubmit = (e: FormEvent<HTMLFormElement>, image: GeneratedImage) => {
+    e.preventDefault();
+    const formData = new FormData(e.currentTarget);
+    const refinementPrompt = formData.get('refine-prompt') as string;
+    if (refinementPrompt && image.url) {
+        onRefineImage(image, refinementPrompt);
+        (e.target as HTMLFormElement).reset();
+    }
+  };
+
 
   return (
     <section id="gallery" className="py-12 sm:py-16">
@@ -55,11 +71,25 @@ export function Gallery({ images, onSaveImage, onRemoveImage, onImageClick, onCo
                     </div>
                   )}
                 </CardContent>
-                <CardFooter className="p-3 bg-card/80 backdrop-blur-sm mt-auto flex justify-between items-center">
-                  <p className="text-sm text-muted-foreground truncate" title={image.prompt}>
+                <div className="p-3 bg-card/80 backdrop-blur-sm">
+                   <p className="text-sm text-muted-foreground truncate" title={image.prompt}>
                     {image.prompt}
                   </p>
-                  <div className="flex items-center gap-1">
+                </div>
+                <CardFooter className="p-3 bg-card/80 backdrop-blur-sm mt-auto flex-col items-start gap-3">
+                    <form onSubmit={(e) => handleRefineSubmit(e, image)} className="w-full flex items-center gap-2">
+                        <Input 
+                            name="refine-prompt"
+                            placeholder="e.g., make it a watercolor painting" 
+                            className="h-9"
+                            disabled={!image.url}
+                        />
+                        <Button type="submit" size="sm" variant="outline" disabled={!image.url}>
+                            <Wand2 className="mr-2 h-4 w-4" />
+                            Refine
+                        </Button>
+                    </form>
+                  <div className="flex items-center gap-1 self-end">
                      <TooltipProvider>
                       <Tooltip>
                         <TooltipTrigger asChild>
@@ -92,7 +122,7 @@ export function Gallery({ images, onSaveImage, onRemoveImage, onImageClick, onCo
                         <TooltipTrigger asChild>
                            <Button variant="outline" size="icon" onClick={() => onSaveImage(image)} disabled={!image.url}>
                               <Save className="h-4 w-4" />
-                              <span className="sr-only">Save Image</span>
+                              <span className="sr-only">Save to Collection</span>
                             </Button>
                         </TooltipTrigger>
                         <TooltipContent>

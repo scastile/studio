@@ -12,6 +12,7 @@ import type { PinnedIdea, Idea, SavedCampaign, SavedImage } from '@/lib/types';
 import { ref, onValue, push, remove } from 'firebase/database';
 import { database } from '@/lib/utils';
 import { elaborateOnIdea } from '@/ai/flows/elaborate-on-idea';
+import { generateImage } from '@/ai/flows/generate-image-flow';
 import { useToast } from '@/hooks/use-toast';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog';
 import { ScrollArea } from '@/components/ui/scroll-area';
@@ -187,6 +188,31 @@ export default function Home() {
     document.body.removeChild(link);
   };
 
+  const handleRefineImage = async (image: GeneratedImage, refinementPrompt: string) => {
+    const newImageId = uuidv4();
+    addImageToList({ id: newImageId, url: null, prompt: refinementPrompt });
+
+    try {
+      const result = await generateImage({
+        prompt: refinementPrompt,
+        imageDataUri: image.url!,
+      });
+      if (result && result.imageDataUri) {
+        updateImageInList(newImageId, result.imageDataUri);
+      } else {
+        throw new Error("Image refinement failed.");
+      }
+    } catch (error) {
+      console.error("Error refining image:", error);
+      toast({
+        variant: 'destructive',
+        title: 'Refinement Failed',
+        description: 'There was a problem generating the refined image.',
+      });
+      removeImageFromList(newImageId);
+    }
+  };
+
   async function handleIdeaSelect(idea: Idea) {
     setSelectedIdea(idea);
     setIsElaborating(true);
@@ -270,6 +296,7 @@ export default function Home() {
         onImageClick={setLightboxImage}
         onCopyImage={handleCopyImage}
         onDownloadImage={handleDownloadImage}
+        onRefineImage={handleRefineImage}
       />
       <footer className="text-center py-6 text-primary-foreground">
         <div className="container mx-auto">
