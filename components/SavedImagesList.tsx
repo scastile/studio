@@ -83,7 +83,7 @@ export function SavedImagesList({ savedImages, onImageLoad, onImageClick, onCopy
                         />
                     </div>
                     <div>
-                        <p className="text-sm font-semibold text-foreground line-clamp-2" title={image.prompt}>{image.prompt}</p>
+                        <p className="text-sm font-semibold text-foreground line-clamp-2" title={image.topic}>{image.topic}</p>
                         <p className="text-xs text-muted-foreground mt-1">
                             Saved {formatDistanceToNow(new Date(image.createdAt), { addSuffix: true })}
                         </p>

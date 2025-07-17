@@ -40,9 +40,10 @@ interface PromotionGeneratorProps {
   onIdeaSelect: (idea: Idea) => void;
   onReset: () => void;
   campaignToLoad: SavedCampaign | null;
+  onTopicChange: (topic: string) => void;
 }
 
-export function PromotionGenerator({ onImageGenerated, onIdeaSelect, onReset, campaignToLoad }: PromotionGeneratorProps) {
+export function PromotionGenerator({ onImageGenerated, onIdeaSelect, onReset, campaignToLoad, onTopicChange }: PromotionGeneratorProps) {
   const [ideas, setIdeas] = useState<Idea[]>([]);
   const [relevantDates, setRelevantDates] = useState<RelevantDate[]>([]);
   const [crossMediaConnections, setCrossMediaConnections] = useState<CrossMediaConnection[]>([]);
@@ -93,6 +94,7 @@ export function PromotionGenerator({ onImageGenerated, onIdeaSelect, onReset, ca
     setCategories([]);
     setSelectedCategory(null);
     setCurrentTopic('');
+    onTopicChange('');
     setIsLoading(false);
     setIsGeneratingTopicImage(false);
     handleRemoveImage();
@@ -103,6 +105,7 @@ export function PromotionGenerator({ onImageGenerated, onIdeaSelect, onReset, ca
     if (campaignToLoad) {
       promotionForm.setValue('topic', campaignToLoad.topic);
       setCurrentTopic(campaignToLoad.topic);
+      onTopicChange(campaignToLoad.topic);
       setIdeas(campaignToLoad.ideas || []);
       setRelevantDates(campaignToLoad.relevantDates || []);
       setCrossMediaConnections(campaignToLoad.crossMediaConnections || []);
@@ -112,7 +115,7 @@ export function PromotionGenerator({ onImageGenerated, onIdeaSelect, onReset, ca
       setIsLoading(false);
       setIsGeneratingTopicImage(false);
     }
-  }, [campaignToLoad, promotionForm]);
+  }, [campaignToLoad, promotionForm, onTopicChange]);
 
 
   async function onPromotionSubmit(values: z.infer<typeof promotionFormSchema>) {
@@ -132,9 +135,10 @@ export function PromotionGenerator({ onImageGenerated, onIdeaSelect, onReset, ca
     }
     promotionForm.clearErrors('topic');
 
-
+    const topic = values.topic || 'Uploaded Image';
     setIsLoading(true);
-    setCurrentTopic(values.topic || 'Uploaded Image');
+    setCurrentTopic(topic);
+    onTopicChange(topic);
     setIsGeneratingTopicImage(shouldGenerateImage);
     setIdeas([]);
     setRelevantDates([]);
@@ -143,7 +147,7 @@ export function PromotionGenerator({ onImageGenerated, onIdeaSelect, onReset, ca
     setSelectedCategory(null);
     onReset(); // Clear loaded campaign state on new search
 
-    const imagePrompt = `Create a striking, visually rich promotional image centered around ${values.topic}. Incorporate vivid, symbolic imagery and meaningful visual metaphors that represent or evoke ${values.topic}. Use a bold and cohesive color palette that enhances the theme, and ensure the composition is both dynamic and attention-grabbing. Style the image to be modern, polished, and suitable for use in high-quality promotional materials.`;
+    const imagePrompt = `Create a striking, visually rich promotional image centered around ${topic}. Incorporate vivid, symbolic imagery and meaningful visual metaphors that represent or evoke ${topic}. Use a bold and cohesive color palette that enhances the theme, and ensure the composition is both dynamic and attention-grabbing. Style the image to be modern, polished, and suitable for use in high-quality promotional materials.`;
     
     let topicImageId: string | undefined = undefined;
     if (shouldGenerateImage) {
@@ -593,5 +597,3 @@ export function PromotionGenerator({ onImageGenerated, onIdeaSelect, onReset, ca
     </>
   );
 }
-
-    

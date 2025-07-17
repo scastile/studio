@@ -35,6 +35,7 @@ export default function Home() {
   const [elaboratedIdea, setElaboratedIdea] = useState<string | null>(null);
   const [loadedCampaign, setLoadedCampaign] = useState<SavedCampaign | null>(null);
   const [lightboxImage, setLightboxImage] = useState<GeneratedImage | SavedImage | null>(null);
+  const [currentTopic, setCurrentTopic] = useState('');
 
   const { toast } = useToast();
 
@@ -89,10 +90,12 @@ export default function Home() {
   const handleResetSearch = () => {
     setGeneratedImages([]);
     setLoadedCampaign(null);
+    setCurrentTopic('');
   };
 
   const handleCampaignLoad = (campaign: SavedCampaign) => {
     setLoadedCampaign(campaign);
+    setCurrentTopic(campaign.topic);
     // Clear any previous images when loading a new campaign
     setGeneratedImages([]);
     toast({
@@ -136,6 +139,7 @@ export default function Home() {
       const savedImagesRef = ref(database, 'savedImages');
       const imageToSave = {
         prompt: image.prompt,
+        topic: currentTopic || 'Untitled',
         url: image.url,
         createdAt: new Date().toISOString(),
       };
@@ -280,12 +284,13 @@ export default function Home() {
             onIdeaSelect={handleIdeaSelect}
             onReset={handleResetSearch}
             campaignToLoad={loadedCampaign}
+            onTopicChange={setCurrentTopic}
           />
           <SavedCampaignsList onCampaignLoad={handleCampaignLoad} />
           <PinnedIdeasList pinnedIdeas={pinnedIdeas} onIdeaSelect={handleIdeaSelect} />
           <SavedImagesList 
               savedImages={savedImages}
-              onImageLoad={(image) => addImageToList({ id: uuidv4(), url: image.url, prompt: image.prompt })}
+              onImageLoad={(image) => addImageToList({ id: uuidv4(), url: image.url, prompt: image.prompt, topic: image.topic })}
               onImageClick={setLightboxImage}
               onCopyImage={handleCopyImage}
           />

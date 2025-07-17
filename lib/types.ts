@@ -34,6 +34,7 @@ export type SavedCampaign = {
 export type SavedImage = {
   id: string;
   prompt: string;
+  topic: string;
   url: string;
   createdAt: string;
 }
@@ -42,4 +43,5 @@ export type GeneratedImage = {
   id: string;
   url: string | null; // null while loading
   prompt: string;
+  topic?: string;
 }
