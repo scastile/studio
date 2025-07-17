@@ -1,12 +1,12 @@
 
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { ref, push } from "firebase/database";
-import { Lightbulb, Loader2, CalendarDays, Info, Film, Book, Tv, Gamepad2, Save, RotateCcw, Archive, FileText, Share, AlertCircle, Image as ImageIcon, Search } from 'lucide-react';
+import { Lightbulb, Loader2, CalendarDays, Info, Film, Book, Tv, Gamepad2, Save, RotateCcw, Archive, FileText, Share, AlertCircle, Image as ImageIcon, Search, Paperclip, X } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -29,6 +29,7 @@ import { database } from '@/lib/utils';
 import { SaveSetDialog } from './SaveSetDialog';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { InfoCard } from './InfoCard';
+import Image from 'next/image';
 
 const promotionFormSchema = z.object({
   topic: z.string().min(3, {
@@ -56,6 +57,8 @@ export function PromotionGenerator({ onImageGenerated, onIdeaSelect, onReset, ca
   const [isMediaConnectionsDialogOpen, setIsMediaConnectionsDialogOpen] = useState(false);
   const [isSaveSetDialogOpen, setIsSaveSetDialogOpen] = useState(false);
   const [currentTopic, setCurrentTopic] = useState('');
+  const [uploadedImage, setUploadedImage] = useState<string | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
   
   const { toast } = useToast();
 
@@ -66,6 +69,23 @@ export function PromotionGenerator({ onImageGenerated, onIdeaSelect, onReset, ca
     },
   });
 
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        setUploadedImage(e.target?.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleRemoveImage = () => {
+    setUploadedImage(null);
+    if(fileInputRef.current) {
+      fileInputRef.current.value = '';
+    }
+  };
 
   const handleReset = () => {
     promotionForm.reset({ topic: '' });
@@ -77,6 +97,7 @@ export function PromotionGenerator({ onImageGenerated, onIdeaSelect, onReset, ca
     setCurrentTopic('');
     setIsLoading(false);
     setIsGeneratingTopicImage(false);
+    handleRemoveImage();
     onReset();
   };
 
@@ -128,7 +149,7 @@ export function PromotionGenerator({ onImageGenerated, onIdeaSelect, onReset, ca
       }
 
       const imagePromise = shouldGenerateImage 
-        ? generateImage({ prompt: promptWithRatio })
+        ? generateImage({ prompt: promptWithRatio, imageDataUri: uploadedImage || undefined, })
         : Promise.resolve(null);
       
       const ideasResult = await ideasPromise;
@@ -156,6 +177,7 @@ export function PromotionGenerator({ onImageGenerated, onIdeaSelect, onReset, ca
           onImageGenerated(imageResult.imageDataUri, topicImageId, imagePrompt);
         }
         setIsGeneratingTopicImage(false);
+        handleRemoveImage();
       }
 
     } catch (error) {
@@ -261,15 +283,50 @@ export function PromotionGenerator({ onImageGenerated, onIdeaSelect, onReset, ca
                       render={({ field }) => (
                         <FormItem>
                           <FormControl>
-                            <Input
-                              placeholder="e.g., 'The Great Gatsby', 'Minecraft', 'Stranger Things'"
-                              {...field}
-                            />
+                            <div className="relative">
+                              <Input
+                                placeholder="e.g., 'The Great Gatsby', 'Minecraft', 'Stranger Things'"
+                                {...field}
+                                className="pr-10"
+                              />
+                               <Button 
+                                  type="button" 
+                                  variant="ghost" 
+                                  size="icon" 
+                                  className="absolute right-1 top-1/2 -translate-y-1/2 h-8 w-8"
+                                  onClick={() => fileInputRef.current?.click()}
+                                  disabled={isLoading || isGeneratingTopicImage}
+                                >
+                                  <Paperclip className="h-5 w-5" />
+                                </Button>
+                                <input
+                                  type="file"
+                                  ref={fileInputRef}
+                                  onChange={handleFileChange}
+                                  className="hidden"
+                                  accept="image/*"
+                                />
+                            </div>
                           </FormControl>
                           <FormMessage />
                         </FormItem>
                       )}
                     />
+
+                    {uploadedImage && (
+                      <div className="relative w-24 h-24 border rounded-md mt-4">
+                        <Image src={uploadedImage} alt="Uploaded preview" layout="fill" objectFit="cover" className="rounded-md" />
+                        <Button
+                          type="button"
+                          variant="destructive"
+                          size="icon"
+                          className="absolute -top-2 -right-2 h-6 w-6 rounded-full"
+                          onClick={handleRemoveImage}
+                        >
+                          <X className="h-4 w-4" />
+                        </Button>
+                      </div>
+                    )}
                     <div className="flex items-center justify-between h-12 w-full rounded-md border border-input bg-background px-3 py-2 text-sm mt-6">
                       <div className="flex items-center gap-2">
                         <ImageIcon className="h-5 w-5 text-muted-foreground" />
@@ -521,5 +578,3 @@ export function PromotionGenerator({ onImageGenerated, onIdeaSelect, onReset, ca
     </>
   );
 }
-
-    
