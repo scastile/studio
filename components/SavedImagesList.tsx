@@ -11,7 +11,7 @@ import Image from 'next/image';
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from './ui/scroll-area';
 import { Card } from './ui/card';
-import { ImageIcon, Trash2, Download } from 'lucide-react';
+import { ImageIcon, Trash2, Download, Copy } from 'lucide-react';
 import type { SavedImage } from '@/lib/types';
 import {
   AlertDialog,
@@ -29,9 +29,10 @@ interface SavedImagesListProps {
   savedImages: SavedImage[];
   onImageLoad: (image: SavedImage) => void;
   onImageClick: (image: SavedImage) => void;
+  onCopyImage: (image: SavedImage) => void;
 }
 
-export function SavedImagesList({ savedImages, onImageLoad, onImageClick }: SavedImagesListProps) {
+export function SavedImagesList({ savedImages, onImageLoad, onImageClick, onCopyImage }: SavedImagesListProps) {
   const { toast } = useToast();
   const [imageToDelete, setImageToDelete] = useState<SavedImage | null>(null);
 
@@ -91,6 +92,9 @@ export function SavedImagesList({ savedImages, onImageLoad, onImageClick }: Save
                   <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
                     <Button size="sm" variant="outline" onClick={() => handleLoadImage(image)} title="Load to Gallery">
                         <Download className="h-4 w-4" />
+                    </Button>
+                    <Button size="sm" variant="outline" onClick={() => onCopyImage(image)} title="Copy Image URL">
+                        <Copy className="h-4 w-4" />
                     </Button>
                     <Button size="sm" variant="destructive" onClick={() => setImageToDelete(image)} title="Delete Image">
                         <Trash2 className="h-4 w-4" />

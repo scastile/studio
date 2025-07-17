@@ -163,6 +163,16 @@ export default function Home() {
     link.click();
     document.body.removeChild(link);
   };
+  
+  const handleCopyImage = (image: GeneratedImage | SavedImage) => {
+    if (image.url) {
+        navigator.clipboard.writeText(image.url);
+        toast({
+            title: 'Image URL Copied!',
+            description: 'The image Data URL has been copied to your clipboard.',
+        });
+    }
+  };
 
   const handleRefineImage = async (image: GeneratedImage, refinementPrompt: string) => {
     const newImageId = uuidv4();
@@ -255,6 +265,7 @@ export default function Home() {
               savedImages={savedImages}
               onImageLoad={(image) => addImageToList({ id: uuidv4(), url: image.url, prompt: image.prompt })}
               onImageClick={setLightboxImage}
+              onCopyImage={handleCopyImage}
           />
           <ImageGenerator 
             onAddImage={addImageToList}
@@ -271,6 +282,7 @@ export default function Home() {
         onRemoveImage={removeImageFromList}
         onImageClick={setLightboxImage}
         onDownloadImage={handleDownloadImage}
+        onCopyImage={handleCopyImage}
         onRefineImage={handleRefineImage}
       />
       <footer className="text-center py-6 text-primary-foreground">

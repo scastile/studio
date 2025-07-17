@@ -3,7 +3,7 @@
 
 import Image from 'next/image';
 import { Card, CardContent, CardFooter } from '@/components/ui/card';
-import { Loader2, Save, Trash2, Download, Wand2 } from 'lucide-react';
+import { Loader2, Save, Trash2, Download, Wand2, Copy } from 'lucide-react';
 import { Skeleton } from './ui/skeleton';
 import { Button } from './ui/button';
 import type { SavedImage } from '@/lib/types';
@@ -28,10 +28,11 @@ interface GalleryProps {
   onRemoveImage: (id: string) => void;
   onImageClick: (image: GeneratedImage) => void;
   onDownloadImage: (image: GeneratedImage) => void;
+  onCopyImage: (image: GeneratedImage) => void;
   onRefineImage: (image: GeneratedImage, refinementPrompt: string) => void;
 }
 
-export function Gallery({ images, onSaveImage, onRemoveImage, onImageClick, onDownloadImage, onRefineImage }: GalleryProps) {
+export function Gallery({ images, onSaveImage, onRemoveImage, onImageClick, onDownloadImage, onCopyImage, onRefineImage }: GalleryProps) {
 
   if (images.length === 0) {
     return null;
@@ -89,6 +90,19 @@ export function Gallery({ images, onSaveImage, onRemoveImage, onImageClick, onDo
                         </Button>
                     </form>
                   <div className="flex items-center gap-1 self-end">
+                     <TooltipProvider>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                           <Button variant="outline" size="icon" onClick={() => onCopyImage(image)} disabled={!image.url}>
+                              <Copy className="h-4 w-4" />
+                              <span className="sr-only">Copy Image URL</span>
+                            </Button>
+                        </TooltipTrigger>
+                        <TooltipContent>
+                          <p>Copy Image URL</p>
+                        </TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
                      <TooltipProvider>
                       <Tooltip>
                         <TooltipTrigger asChild>
