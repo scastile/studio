@@ -11,7 +11,7 @@ export function Header({ isSimple = false }: HeaderProps) {
   return (
     <header className={cn(
       "pt-16 pb-24 text-center relative",
-      isSimple ? "py-12 sm:py-16 sm:pb-8" : "sm:py-24"
+      isSimple ? "py-12 sm:py-16 sm:pb-8" : "sm:pt-16 sm:pb-24"
     )}>
       <div className="container mx-auto px-5">
         <div className={cn(
