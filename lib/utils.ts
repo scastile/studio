@@ -9,12 +9,12 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 const firebaseConfig = {
-  apiKey: "AIzaSyA_...SAMPLE...",
-  authDomain: "librarylaunchpad-default-rtdb.firebaseapp.com",
-  projectId: "librarylaunchpad-default-rtdb",
-  storageBucket: "librarylaunchpad-default-rtdb.appspot.com",
-  messagingSenderId: "1234567890",
-  appId: "1:1234567890:web:1234567890abcdef",
+  apiKey: "your-firebase-api-key",
+  authDomain: "your-firebase-auth-domain",
+  projectId: "your-firebase-project-id",
+  storageBucket: "your-firebase-storage-bucket",
+  messagingSenderId: "your-firebase-messaging-sender-id",
+  appId: "1:789012345678:web:abcdef1234567890fedcba",
   databaseURL: "https://librarylaunchpad-default-rtdb.firebaseio.com",
 };
 

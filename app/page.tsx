@@ -2,27 +2,27 @@
 'use client';
 import { useState, useEffect } from 'react';
 import { marked } from 'marked';
-import { Header } from '@/components/Header';
-import { PromotionGenerator } from '@/components/PromotionGenerator';
-import { ImageGenerator } from '@/components/ImageGenerator';
-import { Gallery, type GeneratedImage } from '@/components/Gallery';
+import { Header } from '../components/Header';
+import { PromotionGenerator } from '../components/PromotionGenerator';
+import { ImageGenerator } from '../components/ImageGenerator';
+import { Gallery, type GeneratedImage } from '../components/Gallery';
 import { v4 as uuidv4 } from 'uuid';
-import { PinnedIdeasList } from '@/components/PinnedIdeasList';
-import type { PinnedIdea, Idea, SavedCampaign, SavedImage } from '@/lib/types';
+import { PinnedIdeasList } from '../components/PinnedIdeasList';
+import type { PinnedIdea, Idea, SavedCampaign, SavedImage } from '../lib/types';
 import { ref, onValue, push, remove } from 'firebase/database';
-import { database } from '@/lib/utils';
-import { elaborateOnIdea } from '@/ai/flows/elaborate-on-idea';
-import { generateImage } from '@/ai/flows/generate-image-flow';
-import { useToast } from '@/hooks/use-toast';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog';
-import { ScrollArea } from '@/components/ui/scroll-area';
-import { Button } from '@/components/ui/button';
+import { database } from '../lib/utils';
+import { elaborateOnIdea } from '../ai/flows/elaborate-on-idea';
+import { generateImage } from '../ai/flows/generate-image-flow';
+import { useToast } from '../hooks/use-toast';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '../components/ui/dialog';
+import { ScrollArea } from '../components/ui/scroll-area';
+import { Button } from '../components/ui/button';
 import { Loader2, Copy, Info, FileDown, Mail } from 'lucide-react';
-import { getIconForCategory } from '@/components/icons';
+import { getIconForCategory } from '../components/icons';
 import Image from 'next/image';
-import { SavedCampaignsList } from '@/components/SavedCampaignsList';
-import { SavedImagesList } from '@/components/SavedImagesList';
-import { InfoCard } from '@/components/InfoCard';
+import { SavedCampaignsList } from '../components/SavedCampaignsList';
+import { SavedImagesList } from '../components/SavedImagesList';
+import { InfoCard } from '../components/InfoCard';
 
 
 export default function Home() {
