@@ -15,7 +15,7 @@ export default function ImageTipsPage() {
             <Card>
                 <CardHeader>
                     <CardTitle className="text-3xl sm:text-4xl font-sans font-bold text-gray-800 dark:text-gray-100 flex items-center gap-4">
-                        <span className="title-gradient">Gemini Flash 2.0: A Quick Guide to Image Prompting</span> <ImageIcon className="w-10 h-10 text-primary" />
+                        <span className="title-gradient">Gemini Flash 2.0: A Quick Guide to Image Prompting</span> <ImageIcon className="w-12 h-12 text-primary" />
                     </CardTitle>
                 </CardHeader>
                 <CardContent>
