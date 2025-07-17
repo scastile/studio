@@ -32,9 +32,11 @@ import { InfoCard } from './InfoCard';
 import Image from 'next/image';
 
 const promotionFormSchema = z.object({
-  topic: z.string().min(3, {
-    message: 'Topic must be at least 3 characters long.',
-  }),
+  topic: z.string(),
+  uploadedImage: z.any().optional(),
+}).refine(data => data.topic.length >= 3 || !!data.uploadedImage, {
+  message: 'Topic must be at least 3 characters long if no image is uploaded.',
+  path: ['topic'],
 });
 
 interface PromotionGeneratorProps {
@@ -66,6 +68,7 @@ export function PromotionGenerator({ onImageGenerated, onIdeaSelect, onReset, ca
     resolver: zodResolver(promotionFormSchema),
     defaultValues: {
       topic: '',
+      uploadedImage: null,
     },
   });
 
@@ -74,7 +77,9 @@ export function PromotionGenerator({ onImageGenerated, onIdeaSelect, onReset, ca
     if (file) {
       const reader = new FileReader();
       reader.onload = (e) => {
-        setUploadedImage(e.target?.result as string);
+        const result = e.target?.result as string;
+        setUploadedImage(result);
+        promotionForm.setValue('uploadedImage', result);
       };
       reader.readAsDataURL(file);
     }
@@ -82,13 +87,14 @@ export function PromotionGenerator({ onImageGenerated, onIdeaSelect, onReset, ca
 
   const handleRemoveImage = () => {
     setUploadedImage(null);
+    promotionForm.setValue('uploadedImage', null);
     if(fileInputRef.current) {
       fileInputRef.current.value = '';
     }
   };
 
   const handleReset = () => {
-    promotionForm.reset({ topic: '' });
+    promotionForm.reset({ topic: '', uploadedImage: null });
     setIdeas([]);
     setRelevantDates([]);
     setCrossMediaConnections([]);
@@ -119,7 +125,7 @@ export function PromotionGenerator({ onImageGenerated, onIdeaSelect, onReset, ca
 
   async function onPromotionSubmit(values: z.infer<typeof promotionFormSchema>) {
     setIsLoading(true);
-    setCurrentTopic(values.topic);
+    setCurrentTopic(values.topic || 'Uploaded Image');
     setIsGeneratingTopicImage(shouldGenerateImage);
     setIdeas([]);
     setRelevantDates([]);
@@ -137,7 +143,7 @@ export function PromotionGenerator({ onImageGenerated, onIdeaSelect, onReset, ca
     }
     
     try {
-      const ideasPromise = generatePromotionIdeas({ topic: values.topic });
+      const ideasPromise = generatePromotionIdeas({ topic: values.topic, imageDataUri: uploadedImage || undefined, });
 
       let promptWithRatio = imagePrompt;
       if (topicImageAspectRatio === '1:1') {
@@ -578,3 +584,5 @@ export function PromotionGenerator({ onImageGenerated, onIdeaSelect, onReset, ca
     </>
   );
 }
+
+    
