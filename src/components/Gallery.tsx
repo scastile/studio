@@ -103,7 +103,6 @@ export function Gallery({ images, onSaveImage, onRemoveImage, onImageClick, onCo
                         </TooltipContent>
                       </Tooltip>
                     </TooltipProvider>
-
                      <TooltipProvider>
                       <Tooltip>
                         <TooltipTrigger asChild>

@@ -156,7 +156,6 @@ export default function Home() {
 
   const handleCopyImage = async (image: GeneratedImage) => {
     if (!image.url) return;
-
     try {
       const response = await fetch(image.url);
       const blob = await response.blob();
@@ -174,7 +173,7 @@ export default function Home() {
       toast({
         variant: 'destructive',
         title: 'Copy Failed',
-        description: 'Could not copy the image. This may be due to browser limitations.',
+        description: 'Could not copy the image. Your browser may not have permission.',
       });
     }
   };
