@@ -77,14 +77,11 @@ export function PromotionGenerator({ onImageGenerated, onIdeaSelect, onReset, ca
       recognitionInstance.lang = 'en-US';
 
       recognitionInstance.onresult = (event: any) => {
-        let transcript = '';
-        for (let i = 0; i < event.results.length; i++) {
-          if (event.results[i].isFinal) {
-            transcript += event.results[i][0].transcript;
-          }
-        }
+        const transcript = Array.from(event.results)
+            .map((result: any) => result[0])
+            .map((result: any) => result.transcript)
+            .join('');
         promotionForm.setValue('topic', transcript);
-        setIsListening(false);
       };
 
       recognitionInstance.onerror = (event: any) => {
@@ -138,6 +135,7 @@ export function PromotionGenerator({ onImageGenerated, onIdeaSelect, onReset, ca
       recognitionRef.current.stop();
       setIsListening(false);
     } else {
+      promotionForm.setValue('topic', '');
       recognitionRef.current.start();
       setIsListening(true);
     }
