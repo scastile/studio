@@ -6,7 +6,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { ref, push } from "firebase/database";
-import { Lightbulb, Loader2, CalendarDays, Info, Film, Book, Tv, Gamepad2, Save, RotateCcw, Archive, FileText, Share, AlertCircle, Image as ImageIcon, Search, Mic } from 'lucide-react';
+import { Lightbulb, Loader2, CalendarDays, Info, Film, Book, Tv, Gamepad2, Save, RotateCcw, Archive, FileText, Share, AlertCircle, Image as ImageIcon, Search, Paperclip, X, Mic } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -29,12 +29,18 @@ import { database } from '@/lib/utils';
 import { SaveSetDialog } from './SaveSetDialog';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { InfoCard } from './InfoCard';
+import Image from 'next/image';
 
 const promotionFormSchema = z.object({
-  topic: z.string().min(3, {
-    message: 'Topic must be at least 3 characters long.',
-  }),
+  topic: z.string(),
+}).refine(data => data.topic.length > 0, {
+  message: 'A topic is required.',
+  path: ['topic'],
+}).refine(data => data.topic.length >= 3, {
+  message: 'Topic must be at least 3 characters long.',
+  path: ['topic'],
 });
+
 
 interface PromotionGeneratorProps {
   onImageGenerated: (imageUrl: string | null, imageId?: string, prompt?: string) => void;
@@ -77,10 +83,7 @@ export function PromotionGenerator({ onImageGenerated, onIdeaSelect, onReset, ca
       recognitionInstance.lang = 'en-US';
 
       recognitionInstance.onresult = (event: any) => {
-        const transcript = Array.from(event.results)
-            .map((result: any) => result[0])
-            .map((result: any) => result.transcript)
-            .join('');
+        const transcript = event.results[event.results.length - 1][0].transcript;
         promotionForm.setValue('topic', transcript);
       };
 
@@ -141,6 +144,7 @@ export function PromotionGenerator({ onImageGenerated, onIdeaSelect, onReset, ca
     }
   };
 
+
   const handleReset = () => {
     promotionForm.reset({ topic: '' });
     setIdeas([]);
@@ -171,6 +175,7 @@ export function PromotionGenerator({ onImageGenerated, onIdeaSelect, onReset, ca
 
 
   async function onPromotionSubmit(values: z.infer<typeof promotionFormSchema>) {
+    
     setIsLoading(true);
     setCurrentTopic(values.topic);
     setIsGeneratingTopicImage(shouldGenerateImage);
@@ -336,12 +341,12 @@ export function PromotionGenerator({ onImageGenerated, onIdeaSelect, onReset, ca
                         <FormItem>
                           <FormControl>
                             <div className="relative">
-                               <Input
+                              <Input
                                 placeholder="e.g., 'The Great Gatsby', 'Minecraft', 'Stranger Things'"
                                 {...field}
                                 className="pr-10"
                               />
-                              <Button
+                               <Button
                                 type="button"
                                 variant="ghost"
                                 size="icon"
@@ -608,3 +613,5 @@ export function PromotionGenerator({ onImageGenerated, onIdeaSelect, onReset, ca
     </>
   );
 }
+
+    
