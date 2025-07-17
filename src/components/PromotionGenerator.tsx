@@ -1,12 +1,12 @@
 
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { ref, push } from "firebase/database";
-import { Lightbulb, Loader2, CalendarDays, Info, Film, Book, Tv, Gamepad2, Save, RotateCcw, Archive, FileText, Share, AlertCircle, Image as ImageIcon, Search } from 'lucide-react';
+import { Lightbulb, Loader2, CalendarDays, Info, Film, Book, Tv, Gamepad2, Save, RotateCcw, Archive, FileText, Share, AlertCircle, Image as ImageIcon, Search, Mic } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -56,6 +56,8 @@ export function PromotionGenerator({ onImageGenerated, onIdeaSelect, onReset, ca
   const [isMediaConnectionsDialogOpen, setIsMediaConnectionsDialogOpen] = useState(false);
   const [isSaveSetDialogOpen, setIsSaveSetDialogOpen] = useState(false);
   const [currentTopic, setCurrentTopic] = useState('');
+  const [isListening, setIsListening] = useState(false);
+  const recognitionRef = useRef<any>(null); // Using any to avoid type conflicts with webkitSpeechRecognition
   
   const { toast } = useToast();
 
@@ -65,6 +67,58 @@ export function PromotionGenerator({ onImageGenerated, onIdeaSelect, onReset, ca
       topic: '',
     },
   });
+
+  useEffect(() => {
+    const SpeechRecognition = window.SpeechRecognition || (window as any).webkitSpeechRecognition;
+    if (SpeechRecognition) {
+      const recognitionInstance = new SpeechRecognition();
+      recognitionInstance.continuous = false;
+      recognitionInstance.interimResults = false;
+      recognitionInstance.lang = 'en-US';
+
+      recognitionInstance.onresult = (event: any) => {
+        const transcript = event.results[0][0].transcript;
+        promotionForm.setValue('topic', transcript);
+        setIsListening(false);
+      };
+
+      recognitionInstance.onerror = (event: any) => {
+        console.error('Speech recognition error', event.error);
+        toast({
+          variant: 'destructive',
+          title: 'Speech Recognition Error',
+          description: `There was an error: ${event.error}`,
+        });
+        setIsListening(false);
+      };
+
+      recognitionInstance.onend = () => {
+        setIsListening(false);
+      };
+
+      recognitionRef.current = recognitionInstance;
+    }
+  }, [promotionForm, toast]);
+
+
+  const handleListen = () => {
+    if (!recognitionRef.current) {
+      toast({
+        variant: 'destructive',
+        title: 'Not Supported',
+        description: 'Speech recognition is not supported in your browser.',
+      });
+      return;
+    }
+
+    if (isListening) {
+      recognitionRef.current.stop();
+      setIsListening(false);
+    } else {
+      recognitionRef.current.start();
+      setIsListening(true);
+    }
+  };
 
   const handleReset = () => {
     promotionForm.reset({ topic: '' });
@@ -260,10 +314,23 @@ export function PromotionGenerator({ onImageGenerated, onIdeaSelect, onReset, ca
                       render={({ field }) => (
                         <FormItem>
                           <FormControl>
-                            <Input
-                              placeholder="e.g., 'The Great Gatsby', 'Minecraft', 'Stranger Things'"
-                              {...field}
-                            />
+                            <div className="relative">
+                               <Input
+                                placeholder="e.g., 'The Great Gatsby', 'Minecraft', 'Stranger Things'"
+                                {...field}
+                                className="pr-10"
+                              />
+                              <Button
+                                type="button"
+                                variant="ghost"
+                                size="icon"
+                                className="absolute right-1 top-1/2 -translate-y-1/2 h-8 w-8"
+                                onClick={handleListen}
+                                disabled={isLoading}
+                              >
+                                <Mic className={`h-5 w-5 ${isListening ? 'text-primary' : ''}`} />
+                              </Button>
+                            </div>
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -324,7 +391,7 @@ export function PromotionGenerator({ onImageGenerated, onIdeaSelect, onReset, ca
             </div>
           </div>
           <div className="space-y-6">
-             <InfoCard 
+            <InfoCard 
               title="Quick Tips"
               description="Be specific with your topic. Instead of 'Dune', try 'the Dune book series' for better results."
               buttonText="View Prompting Tips"
