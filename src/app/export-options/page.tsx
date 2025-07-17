@@ -3,7 +3,7 @@
 
 import { Header } from '@/components/Header';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from '@/components/ui/card';
-import { FileDown, Mail, Copy, Rocket } from 'lucide-react';
+import { FileDown, Mail, Copy, Rocket, CalendarPlus } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
 
@@ -29,7 +29,7 @@ export default function ExportOptionsPage() {
                 </CardContent>
             </Card>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-8">
                 <Card className="flex flex-col">
                     <CardHeader>
                         <CardTitle className="font-sans text-2xl flex items-center gap-3">
@@ -95,6 +95,28 @@ export default function ExportOptionsPage() {
                     <CardFooter>
                         <Button className="w-full" onClick={() => toast({ title: "Now Available!", description: "You can copy text from the 'More Info' dialog."})}>
                            Available Now
+                        </Button>
+                    </CardFooter>
+                </Card>
+                <Card className="flex flex-col">
+                    <CardHeader>
+                        <CardTitle className="font-sans text-2xl flex items-center gap-3">
+                            <CalendarPlus className="w-7 h-7 text-primary" />
+                            Add to Calendar
+                        </CardTitle>
+                    </CardHeader>
+                    <CardContent className="flex-grow space-y-4">
+                        <p className="text-muted-foreground">Schedule key dates from your promotion plan directly to your Google or Outlook calendar. This helps you keep track of important milestones and deadlines for your campaign.</p>
+                        <p className="text-sm text-foreground font-semibold">Use Cases:</p>
+                        <ul className="list-disc list-inside text-muted-foreground text-sm space-y-1">
+                            <li>Set reminders for relevant holidays</li>
+                            <li>Schedule social media post dates</li>
+                            <li>Plan event dates and preparation tasks</li>
+                        </ul>
+                    </CardContent>
+                    <CardFooter>
+                         <Button className="w-full" onClick={() => toast({ title: "Coming Soon!", description: "Calendar integration will be available in a future update."})}>
+                            Try It Out
                         </Button>
                     </CardFooter>
                 </Card>
