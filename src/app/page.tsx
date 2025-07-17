@@ -158,27 +158,26 @@ export default function Home() {
     if (!image.url) return;
 
     try {
-        const response = await fetch(image.url);
-        const blob = await response.blob();
-        await navigator.clipboard.write([
-            new ClipboardItem({
-                [blob.type]: blob,
-            }),
-        ]);
-        toast({
-            title: 'Image Copied!',
-            description: 'The image has been copied to your clipboard.',
-        });
+      const response = await fetch(image.url);
+      const blob = await response.blob();
+      await navigator.clipboard.write([
+        new ClipboardItem({
+          [blob.type]: blob,
+        }),
+      ]);
+      toast({
+        title: 'Image Copied!',
+        description: 'The image has been copied to your clipboard.',
+      });
     } catch (error) {
-        console.error('Failed to copy image:', error);
-        toast({
-            variant: 'destructive',
-            title: 'Copy Failed',
-            description: 'Could not copy the image. This may be due to browser limitations.',
-        });
+      console.error('Failed to copy image:', error);
+      toast({
+        variant: 'destructive',
+        title: 'Copy Failed',
+        description: 'Could not copy the image. This may be due to browser limitations.',
+      });
     }
   };
-
 
   const handleDownloadImage = (image: GeneratedImage) => {
     if (!image.url) return;
