@@ -87,10 +87,14 @@ export function ImageGenerator({ onAddImage, onUpdateImage, onRemoveImage, onIma
         <Card>
             <CardContent className="p-6">
               <div className="mb-6">
-                <h2 className="font-sans text-2xl sm:text-3xl font-bold text-gray-800 dark:text-gray-100 flex items-center gap-3 justify-start">
-                  <ImageIcon className="w-7 h-7 text-primary" />
-                  Image Generation
-                </h2>
+                <div className="flex justify-start items-center gap-3">
+                    <div className="bg-gradient-to-r from-[#4f46e5] to-[#7c3aed] p-2 rounded-lg">
+                      <ImageIcon className="w-7 h-7 text-accent-foreground" />
+                    </div>
+                    <h2 className="font-sans text-2xl sm:text-3xl font-bold">
+                        <span className="title-gradient">Image Generation</span>
+                    </h2>
+                </div>
                 <p className="mt-2 text-md text-muted-foreground">
                   Generate unique AI images for your promotional campaigns.
                 </p>
