@@ -274,7 +274,7 @@ export default function Home() {
       <footer className="text-center py-6 text-primary-foreground">
         <div className="container mx-auto">
           <p>&copy; {new Date().getFullYear()} LibraryLaunchpad. All rights reserved.</p>
-          <p className="font-sans font-bold text-white mt-2">Powered by <span className="italic">P</span>aperLab</p>
+          <p className="font-sans font-bold text-white mt-2">Powered by <span className="italic">P</span>aper<span className="italic">L</span>ab</p>
         </div>
       </footer>
 
@@ -357,5 +357,3 @@ export default function Home() {
     </main>
   );
 }
-
-    
