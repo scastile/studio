@@ -154,30 +154,6 @@ export default function Home() {
     }
   };
 
-  const handleCopyImage = async (image: GeneratedImage) => {
-    if (!image.url) return;
-    try {
-      const response = await fetch(image.url);
-      const blob = await response.blob();
-      await navigator.clipboard.write([
-        new ClipboardItem({
-          [blob.type]: blob,
-        }),
-      ]);
-      toast({
-        title: 'Image Copied!',
-        description: 'The image has been copied to your clipboard.',
-      });
-    } catch (error) {
-      console.error('Failed to copy image:', error);
-      toast({
-        variant: 'destructive',
-        title: 'Copy Failed',
-        description: 'Could not copy the image. Your browser may not have permission.',
-      });
-    }
-  };
-
   const handleDownloadImage = (image: GeneratedImage) => {
     if (!image.url) return;
     const link = document.createElement('a');
@@ -294,7 +270,6 @@ export default function Home() {
         onSaveImage={handleSaveImage}
         onRemoveImage={removeImageFromList}
         onImageClick={setLightboxImage}
-        onCopyImage={handleCopyImage}
         onDownloadImage={handleDownloadImage}
         onRefineImage={handleRefineImage}
       />
