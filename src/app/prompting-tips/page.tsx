@@ -3,7 +3,7 @@
 
 import { Header } from '@/components/Header';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { Lightbulb, Target, AspectRatio, Scaling, Pilcrow } from 'lucide-react';
+import { Lightbulb, Target, RectangleHorizontal, Scaling, Pilcrow } from 'lucide-react';
 
 export default function PromptingTipsPage() {
 
@@ -66,7 +66,7 @@ export default function PromptingTipsPage() {
                 <Card className="flex flex-col">
                     <CardHeader>
                         <CardTitle className="font-sans text-2xl flex items-center gap-3">
-                            <AspectRatio className="w-7 h-7 text-primary" />
+                            <RectangleHorizontal className="w-7 h-7 text-primary" />
                             Image Aspect Ratios
                         </CardTitle>
                     </CardHeader>
