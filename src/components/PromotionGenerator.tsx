@@ -84,10 +84,28 @@ export function PromotionGenerator({ onImageGenerated, onIdeaSelect, onReset, ca
 
       recognitionInstance.onerror = (event: any) => {
         console.error('Speech recognition error', event.error);
+        let description = 'An unknown error occurred.';
+        switch (event.error) {
+            case 'network':
+                description = 'Network error. Please check your internet connection.';
+                break;
+            case 'not-allowed':
+            case 'service-not-allowed':
+                description = 'Microphone access denied. Please allow microphone access in your browser settings.';
+                break;
+            case 'no-speech':
+                description = 'No speech was detected. Please try again.';
+                break;
+            case 'audio-capture':
+                description = 'Could not capture audio. Please check your microphone.';
+                break;
+            default:
+                description = `An unexpected error occurred: ${event.error}`;
+        }
         toast({
-          variant: 'destructive',
-          title: 'Speech Recognition Error',
-          description: `There was an error: ${event.error}`,
+            variant: 'destructive',
+            title: 'Speech Recognition Error',
+            description: description,
         });
         setIsListening(false);
       };
