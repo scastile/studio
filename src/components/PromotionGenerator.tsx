@@ -327,9 +327,9 @@ export function PromotionGenerator({ onImageGenerated, onIdeaSelect, onReset, ca
           <div className="space-y-6">
             <InfoCard 
               title="Quick Tips"
-              description="Be specific about your content type and target audience for better results."
-              buttonText="View Examples"
-              onButtonClick={() => toast({ title: "Coming Soon!", description: "Examples will be available in a future update."})}
+              description="Be specific with your topic. Instead of 'Dune', try 'the Dune book series' for better results."
+              buttonText="View Prompting Tips"
+              href="/prompting-tips"
             />
             <InfoCard 
               title="Export Options"
