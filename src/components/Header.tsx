@@ -31,7 +31,7 @@ export function Header({ isSimple = false }: HeaderProps) {
           {!isSimple && (
             <>
               <p className="text-base sm:text-lg text-muted-foreground max-w-2xl mx-auto">
-                Transform your library's engagement with AI-powered promotional campaigns. Generate innovative cross-promotion ideas for books, movies, games, and events that spark creativity and build community.
+                Transform your library's engagement with AI-powered promotional campaigns.<br className="sm:hidden" /> Generate innovative cross-promotion ideas for books, movies, games, and events that spark creativity and build community.
               </p>
               <div className="mt-10 flex justify-center items-center gap-8 sm:gap-12 md:gap-16">
                 <div className="text-center">
