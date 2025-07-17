@@ -3,7 +3,7 @@
 
 import { Header } from '@/components/Header';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { Lightbulb, Target, Scaling, Pilcrow } from 'lucide-react';
+import { Lightbulb, Target, Scaling, Sparkles } from 'lucide-react';
 
 export default function PromptingTipsPage() {
 
@@ -16,7 +16,7 @@ export default function PromptingTipsPage() {
             <Card>
                 <CardHeader>
                     <CardTitle className="text-3xl sm:text-4xl font-sans font-bold text-gray-800 dark:text-gray-100 flex items-center gap-4">
-                        <span className="title-gradient">Prompting Best Practices</span> <Pilcrow className="w-8 h-8 text-primary" />
+                        <span className="title-gradient">Prompting Best Practices</span> <Sparkles className="w-8 h-8 text-primary" />
                     </CardTitle>
                 </CardHeader>
                 <CardContent>
