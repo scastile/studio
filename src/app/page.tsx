@@ -154,61 +154,31 @@ export default function Home() {
     }
   };
 
-    const handleCopyImage = async (image: GeneratedImage) => {
-        if (!image.url) return;
+  const handleCopyImage = async (image: GeneratedImage) => {
+    if (!image.url) return;
 
-        try {
-            const img = new window.Image();
-            img.crossOrigin = "anonymous"; // Important for data URIs
-            img.src = image.url;
-            img.onload = () => {
-                const canvas = document.createElement('canvas');
-                canvas.width = img.width;
-                canvas.height = img.height;
-                const ctx = canvas.getContext('2d');
-                if (!ctx) {
-                    throw new Error('Could not get canvas context');
-                }
-                ctx.drawImage(img, 0, 0);
-                canvas.toBlob(async (blob) => {
-                    if (blob) {
-                        try {
-                            await navigator.clipboard.write([
-                                new ClipboardItem({
-                                    [blob.type]: blob,
-                                }),
-                            ]);
-                            toast({
-                                title: 'Image Copied!',
-                                description: 'The image has been copied to your clipboard.',
-                            });
-                        } catch (copyError) {
-                            console.error('Failed to copy image to clipboard:', copyError);
-                            toast({
-                                variant: 'destructive',
-                                title: 'Copy Failed',
-                                description: 'Could not copy the image to the clipboard.',
-                            });
-                        }
-                    }
-                }, 'image/png');
-            };
-            img.onerror = () => {
-                 toast({
-                    variant: 'destructive',
-                    title: 'Copy Failed',
-                    description: 'Could not load image for copying.',
-                });
-            }
-        } catch (error) {
-            console.error('Failed to copy image:', error);
-            toast({
-                variant: 'destructive',
-                title: 'Copy Failed',
-                description: 'An unexpected error occurred while trying to copy the image.',
-            });
-        }
-    };
+    try {
+        const response = await fetch(image.url);
+        const blob = await response.blob();
+        await navigator.clipboard.write([
+            new ClipboardItem({
+                [blob.type]: blob,
+            }),
+        ]);
+        toast({
+            title: 'Image Copied!',
+            description: 'The image has been copied to your clipboard.',
+        });
+    } catch (error) {
+        console.error('Failed to copy image:', error);
+        toast({
+            variant: 'destructive',
+            title: 'Copy Failed',
+            description: 'Could not copy the image. This may be due to browser limitations.',
+        });
+    }
+  };
+
 
   const handleDownloadImage = (image: GeneratedImage) => {
     if (!image.url) return;
