@@ -1,11 +1,11 @@
 
 'use client';
 
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { Loader2, Camera, ImageIcon } from 'lucide-react';
+import { Loader2, Camera, ImageIcon, Paperclip, X } from 'lucide-react';
 import { v4 as uuidv4 } from 'uuid';
 
 import { generateImage } from '@/ai/flows/generate-image-flow';
@@ -18,6 +18,7 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import type { SavedImage, GeneratedImage } from '@/lib/types';
 import { InfoCard } from './InfoCard';
+import Image from 'next/image';
 
 const imageFormSchema = z.object({
   prompt: z.string().min(3, {
@@ -35,6 +36,8 @@ interface ImageGeneratorProps {
 
 export function ImageGenerator({ onAddImage, onUpdateImage, onRemoveImage, onImageClick }: ImageGeneratorProps) {
   const [isGeneratingNewImage, setIsGeneratingNewImage] = useState(false);
+  const [uploadedImage, setUploadedImage] = useState<string | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
 
   const imageForm = useForm<z.infer<typeof imageFormSchema>>({
@@ -44,6 +47,24 @@ export function ImageGenerator({ onAddImage, onUpdateImage, onRemoveImage, onIma
       aspectRatio: '1:1',
     },
   });
+
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        setUploadedImage(e.target?.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleRemoveImage = () => {
+    setUploadedImage(null);
+    if(fileInputRef.current) {
+      fileInputRef.current.value = '';
+    }
+  };
 
   async function onImageSubmit(values: z.infer<typeof imageFormSchema>) {
     setIsGeneratingNewImage(true);
@@ -61,10 +82,15 @@ export function ImageGenerator({ onAddImage, onUpdateImage, onRemoveImage, onIma
         promptWithRatio += ' --portrait-aspect-ratio-tall';
       }
       
-      const result = await generateImage({ prompt: promptWithRatio });
+      const result = await generateImage({ 
+        prompt: promptWithRatio,
+        imageDataUri: uploadedImage || undefined,
+      });
+
       if (result && result.imageDataUri) {
         onUpdateImage(newImageId, result.imageDataUri);
         imageForm.reset({ prompt: '', aspectRatio: '1:1' });
+        handleRemoveImage();
       } else {
         throw new Error('Image generation failed to return a valid image.');
       }
@@ -108,16 +134,52 @@ export function ImageGenerator({ onAddImage, onUpdateImage, onRemoveImage, onIma
                     render={({ field }) => (
                         <FormItem>
                           <FormControl>
-                            <Input 
-                              placeholder="Enter a prompt for a new image..." 
-                              {...field}
-                              disabled={isGeneratingNewImage}
-                            />
+                            <div className="relative">
+                                <Input 
+                                  placeholder="Enter a prompt for a new image..." 
+                                  {...field}
+                                  disabled={isGeneratingNewImage}
+                                  className="pr-10"
+                                />
+                                <Button 
+                                  type="button" 
+                                  variant="ghost" 
+                                  size="icon" 
+                                  className="absolute right-1 top-1/2 -translate-y-1/2 h-8 w-8"
+                                  onClick={() => fileInputRef.current?.click()}
+                                  disabled={isGeneratingNewImage}
+                                >
+                                  <Paperclip className="h-5 w-5" />
+                                </Button>
+                                <input
+                                  type="file"
+                                  ref={fileInputRef}
+                                  onChange={handleFileChange}
+                                  className="hidden"
+                                  accept="image/*"
+                                />
+                            </div>
                           </FormControl>
                           <FormMessage />
                         </FormItem>
                       )}
                   />
+
+                  {uploadedImage && (
+                    <div className="relative w-24 h-24 border rounded-md">
+                      <Image src={uploadedImage} alt="Uploaded preview" layout="fill" objectFit="cover" className="rounded-md" />
+                      <Button
+                        type="button"
+                        variant="destructive"
+                        size="icon"
+                        className="absolute -top-2 -right-2 h-6 w-6 rounded-full"
+                        onClick={handleRemoveImage}
+                      >
+                        <X className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  )}
+
                   <div className="flex items-center gap-4">
                       <Label htmlFor="aspectRatioGallery" className="text-muted-foreground">Aspect Ratio</Label>
                       <FormField

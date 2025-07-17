@@ -13,6 +13,7 @@ import {z} from 'genkit';
 
 const GenerateImageInputSchema = z.object({
   prompt: z.string().describe('The prompt for which to generate an image.'),
+  imageDataUri: z.string().optional().describe('An optional image for context, as a data URI.'),
 });
 export type GenerateImageInput = z.infer<typeof GenerateImageInputSchema>;
 
@@ -31,10 +32,15 @@ const generateImageFlow = ai.defineFlow(
     inputSchema: GenerateImageInputSchema,
     outputSchema: GenerateImageOutputSchema,
   },
-  async ({prompt}) => {
+  async ({prompt, imageDataUri}) => {
+
+    const flowPrompt = imageDataUri 
+      ? [{ media: { url: imageDataUri } }, { text: prompt }]
+      : prompt;
+
     const {media} = await ai.generate({
       model: 'googleai/gemini-2.0-flash-preview-image-generation',
-      prompt: prompt,
+      prompt: flowPrompt,
       config: {
         responseModalities: ['IMAGE', 'TEXT'],
       },
