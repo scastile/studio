@@ -6,7 +6,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { ref, push } from "firebase/database";
-import { Lightbulb, Loader2, CalendarDays, Info, Film, Book, Tv, Gamepad2, Save, RotateCcw, Archive, FileText, Share, AlertCircle, Image as ImageIcon, Search, Paperclip, X, Mic } from 'lucide-react';
+import { Lightbulb, Loader2, CalendarDays, Info, Film, Book, Tv, Gamepad2, Save, RotateCcw, Archive, FileText, Share, AlertCircle, Image as ImageIcon, Search, Paperclip, X } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -33,14 +33,7 @@ import Image from 'next/image';
 
 const promotionFormSchema = z.object({
   topic: z.string(),
-}).refine(data => data.topic.length > 0, {
-  message: 'A topic is required.',
-  path: ['topic'],
-}).refine(data => data.topic.length >= 3, {
-  message: 'Topic must be at least 3 characters long.',
-  path: ['topic'],
 });
-
 
 interface PromotionGeneratorProps {
   onImageGenerated: (imageUrl: string | null, imageId?: string, prompt?: string) => void;
@@ -62,8 +55,8 @@ export function PromotionGenerator({ onImageGenerated, onIdeaSelect, onReset, ca
   const [isMediaConnectionsDialogOpen, setIsMediaConnectionsDialogOpen] = useState(false);
   const [isSaveSetDialogOpen, setIsSaveSetDialogOpen] = useState(false);
   const [currentTopic, setCurrentTopic] = useState('');
-  const [isListening, setIsListening] = useState(false);
-  const recognitionRef = useRef<any>(null); // To hold the recognition instance
+  const [uploadedImage, setUploadedImage] = useState<string | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
   
   const { toast } = useToast();
 
@@ -74,80 +67,23 @@ export function PromotionGenerator({ onImageGenerated, onIdeaSelect, onReset, ca
     },
   });
 
-  const handleListen = () => {
-    if (isListening) {
-      if (recognitionRef.current) {
-        recognitionRef.current.stop();
-      }
-      setIsListening(false);
-      return;
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        setUploadedImage(e.target?.result as string);
+      };
+      reader.readAsDataURL(file);
     }
-  
-    const SpeechRecognition = window.SpeechRecognition || (window as any).webkitSpeechRecognition;
-    if (!SpeechRecognition) {
-      toast({
-        variant: 'destructive',
-        title: 'Not Supported',
-        description: 'Speech recognition is not supported in your browser.',
-      });
-      return;
-    }
-  
-    const recognitionInstance = new SpeechRecognition();
-    recognitionRef.current = recognitionInstance;
-  
-    recognitionInstance.continuous = false;
-    recognitionInstance.interimResults = false;
-    recognitionInstance.lang = 'en-US';
-  
-    promotionForm.setValue('topic', 'Listening...');
-    setIsListening(true);
-  
-    recognitionInstance.onresult = (event: any) => {
-      const transcript = event.results[0][0].transcript;
-      promotionForm.setValue('topic', transcript);
-    };
-  
-    recognitionInstance.onerror = (event: any) => {
-      console.error('Speech recognition error', event.error);
-      let description = 'An unknown error occurred.';
-      switch (event.error) {
-        case 'network':
-          description = 'Network error. Please check your internet connection.';
-          break;
-        case 'not-allowed':
-        case 'service-not-allowed':
-          description = 'Microphone access denied. Please allow microphone access in your browser settings.';
-          break;
-        case 'no-speech':
-          description = 'No speech was detected. Please try again.';
-          break;
-        case 'audio-capture':
-          description = 'Could not capture audio. Please check your microphone.';
-          break;
-        default:
-          description = `An unexpected error occurred: ${event.error}`;
-      }
-      toast({
-        variant: 'destructive',
-        title: 'Speech Recognition Error',
-        description: description,
-      });
-      if (promotionForm.getValues('topic') === 'Listening...') {
-        promotionForm.setValue('topic', '');
-      }
-    };
-  
-    recognitionInstance.onend = () => {
-      setIsListening(false);
-      if (promotionForm.getValues('topic') === 'Listening...') {
-        promotionForm.setValue('topic', '');
-      }
-    };
-    
-    recognitionInstance.start();
   };
 
+  const handleRemoveImage = () => {
+    setUploadedImage(null);
+    if(fileInputRef.current) {
+      fileInputRef.current.value = '';
+    }
+  };
 
   const handleReset = () => {
     promotionForm.reset({ topic: '' });
@@ -159,6 +95,7 @@ export function PromotionGenerator({ onImageGenerated, onIdeaSelect, onReset, ca
     setCurrentTopic('');
     setIsLoading(false);
     setIsGeneratingTopicImage(false);
+    handleRemoveImage();
     onReset();
   };
 
@@ -179,9 +116,25 @@ export function PromotionGenerator({ onImageGenerated, onIdeaSelect, onReset, ca
 
 
   async function onPromotionSubmit(values: z.infer<typeof promotionFormSchema>) {
-    
+    if (!values.topic && !uploadedImage) {
+        promotionForm.setError('topic', {
+            type: 'manual',
+            message: 'A topic is required if no image is uploaded.',
+        });
+        return;
+    }
+     if (values.topic.length < 3 && !uploadedImage) {
+        promotionForm.setError('topic', {
+            type: 'manual',
+            message: 'Topic must be at least 3 characters long.',
+        });
+        return;
+    }
+    promotionForm.clearErrors('topic');
+
+
     setIsLoading(true);
-    setCurrentTopic(values.topic);
+    setCurrentTopic(values.topic || 'Uploaded Image');
     setIsGeneratingTopicImage(shouldGenerateImage);
     setIdeas([]);
     setRelevantDates([]);
@@ -199,7 +152,7 @@ export function PromotionGenerator({ onImageGenerated, onIdeaSelect, onReset, ca
     }
     
     try {
-      const ideasPromise = generatePromotionIdeas({ topic: values.topic });
+      const ideasPromise = generatePromotionIdeas({ topic: values.topic, imageDataUri: uploadedImage || undefined, });
 
       let promptWithRatio = imagePrompt;
       if (topicImageAspectRatio === '1:1') {
@@ -211,7 +164,7 @@ export function PromotionGenerator({ onImageGenerated, onIdeaSelect, onReset, ca
       }
 
       const imagePromise = shouldGenerateImage 
-        ? generateImage({ prompt: promptWithRatio })
+        ? generateImage({ prompt: promptWithRatio, imageDataUri: uploadedImage || undefined, })
         : Promise.resolve(null);
       
       const ideasResult = await ideasPromise;
@@ -239,6 +192,7 @@ export function PromotionGenerator({ onImageGenerated, onIdeaSelect, onReset, ca
           onImageGenerated(imageResult.imageDataUri, topicImageId, imagePrompt);
         }
         setIsGeneratingTopicImage(false);
+        handleRemoveImage();
       }
 
     } catch (error) {
@@ -350,22 +304,44 @@ export function PromotionGenerator({ onImageGenerated, onIdeaSelect, onReset, ca
                                 {...field}
                                 className="pr-10"
                               />
-                               <Button
-                                type="button"
-                                variant="ghost"
-                                size="icon"
-                                className="absolute right-1 top-1/2 -translate-y-1/2 h-8 w-8"
-                                onClick={handleListen}
-                                disabled={isLoading}
-                              >
-                                <Mic className={`h-5 w-5 ${isListening ? 'text-primary' : ''}`} />
-                              </Button>
+                               <Button 
+                                  type="button" 
+                                  variant="ghost" 
+                                  size="icon" 
+                                  className="absolute right-1 top-1/2 -translate-y-1/2 h-8 w-8"
+                                  onClick={() => fileInputRef.current?.click()}
+                                  disabled={isLoading || isGeneratingTopicImage}
+                                >
+                                  <Paperclip className="h-5 w-5" />
+                                </Button>
+                                <input
+                                  type="file"
+                                  ref={fileInputRef}
+                                  onChange={handleFileChange}
+                                  className="hidden"
+                                  accept="image/*"
+                                />
                             </div>
                           </FormControl>
                           <FormMessage />
                         </FormItem>
                       )}
                     />
+
+                    {uploadedImage && (
+                      <div className="relative w-24 h-24 border rounded-md mt-4">
+                        <Image src={uploadedImage} alt="Uploaded preview" layout="fill" objectFit="cover" className="rounded-md" />
+                        <Button
+                          type="button"
+                          variant="destructive"
+                          size="icon"
+                          className="absolute -top-2 -right-2 h-6 w-6 rounded-full"
+                          onClick={handleRemoveImage}
+                        >
+                          <X className="h-4 w-4" />
+                        </Button>
+                      </div>
+                    )}
                     <div className="flex items-center justify-between h-12 w-full rounded-md border border-input bg-background px-3 py-2 text-sm mt-6">
                       <div className="flex items-center gap-2">
                         <ImageIcon className="h-5 w-5 text-muted-foreground" />
@@ -423,9 +399,9 @@ export function PromotionGenerator({ onImageGenerated, onIdeaSelect, onReset, ca
           <div className="space-y-6">
             <InfoCard 
               title="Quick Tips"
-              description="Be specific with your topic. Instead of 'Dune', try 'the Dune book series' for better results."
-              buttonText="View Prompting Tips"
-              href="/prompting-tips"
+              description="Be specific about your content type and target audience for better results."
+              buttonText="View Examples"
+              onButtonClick={() => toast({ title: "Coming Soon!", description: "Examples will be available in a future update."})}
             />
             <InfoCard 
               title="Export Options"
@@ -617,7 +593,3 @@ export function PromotionGenerator({ onImageGenerated, onIdeaSelect, onReset, ca
     </>
   );
 }
-
-    
-
-    
