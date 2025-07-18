@@ -21,7 +21,7 @@ export function Header({ isSimple = false }: HeaderProps) {
       )}>
         {isSimple && (
             <Link href="/" passHref>
-              <Button variant="outline" size="icon" className="absolute top-4 left-4 sm:top-6 sm:left-6">
+              <Button variant="outline" size="icon" className="absolute -top-8 left-4 sm:-top-4 sm:left-6">
                 <Home className="h-5 w-5" />
                 <span className="sr-only">Home</span>
               </Button>
