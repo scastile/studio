@@ -1,3 +1,4 @@
+
 // src/ai/flows/generate-promotion-ideas.ts
 'use server';
 
@@ -53,7 +54,7 @@ const prompt = ai.definePrompt({
 
   First, analyze the provided topic. Search thoroughly for its presence across all major media formats (Book, Movie, TV Show, Game, etc.). Populate the crossMediaConnections array with ALL relevant versions you find. It is crucial that you include the original source material (e.g., the book a movie was based on) and any significant adaptations. For each connection, provide its type, title, and release year.
   
-  Then, generate a list of creative cross-promotional ideas for the following topic in a library setting. Include ideas for displays, shelf signage, social media posts, video concepts, escape room themes, games, crafts, and signs (one idea for each of the previously listed categories). Also include any other ideas you can think of, especially those that tie into current events or culture.
+  Then, generate a list of creative cross-promotional ideas for the following topic in a library setting. Include ideas for displays, shelf signage, video concepts, escape room themes, games, crafts, and signs (one idea for each of these categories). For the 'Social Media' category, please generate two distinct ideas. Also include any other ideas you can think of, especially those that tie into current events or culture.
 
   Also, identify any relevant dates or holidays associated with the topic. For example, for the movie "Jaws", a relevant date would be July 4th. For a book, it could be the author's birthday or a significant date within the story.
 
@@ -74,3 +75,4 @@ const generatePromotionIdeasFlow = ai.defineFlow(
     return output!;
   }
 );
+
