@@ -1,7 +1,9 @@
 
 'use client';
-import { Lightbulb } from 'lucide-react';
+import { Lightbulb, Home } from 'lucide-react';
+import Link from 'next/link';
 import { cn } from '@/lib/utils';
+import { Button } from './ui/button';
 
 interface HeaderProps {
   isSimple?: boolean;
@@ -15,9 +17,17 @@ export function Header({ isSimple = false }: HeaderProps) {
     )}>
       <div className="container mx-auto px-5">
         <div className={cn(
-          "bg-card rounded-2xl shadow-lg max-w-[1200px] mx-auto p-8 sm:p-12",
+          "bg-card rounded-2xl shadow-lg max-w-[1200px] mx-auto p-8 sm:p-12 relative",
           isSimple && "p-6 sm:p-8"
         )}>
+          {isSimple && (
+            <Link href="/" passHref>
+              <Button variant="outline" size="icon" className="absolute top-4 left-4">
+                <Home className="h-5 w-5" />
+                <span className="sr-only">Home</span>
+              </Button>
+            </Link>
+          )}
           <a href="/" className="inline-block no-underline">
             <div className="flex justify-center items-center gap-4 mb-4">
                 <div className="bg-gradient-to-r from-[#4f46e5] to-[#7c3aed] p-2 rounded-lg">
