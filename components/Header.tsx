@@ -12,21 +12,19 @@ interface HeaderProps {
 export function Header({ isSimple = false }: HeaderProps) {
   return (
     <div className={cn("relative", isSimple ? "pt-12" : "pb-24")}>
-       <div className={cn(
-        "relative",
-        isSimple ? "pb-8" : "sm:pt-16 sm:pb-24 text-center"
-      )}>
-         {isSimple && (
-            <Link href="/" passHref className="absolute top-0 left-0 z-10">
-              <Button variant="outline" size="icon">
-                <Home className="h-5 w-5" />
-                <span className="sr-only">Home</span>
-              </Button>
-            </Link>
-          )}
+      <div className={cn("relative mx-auto max-w-[1200px]")}>
+        {isSimple && (
+          <Link href="/" passHref className="absolute top-[38px] left-0 z-10">
+            <Button variant="outline" size="icon">
+              <Home className="h-5 w-5" />
+              <span className="sr-only">Home</span>
+            </Button>
+          </Link>
+        )}
         <div className={cn(
           "bg-card rounded-2xl shadow-lg",
-          isSimple ? "p-6 sm:p-8" : "p-8 sm:p-12"
+          isSimple ? "p-6 sm:p-8" : "p-8 sm:p-12",
+          isSimple && "text-center"
         )}>
             <a href="/" className="inline-block no-underline">
               <div className="flex justify-center items-center gap-4 mb-4">
