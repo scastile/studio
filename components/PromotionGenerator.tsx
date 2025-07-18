@@ -549,8 +549,8 @@ export function PromotionGenerator({ onImageGenerated, onIdeaSelect, onReset, ca
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {filteredIdeas.map((idea) => (
-                  <IdeaCard 
-                    key={idea.id} 
+                  <IdeaCard
+                    key={idea.id}
                     idea={idea} 
                     onSelect={onIdeaSelect} 
                     onPin={handlePinIdea}
@@ -594,5 +594,7 @@ export function PromotionGenerator({ onImageGenerated, onIdeaSelect, onReset, ca
     </>
   );
 }
+
+    
 
     
