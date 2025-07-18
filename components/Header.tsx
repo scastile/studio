@@ -44,7 +44,7 @@ export function Header({ isSimple = false }: HeaderProps) {
                   <div className="mt-10 flex justify-center items-center gap-8 sm:gap-12 md:gap-16">
                     <div className="text-center">
                       <p className="text-2xl sm:text-3xl md:text-4xl font-bold text-primary">12,500+</p>
-                      <p className="text-xs sm:text-sm text-muted-foreground">Ideas Generated</p>
+                      <p className="text-xs sm:text-sm text-muted-foreground">Campaigns Generated</p>
                     </div>
                     <div className="text-center">
                       <p className="text-2xl sm:text-3xl md:text-4xl font-bold text-primary">1+</p>
