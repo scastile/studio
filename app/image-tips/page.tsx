@@ -23,7 +23,7 @@ export default function ImageTipsPage() {
       // Generate Simple Image
       setIsGeneratingSimple(true);
       try {
-        const simpleResult = await generateImage({ prompt: 'a knight' });
+        const simpleResult = await generateImage({ prompt: 'a knight --wide-aspect-ratio-16:9' });
         if (simpleResult && simpleResult.imageDataUri) {
           setSimpleKnightImage(simpleResult.imageDataUri);
         }
@@ -36,7 +36,7 @@ export default function ImageTipsPage() {
       // Generate Good Image
       setIsGeneratingGood(true);
       try {
-        const goodResult = await generateImage({ prompt: "A knight in shining armor holding a sword, fantasy art." });
+        const goodResult = await generateImage({ prompt: "A knight in shining armor holding a sword, fantasy art. --wide-aspect-ratio-16:9" });
         if (goodResult && goodResult.imageDataUri) {
           setGoodKnightImage(goodResult.imageDataUri);
         }
@@ -49,7 +49,7 @@ export default function ImageTipsPage() {
       // Generate Excellent Image
       setIsGeneratingExcellent(true);
       try {
-        const excellentResult = await generateImage({ prompt: "Photorealistic, cinematic close-up shot of a female knight with a determined expression. She wears ornate, battle-worn steel armor reflecting the dramatic lighting of a fiery sunset. Sparks from a nearby forge float in the air. Low-angle view, making her look heroic. In the style of a high-fantasy movie poster." });
+        const excellentResult = await generateImage({ prompt: "Photorealistic, cinematic close-up shot of a female knight with a determined expression. She wears ornate, battle-worn steel armor reflecting the dramatic lighting of a fiery sunset. Sparks from a nearby forge float in the air. Low-angle view, making her look heroic. In the style of a high-fantasy movie poster. --wide-aspect-ratio-16:9" });
         if (excellentResult && excellentResult.imageDataUri) {
           setExcellentKnightImage(excellentResult.imageDataUri);
         }
@@ -189,14 +189,14 @@ export default function ImageTipsPage() {
                                 <p className="p-3 bg-muted rounded-md mt-1 font-mono text-sm">a knight</p>
                                 <div className="mt-2 rounded-lg overflow-hidden border">
                                     {isGeneratingSimple ? (
-                                        <div className="w-full h-full flex items-center justify-center bg-muted aspect-square">
+                                        <div className="w-full h-full flex items-center justify-center bg-muted aspect-video">
                                             <Skeleton className="w-full h-full" />
                                             <Loader2 className="absolute h-8 w-8 animate-spin text-primary" />
                                         </div>
                                     ) : simpleKnightImage ? (
                                         <Image src={simpleKnightImage} alt="A knight in armor in a field" width={400} height={400} className="object-cover" data-ai-hint="knight field" unoptimized />
                                     ) : (
-                                        <div className="w-full h-full flex items-center justify-center bg-muted aspect-square">
+                                        <div className="w-full h-full flex items-center justify-center bg-muted aspect-video">
                                             <p className="text-destructive">Image failed to load.</p>
                                         </div>
                                     )}
@@ -207,14 +207,14 @@ export default function ImageTipsPage() {
                                 <p className="p-3 bg-muted rounded-md mt-1 font-mono text-sm">A knight in shining armor holding a sword, fantasy art.</p>
                                  <div className="mt-2 rounded-lg overflow-hidden border">
                                     {isGeneratingGood ? (
-                                        <div className="w-full h-full flex items-center justify-center bg-muted aspect-square">
+                                        <div className="w-full h-full flex items-center justify-center bg-muted aspect-video">
                                             <Skeleton className="w-full h-full" />
                                             <Loader2 className="absolute h-8 w-8 animate-spin text-primary" />
                                         </div>
                                     ) : goodKnightImage ? (
                                         <Image src={goodKnightImage} alt="A fantasy art style knight in shining armor" width={400} height={400} className="object-cover" data-ai-hint="fantasy knight" unoptimized />
                                     ) : (
-                                        <div className="w-full h-full flex items-center justify-center bg-muted aspect-square">
+                                        <div className="w-full h-full flex items-center justify-center bg-muted aspect-video">
                                             <p className="text-destructive">Image failed to load.</p>
                                         </div>
                                     )}
@@ -227,14 +227,14 @@ export default function ImageTipsPage() {
                                 </p>
                                 <div className="mt-2 rounded-lg overflow-hidden border">
                                     {isGeneratingExcellent ? (
-                                        <div className="w-full h-full flex items-center justify-center bg-muted aspect-square">
+                                        <div className="w-full h-full flex items-center justify-center bg-muted aspect-video">
                                             <Skeleton className="w-full h-full" />
                                             <Loader2 className="absolute h-8 w-8 animate-spin text-primary" />
                                         </div>
                                     ) : excellentKnightImage ? (
                                         <Image src={excellentKnightImage} alt="A photorealistic female knight in ornate armor at sunset" width={400} height={400} className="object-cover" data-ai-hint="female knight" unoptimized />
                                     ) : (
-                                        <div className="w-full h-full flex items-center justify-center bg-muted aspect-square">
+                                        <div className="w-full h-full flex items-center justify-center bg-muted aspect-video">
                                             <p className="text-destructive">Image failed to load.</p>
                                         </div>
                                     )}
@@ -269,5 +269,7 @@ export default function ImageTipsPage() {
     
 
 
+
+    
 
     
