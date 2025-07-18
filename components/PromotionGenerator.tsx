@@ -317,7 +317,7 @@ export function PromotionGenerator({ onImageGenerated, onIdeaSelect, onReset, ca
 
   return (
     <>
-       <div className="grid grid-cols-1 md:grid-cols-[1fr_300px] gap-[30px]">
+       <div className="grid grid-cols-1 lg:grid-cols-[1fr_300px] gap-[30px]">
           <div className="flex flex-col">
             <div className="bg-card rounded-2xl shadow-lg p-8 flex-grow flex flex-col h-full">
               <p className="font-semibold text-left mb-4 text-lg">What would you like to promote?</p>
@@ -630,5 +630,3 @@ export function PromotionGenerator({ onImageGenerated, onIdeaSelect, onReset, ca
     </>
   );
 }
-
-    
