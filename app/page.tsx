@@ -275,10 +275,10 @@ export default function Home() {
 
   return (
     <main className="min-h-screen">
-      <div className="container mx-auto px-4 max-w-[1200px]">
+      <div className="container mx-auto max-w-[1200px] space-y-8">
         <Header />
 
-        <div className="-mt-16 space-y-8">
+        <div className="space-y-8">
             <PromotionGenerator 
               onImageGenerated={handleInitialImageGenerated} 
               onIdeaSelect={handleIdeaSelect}
