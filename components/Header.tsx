@@ -13,14 +13,14 @@ export function Header({ isSimple = false }: HeaderProps) {
   return (
     <div className={cn("relative", isSimple ? "pt-12" : "pb-24")}>
        {isSimple && (
-            <Link href="/" passHref>
-              <Button variant="outline" size="icon" className="absolute top-[8px] left-0">
+            <Link href="/" passHref className="absolute -top-6 left-0">
+              <Button variant="outline" size="icon">
                 <Home className="h-5 w-5" />
                 <span className="sr-only">Home</span>
               </Button>
             </Link>
           )}
-      <header className={cn(
+      <div className={cn(
         isSimple ? "pb-8" : "sm:pt-16 sm:pb-24 text-center"
       )}>
         <div className={cn(
@@ -59,7 +59,7 @@ export function Header({ isSimple = false }: HeaderProps) {
               </>
             )}
           </div>
-      </header>
+      </div>
     </div>
   );
 }
