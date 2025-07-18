@@ -12,6 +12,7 @@ import { v4 as uuidv4 } from 'uuid';
 
 import { generatePromotionIdeas } from '@/ai/flows/generate-promotion-ideas';
 import { generateImage } from '@/ai/flows/generate-image-flow';
+import { regeneratePromotionIdea } from '@/ai/flows/regenerate-promotion-idea';
 import { Button } from '@/components/ui/button';
 import { Form, FormControl, FormField, FormItem, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
@@ -57,6 +58,7 @@ export function PromotionGenerator({ onImageGenerated, onIdeaSelect, onReset, ca
   const [isMediaConnectionsDialogOpen, setIsMediaConnectionsDialogOpen] = useState(false);
   const [isSaveSetDialogOpen, setIsSaveSetDialogOpen] = useState(false);
   const [currentTopic, setCurrentTopic] = useState('');
+  const [regeneratingIdeaId, setRegeneratingIdeaId] = useState<string | null>(null);
   
   const { toast } = useToast();
 
@@ -138,8 +140,8 @@ export function PromotionGenerator({ onImageGenerated, onIdeaSelect, onReset, ca
       const ideasResult = await ideasPromise;
       if (ideasResult) {
         if(ideasResult.ideas) {
-          const ideasWithTopic = ideasResult.ideas.map(idea => ({ ...idea, topic: values.topic }));
-          setIdeas(ideasWithTopic);
+          const ideasWithIds = ideasResult.ideas.map(idea => ({ ...idea, id: uuidv4(), topic: values.topic }));
+          setIdeas(ideasWithIds);
           const uniqueCategories = [...new Set(ideasResult.ideas.map(idea => idea.category))];
           setCategories(uniqueCategories);
         }
@@ -193,6 +195,42 @@ export function PromotionGenerator({ onImageGenerated, onIdeaSelect, onReset, ca
         title: 'Pinning Failed',
         description: 'There was a problem saving your idea. Please try again.',
       });
+    }
+  }
+
+  async function handleRegenerateIdea(ideaToRegenerate: Idea) {
+    setRegeneratingIdeaId(ideaToRegenerate.id);
+    try {
+      const result = await regeneratePromotionIdea({
+        topic: ideaToRegenerate.topic,
+        category: ideaToRegenerate.category,
+        existingDescription: ideaToRegenerate.description,
+      });
+
+      if (result && result.newDescription) {
+        setIdeas(prevIdeas => 
+          prevIdeas.map(idea => 
+            idea.id === ideaToRegenerate.id 
+              ? { ...idea, description: result.newDescription } 
+              : idea
+          )
+        );
+        toast({
+          title: 'Idea Regenerated!',
+          description: `A new idea for ${ideaToRegenerate.category} has been generated.`,
+        });
+      } else {
+        throw new Error('No new idea was generated.');
+      }
+    } catch (error) {
+      console.error("Error regenerating idea:", error);
+      toast({
+        variant: 'destructive',
+        title: 'Regeneration Failed',
+        description: 'There was a problem generating a new idea. Please try again.',
+      });
+    } finally {
+      setRegeneratingIdeaId(null);
     }
   }
 
@@ -510,8 +548,15 @@ export function PromotionGenerator({ onImageGenerated, onIdeaSelect, onReset, ca
                 ))}
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {filteredIdeas.map((idea, index) => (
-                  <IdeaCard key={index} idea={idea} onSelect={onIdeaSelect} onPin={handlePinIdea} />
+                {filteredIdeas.map((idea) => (
+                  <IdeaCard 
+                    key={idea.id} 
+                    idea={idea} 
+                    onSelect={onIdeaSelect} 
+                    onPin={handlePinIdea}
+                    onRegenerate={handleRegenerateIdea}
+                    isRegenerating={regeneratingIdeaId === idea.id}
+                  />
                 ))}
               </div>
             </>

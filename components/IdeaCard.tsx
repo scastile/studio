@@ -2,20 +2,18 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { getIconForCategory } from '@/components/icons';
 import { Button } from './ui/button';
-import { Info, Pin } from 'lucide-react';
-
-type Idea = {
-  category: string;
-  description: string;
-};
+import { Info, Pin, Dice5, Loader2 } from 'lucide-react';
+import type { Idea } from '@/lib/types';
 
 interface IdeaCardProps {
   idea: Idea;
   onSelect: (idea: Idea) => void;
   onPin: (idea: Idea) => void;
+  onRegenerate: (idea: Idea) => void;
+  isRegenerating: boolean;
 }
 
-export function IdeaCard({ idea, onSelect, onPin }: IdeaCardProps) {
+export function IdeaCard({ idea, onSelect, onPin, onRegenerate, isRegenerating }: IdeaCardProps) {
   const Icon = getIconForCategory(idea.category);
 
   return (
@@ -26,9 +24,14 @@ export function IdeaCard({ idea, onSelect, onPin }: IdeaCardProps) {
             <Icon className="w-6 h-6 text-accent" />
             <span>{idea.category}</span>
           </div>
-          <Button type="button" variant="ghost" size="icon" onClick={() => onPin(idea)} title="Pin this idea">
-            <Pin className="w-5 h-5 text-muted-foreground hover:text-primary" />
-          </Button>
+          <div className="flex items-center">
+            <Button type="button" variant="ghost" size="icon" onClick={() => onRegenerate(idea)} title="Regenerate this idea" disabled={isRegenerating}>
+              {isRegenerating ? <Loader2 className="w-5 h-5 animate-spin" /> : <Dice5 className="w-5 h-5 text-muted-foreground hover:text-primary" />}
+            </Button>
+            <Button type="button" variant="ghost" size="icon" onClick={() => onPin(idea)} title="Pin this idea" disabled={isRegenerating}>
+              <Pin className="w-5 h-5 text-muted-foreground hover:text-primary" />
+            </Button>
+          </div>
         </CardTitle>
       </CardHeader>
       <CardContent className="flex-grow flex flex-col">
@@ -39,6 +42,7 @@ export function IdeaCard({ idea, onSelect, onPin }: IdeaCardProps) {
           size="sm"
           className="mt-4 w-full"
           onClick={() => onSelect(idea)}
+          disabled={isRegenerating}
         >
           <Info className="mr-2 h-4 w-4" />
           More Info

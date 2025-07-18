@@ -1,6 +1,7 @@
 
 
 export type Idea = {
+  id: string;
   topic: string;
   category: string;
   description: string;
