@@ -21,7 +21,7 @@ export type GeneratePromotionIdeasInput = z.infer<typeof GeneratePromotionIdeasI
 const GeneratePromotionIdeasOutputSchema = z.object({
   ideas: z.array(
     z.object({
-      category: z.string().describe('The category of the promotion idea (e.g., Display, Shelf Signage, Social Media, Video, Escape Room).'),
+      category: z.string().describe('The category of the promotion idea (e.g., Display, Shelf Signage, Social Media, Video, Escape Room, Other).'),
       description: z.string().describe('A detailed description of the promotion idea.'),
     })
   ).describe('A list of creative cross-promotional ideas.'),
@@ -53,7 +53,7 @@ const prompt = ai.definePrompt({
 
   First, analyze the provided topic. Search thoroughly for its presence across all major media formats (Book, Movie, TV Show, Game, etc.). Populate the crossMediaConnections array with ALL relevant versions you find. It is crucial that you include the original source material (e.g., the book a movie was based on) and any significant adaptations. For each connection, provide its type, title, and release year.
   
-  Then, generate a list of creative cross-promotional ideas for the following topic in a library setting. Include ideas for displays, shelf signage, video concepts, escape room themes, games, crafts, and signs (one idea for each of these categories). For the 'Social Media' category, please generate two distinct ideas. Also include any other ideas you can think of, especially those that tie into current events or culture.
+  Then, generate a list of creative cross-promotional ideas for the following topic in a library setting. Include one idea for each of the following categories: Display, Shelf Signage, Video, Escape Room, Game, Craft, and Sign. For the 'Social Media' category, please generate two distinct ideas. For the 'Other' category, please generate three distinct ideas that tie into current events or pop culture.
 
   Also, identify any relevant dates or holidays associated with the topic. For example, for the movie "Jaws", a relevant date would be July 4th. For a book, it could be the author's birthday or a significant date within the story.
 
@@ -74,5 +74,6 @@ const generatePromotionIdeasFlow = ai.defineFlow(
     return output!;
   }
 );
+
 
 
