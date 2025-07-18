@@ -1,7 +1,7 @@
 
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import {
   Dialog,
@@ -24,6 +24,12 @@ interface SaveSetDialogProps {
 
 export function SaveSetDialog({ isOpen, onClose, onSave, topic }: SaveSetDialogProps) {
   const [campaignName, setCampaignName] = useState('');
+
+  useEffect(() => {
+    if (isOpen) {
+      setCampaignName(topic);
+    }
+  }, [isOpen, topic]);
 
   const handleSave = () => {
     if (campaignName.trim()) {
