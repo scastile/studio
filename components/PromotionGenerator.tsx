@@ -1,11 +1,11 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { ref, push } from "firebase/database";
-import { Lightbulb, Loader2, CalendarDays, Info, Film, Book, Tv, Gamepad2, Save, Archive, Image as ImageIcon, Search, RotateCcw } from 'lucide-react';
+import { Lightbulb, Loader2, CalendarDays, Info, Film, Book, Tv, Gamepad2, Save, Archive, Image as ImageIcon, Search, RotateCcw, X, Paperclip } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -29,11 +29,10 @@ import { database } from '@/lib/utils';
 import { SaveSetDialog } from './SaveSetDialog';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { InfoCard } from './InfoCard';
+import Image from 'next/image';
 
 const promotionFormSchema = z.object({
-  topic: z.string().min(3, {
-    message: 'Topic must be at least 3 characters long.',
-  }),
+  topic: z.string(),
 });
 
 interface PromotionGeneratorProps {
@@ -58,6 +57,8 @@ export function PromotionGenerator({ onImageGenerated, onIdeaSelect, onReset, ca
   const [isSaveSetDialogOpen, setIsSaveSetDialogOpen] = useState(false);
   const [currentTopic, setCurrentTopic] = useState('');
   const [regeneratingIdeaId, setRegeneratingIdeaId] = useState<string | null>(null);
+  const [uploadedImage, setUploadedImage] = useState<string | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
   
   const { toast } = useToast();
 
@@ -67,6 +68,24 @@ export function PromotionGenerator({ onImageGenerated, onIdeaSelect, onReset, ca
       topic: '',
     },
   });
+  
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        setUploadedImage(e.target?.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleRemoveImage = () => {
+    setUploadedImage(null);
+    if(fileInputRef.current) {
+      fileInputRef.current.value = '';
+    }
+  };
 
   const handleReset = () => {
     promotionForm.reset({ topic: '' });
@@ -79,6 +98,7 @@ export function PromotionGenerator({ onImageGenerated, onIdeaSelect, onReset, ca
     onTopicChange('');
     setIsLoading(false);
     setIsGeneratingTopicImage(false);
+    handleRemoveImage();
     onReset();
   };
 
@@ -87,7 +107,9 @@ export function PromotionGenerator({ onImageGenerated, onIdeaSelect, onReset, ca
       promotionForm.setValue('topic', campaignToLoad.topic);
       setCurrentTopic(campaignToLoad.topic);
       onTopicChange(campaignToLoad.topic);
-      setIdeas(campaignToLoad.ideas || []);
+      // Ensure ideas have unique IDs when loaded from a campaign
+      const ideasWithIds = (campaignToLoad.ideas || []).map(idea => ({ ...idea, id: idea.id || uuidv4() }));
+      setIdeas(ideasWithIds);
       setRelevantDates(campaignToLoad.relevantDates || []);
       setCrossMediaConnections(campaignToLoad.crossMediaConnections || []);
       const uniqueCategories = [...new Set((campaignToLoad.ideas || []).map(idea => idea.category))];
@@ -100,7 +122,23 @@ export function PromotionGenerator({ onImageGenerated, onIdeaSelect, onReset, ca
 
 
   async function onPromotionSubmit(values: z.infer<typeof promotionFormSchema>) {
-    const topic = values.topic;
+    if (!values.topic && !uploadedImage) {
+        promotionForm.setError('topic', {
+            type: 'manual',
+            message: 'A topic is required if no image is uploaded.',
+        });
+        return;
+    }
+     if (values.topic.length < 3 && !uploadedImage) {
+        promotionForm.setError('topic', {
+            type: 'manual',
+            message: 'Topic must be at least 3 characters long.',
+        });
+        return;
+    }
+    promotionForm.clearErrors('topic');
+
+    const topic = values.topic || 'Uploaded Image';
     setIsLoading(true);
     setCurrentTopic(topic);
     onTopicChange(topic);
@@ -121,7 +159,7 @@ export function PromotionGenerator({ onImageGenerated, onIdeaSelect, onReset, ca
     }
     
     try {
-      const ideasPromise = generatePromotionIdeas({ topic: values.topic });
+      const ideasPromise = generatePromotionIdeas({ topic: topic, imageDataUri: uploadedImage || undefined, });
 
       let promptWithRatio = imagePrompt;
       if (topicImageAspectRatio === '1:1') {
@@ -133,13 +171,13 @@ export function PromotionGenerator({ onImageGenerated, onIdeaSelect, onReset, ca
       }
 
       const imagePromise = shouldGenerateImage 
-        ? generateImage({ prompt: promptWithRatio })
+        ? generateImage({ prompt: promptWithRatio, imageDataUri: uploadedImage || undefined, })
         : Promise.resolve(null);
       
       const ideasResult = await ideasPromise;
       if (ideasResult) {
         if(ideasResult.ideas) {
-          const ideasWithIds = ideasResult.ideas.map(idea => ({ ...idea, id: uuidv4(), topic: values.topic }));
+          const ideasWithIds = ideasResult.ideas.map(idea => ({ ...idea, id: uuidv4(), topic: topic }));
           setIdeas(ideasWithIds);
           const uniqueCategories = [...new Set(ideasResult.ideas.map(idea => idea.category))];
           setCategories(uniqueCategories);
@@ -161,6 +199,7 @@ export function PromotionGenerator({ onImageGenerated, onIdeaSelect, onReset, ca
           onImageGenerated(imageResult.imageDataUri, topicImageId, imagePrompt);
         }
         setIsGeneratingTopicImage(false);
+        handleRemoveImage();
       }
 
     } catch (error) {
@@ -198,6 +237,14 @@ export function PromotionGenerator({ onImageGenerated, onIdeaSelect, onReset, ca
   }
 
   async function handleRegenerateIdea(ideaToRegenerate: Idea) {
+    if(!ideaToRegenerate.id) {
+      toast({
+        variant: 'destructive',
+        title: 'Cannot regenerate idea',
+        description: 'This idea is missing a unique identifier.',
+      });
+      return;
+    }
     setRegeneratingIdeaId(ideaToRegenerate.id);
     try {
       const result = await regeneratePromotionIdea({
@@ -302,19 +349,54 @@ export function PromotionGenerator({ onImageGenerated, onIdeaSelect, onReset, ca
                       render={({ field }) => (
                         <FormItem>
                           <FormControl>
+                            <div className="relative">
                               <Input
                                 placeholder="e.g., 'The Great Gatsby', 'Minecraft', 'Stranger Things'"
                                 {...field}
+                                className="pr-10 text-base"
                               />
+                               <Button 
+                                  type="button" 
+                                  variant="ghost" 
+                                  size="icon" 
+                                  className="absolute right-1 top-1/2 -translate-y-1/2 h-8 w-8"
+                                  onClick={() => fileInputRef.current?.click()}
+                                  disabled={isLoading || isGeneratingTopicImage}
+                                >
+                                  <Paperclip className="h-5 w-5" />
+                                </Button>
+                                <input
+                                  type="file"
+                                  ref={fileInputRef}
+                                  onChange={handleFileChange}
+                                  className="hidden"
+                                  accept="image/*"
+                                />
+                            </div>
                           </FormControl>
                           <FormMessage />
                         </FormItem>
                       )}
                     />
-                    <div className="flex items-center justify-between h-12 w-full rounded-md border border-input bg-background px-3 py-2 text-sm mt-6">
+
+                    {uploadedImage && (
+                      <div className="relative mt-4 h-24 w-24 rounded-md border">
+                        <Image src={uploadedImage} alt="Uploaded preview" layout="fill" objectFit="cover" className="rounded-md" />
+                        <Button
+                          type="button"
+                          variant="destructive"
+                          size="icon"
+                          className="absolute -right-2 -top-2 h-6 w-6 rounded-full"
+                          onClick={handleRemoveImage}
+                        >
+                          <X className="h-4 w-4" />
+                        </Button>
+                      </div>
+                    )}
+                    <div className="mt-6 flex h-12 w-full items-center justify-between rounded-md border border-input bg-background px-3 py-2 text-sm">
                       <div className="flex items-center gap-2">
                         <ImageIcon className="h-5 w-5 text-muted-foreground" />
-                        <Label htmlFor="image-generation-switch" className="text-foreground font-bold">
+                        <Label htmlFor="image-generation-switch" className="font-bold text-foreground">
                           Generate AI Image with topic
                         </Label>
                       </div>
@@ -327,7 +409,7 @@ export function PromotionGenerator({ onImageGenerated, onIdeaSelect, onReset, ca
                     </div>
 
                     {shouldGenerateImage && (
-                      <div className="flex justify-start items-center gap-4 mt-6">
+                      <div className="mt-6 flex items-center justify-start gap-4">
                         <Label htmlFor="aspectRatio" className="text-muted-foreground">Aspect Ratio</Label>
                         <Select
                           defaultValue={topicImageAspectRatio}
@@ -346,8 +428,8 @@ export function PromotionGenerator({ onImageGenerated, onIdeaSelect, onReset, ca
                       </div>
                     )}
                   </div>
-                  <div className="flex flex-col sm:flex-row gap-2">
-                    <Button type="submit" disabled={isLoading || isGeneratingTopicImage} className="flex-grow font-bold bg-gradient-to-r from-[#4f46e5] to-[#7c3aed] text-white py-6 px-7 rounded-xl text-lg shadow-[0_4px_15px_rgba(79,70,229,0.3)] hover:shadow-[0_6px_20px_rgba(79,70,229,0.4)] hover:translate-y-0.5 transition-all duration-300 active:translate-y-0" size="lg">
+                  <div className="flex flex-col gap-2 sm:flex-row">
+                    <Button type="submit" disabled={isLoading || isGeneratingTopicImage} className="w-full rounded-xl bg-gradient-to-r from-[#4f46e5] to-[#7c3aed] py-6 px-7 text-lg font-bold text-white shadow-[0_4px_15px_rgba(79,70,229,0.3)] transition-all duration-300 hover:translate-y-0.5 hover:shadow-[0_6px_20px_rgba(79,70,229,0.4)] active:translate-y-0" size="lg">
                       {isLoading || isGeneratingTopicImage ? (
                         <>
                           <Loader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -360,10 +442,6 @@ export function PromotionGenerator({ onImageGenerated, onIdeaSelect, onReset, ca
                         </>
                       )}
                     </Button>
-                    <Button type="button" onClick={handleReset} variant="outline" className="py-6 px-7 rounded-xl text-lg" size="lg">
-                      <RotateCcw className="mr-2 h-4 w-4" />
-                      Reset
-                    </Button>
                   </div>
                 </form>
               </Form>
@@ -372,8 +450,8 @@ export function PromotionGenerator({ onImageGenerated, onIdeaSelect, onReset, ca
           <div className="space-y-6">
             <InfoCard 
               title="Quick Tips"
-              description="Be specific about your content type and target audience for better results."
-              buttonText="View Examples"
+              description="For better results, be specific about your content type and target audience."
+              buttonText="Prompting Best Practices"
               href="/prompting-tips"
             />
             <InfoCard 
@@ -388,8 +466,8 @@ export function PromotionGenerator({ onImageGenerated, onIdeaSelect, onReset, ca
        {campaignToLoad && (
         <Card>
           <CardHeader>
-            <CardTitle className="flex items-center gap-3 text-lg font-sans">
-              <Archive className="w-6 h-6 text-primary" />
+            <CardTitle className="flex items-center gap-3 font-sans text-lg">
+              <Archive className="h-6 w-6 text-primary" />
               <span>Currently Loaded Campaign</span>
             </CardTitle>
             <CardDescription>
@@ -420,8 +498,8 @@ export function PromotionGenerator({ onImageGenerated, onIdeaSelect, onReset, ca
       {!campaignToLoad && showResults && (
          <Card>
           <CardHeader>
-            <CardTitle className="flex items-center gap-3 text-lg font-sans">
-              <Search className="w-6 h-6 text-primary" />
+            <CardTitle className="flex items-center gap-3 font-sans text-lg">
+              <Search className="h-6 w-6 text-primary" />
               <span>Current Search</span>
             </CardTitle>
              <CardDescription>
@@ -433,12 +511,12 @@ export function PromotionGenerator({ onImageGenerated, onIdeaSelect, onReset, ca
               <p><span className="font-semibold text-foreground">Topic:</span> {currentTopic}</p>
             </div>
           </CardContent>
-          <CardFooter className="flex-col sm:flex-row gap-2">
+          <CardFooter className="flex-col gap-2 sm:flex-row">
             <Button
               onClick={() => setIsSaveSetDialogOpen(true)}
               size="lg"
               variant="outline"
-              className="w-full mt-auto bg-transparent border-2 border-primary text-primary hover:bg-primary hover:text-primary-foreground"
+              className="mt-auto w-full border-2 border-primary bg-transparent text-primary hover:bg-primary hover:text-primary-foreground"
             >
               <Save className="mr-2 h-5 w-5" />
               Save Idea Set
@@ -447,7 +525,7 @@ export function PromotionGenerator({ onImageGenerated, onIdeaSelect, onReset, ca
                 onClick={handleReset}
                 size="lg"
                 variant="destructive"
-                className="w-full mt-auto"
+                className="mt-auto w-full"
               >
                 <RotateCcw className="mr-2 h-5 w-5" />
                 Reset Search
@@ -458,9 +536,9 @@ export function PromotionGenerator({ onImageGenerated, onIdeaSelect, onReset, ca
 
       {(isLoading || isGeneratingTopicImage) && (
         <div className="mt-12">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
             {[...Array(6)].map((_, i) => (
-              <div key={i} className="flex flex-col space-y-3 p-6 border rounded-lg bg-card">
+              <div key={i} className="flex flex-col space-y-3 rounded-lg border bg-card p-6">
                 <div className="flex items-center space-x-4">
                     <Skeleton className="h-8 w-8 rounded-full" />
                     <Skeleton className="h-6 w-32" />
@@ -475,12 +553,12 @@ export function PromotionGenerator({ onImageGenerated, onIdeaSelect, onReset, ca
 
       { showResults && (
         <div className="mt-12">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
             {relevantDates.length > 0 && (
               <Card>
                 <CardHeader>
-                  <CardTitle className="flex items-center gap-3 text-lg font-sans">
-                    <CalendarDays className="w-6 h-6 text-primary" />
+                  <CardTitle className="flex items-center gap-3 font-sans text-lg">
+                    <CalendarDays className="h-6 w-6 text-primary" />
                     <span>Relevant Dates</span>
                   </CardTitle>
                 </CardHeader>
@@ -498,8 +576,8 @@ export function PromotionGenerator({ onImageGenerated, onIdeaSelect, onReset, ca
              {crossMediaConnections.length > 0 && (
               <Card className="flex flex-col">
                 <CardHeader>
-                  <CardTitle className="flex items-center gap-3 text-lg font-sans">
-                    <Film className="w-6 h-6 text-primary" />
+                  <CardTitle className="flex items-center gap-3 font-sans text-lg">
+                    <Film className="h-6 w-6 text-primary" />
                     <span>Media Connections</span>
                   </CardTitle>
                 </CardHeader>
@@ -527,11 +605,11 @@ export function PromotionGenerator({ onImageGenerated, onIdeaSelect, onReset, ca
           
           {ideas.length > 0 && (
             <>
-              <div className="flex flex-wrap justify-center gap-2 my-8">
+              <div className="my-8 flex flex-wrap justify-center gap-2">
                 <Badge
                   variant={selectedCategory === null ? 'default' : 'secondary'}
                   onClick={() => setSelectedCategory(null)}
-                  className="cursor-pointer text-base px-4 py-2"
+                  className="cursor-pointer px-4 py-2 text-base"
                 >
                   All
                 </Badge>
@@ -540,13 +618,13 @@ export function PromotionGenerator({ onImageGenerated, onIdeaSelect, onReset, ca
                     key={category}
                     variant={selectedCategory === category ? 'default' : 'secondary'}
                     onClick={() => setSelectedCategory(category)}
-                    className="cursor-pointer text-base px-4 py-2"
+                    className="cursor-pointer px-4 py-2 text-base"
                   >
                     {category}
                   </Badge>
                 ))}
               </div>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
                 {filteredIdeas.map((idea) => (
                   <IdeaCard
                     key={idea.id}
@@ -566,8 +644,8 @@ export function PromotionGenerator({ onImageGenerated, onIdeaSelect, onReset, ca
       <Dialog open={isMediaConnectionsDialogOpen} onOpenChange={setIsMediaConnectionsDialogOpen}>
         <DialogContent className="sm:max-w-lg">
           <DialogHeader>
-            <DialogTitle className="flex items-center gap-3 text-2xl font-headline">
-              <Film className="w-8 h-8 text-primary" />
+            <DialogTitle className="flex items-center gap-3 font-headline text-2xl">
+              <Film className="h-8 w-8 text-primary" />
               All Media Connections
             </DialogTitle>
             <DialogDescription>
