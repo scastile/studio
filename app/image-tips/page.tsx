@@ -5,6 +5,7 @@ import { Header } from '@/components/Header';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { CheckCircle2, Pencil, Sparkles, Image as ImageIcon, Wand2, Save } from 'lucide-react';
 import { Paperclip } from 'lucide-react';
+import Image from 'next/image';
 
 export default function ImageTipsPage() {
   return (
@@ -131,16 +132,25 @@ export default function ImageTipsPage() {
                             <div>
                                 <h4 className="text-lg font-semibold text-foreground">Simple Prompt:</h4>
                                 <p className="p-3 bg-muted rounded-md mt-1 font-mono text-sm">a knight</p>
+                                <div className="mt-2 relative aspect-square w-full rounded-lg overflow-hidden border">
+                                    <Image src="https://storage.googleapis.com/project-1-428616.appspot.com/a-knight-simple.png" alt="A knight in armor in a field" layout="fill" objectFit="cover" data-ai-hint="knight field" />
+                                </div>
                             </div>
                              <div>
                                 <h4 className="text-lg font-semibold text-foreground">Good Prompt:</h4>
                                 <p className="p-3 bg-muted rounded-md mt-1 font-mono text-sm">A knight in shining armor holding a sword, fantasy art.</p>
+                                 <div className="mt-2 relative aspect-square w-full rounded-lg overflow-hidden border">
+                                    <Image src="https://storage.googleapis.com/project-1-428616.appspot.com/a-knight-good.png" alt="A fantasy art style knight in shining armor" layout="fill" objectFit="cover" data-ai-hint="knight fantasy" />
+                                </div>
                             </div>
                              <div>
                                 <h4 className="text-lg font-semibold text-foreground">Excellent, Detailed Prompt:</h4>
                                 <p className="p-3 bg-muted rounded-md mt-1 font-mono text-sm">
                                     <strong>Photorealistic, cinematic close-up shot</strong> of a <strong>female knight</strong> with a determined expression. She wears <strong>ornate, battle-worn steel armor</strong> reflecting the <strong>dramatic lighting</strong> of a fiery sunset. <strong>Sparks from a nearby forge</strong> float in the air. <strong>Low-angle view</strong>, making her look heroic. <strong>In the style of a high-fantasy movie poster</strong>.
                                 </p>
+                                <div className="mt-2 relative aspect-square w-full rounded-lg overflow-hidden border">
+                                    <Image src="https://storage.googleapis.com/project-1-428616.appspot.com/a-knight-excellent.png" alt="A photorealistic female knight in ornate armor at sunset" layout="fill" objectFit="cover" data-ai-hint="female knight" />
+                                </div>
                             </div>
                         </CardContent>
                     </Card>
@@ -160,5 +170,3 @@ export default function ImageTipsPage() {
     </main>
   );
 }
-
-    
