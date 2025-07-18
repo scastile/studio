@@ -3,11 +3,12 @@
 
 import { Header } from '@/components/Header';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { CheckCircle2, Pencil, Sparkles, Image as ImageIcon, Paperclip } from 'lucide-react';
+import { CheckCircle2, Pencil, Sparkles, Image as ImageIcon } from 'lucide-react';
+import { Paperclip } from 'lucide-react';
 
 export default function ImageTipsPage() {
   return (
-    <main className="min-h-screen flex flex-col bg-background">
+    <main className="min-h-screen flex flex-col bg-gradient-to-br from-[#667eea] to-[#764ba2]">
       <div className="container mx-auto max-w-[1200px] flex-grow space-y-8 pt-8">
         <Header isSimple={true} />
 
@@ -132,7 +133,7 @@ export default function ImageTipsPage() {
           <p>&copy; {new Date().getFullYear()} LibraryLaunchpad. All rights reserved.</p>
           <p className="font-sans font-bold text-white mt-2 flex justify-center items-center gap-2">
             <Paperclip className="inline-block h-4 w-4" />
-            Powered by <span className="italic">P</span>aper<span className="italic">L</span>ab
+            Powered by PaperLab
           </p>
         </div>
       </footer>
