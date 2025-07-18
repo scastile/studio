@@ -6,7 +6,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { ref, push } from "firebase/database";
-import { Lightbulb, Loader2, CalendarDays, Info, Film, Book, Tv, Gamepad2, Save, Archive, Image as ImageIcon, Search } from 'lucide-react';
+import { Lightbulb, Loader2, CalendarDays, Info, Film, Book, Tv, Gamepad2, Save, Archive, Image as ImageIcon, Search, RotateCcw } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -310,7 +310,7 @@ export function PromotionGenerator({ onImageGenerated, onIdeaSelect, onReset, ca
                     )}
                   </div>
                   <div className="flex flex-col sm:flex-row gap-2">
-                    <Button type="submit" disabled={isLoading || isGeneratingTopicImage} className="w-full font-bold bg-gradient-to-r from-[#4f46e5] to-[#7c3aed] text-white py-6 px-7 rounded-xl text-lg shadow-[0_4px_15px_rgba(79,70,229,0.3)] hover:shadow-[0_6px_20px_rgba(79,70,229,0.4)] hover:translate-y-0.5 transition-all duration-300 active:translate-y-0" size="lg">
+                    <Button type="submit" disabled={isLoading || isGeneratingTopicImage} className="flex-grow font-bold bg-gradient-to-r from-[#4f46e5] to-[#7c3aed] text-white py-6 px-7 rounded-xl text-lg shadow-[0_4px_15px_rgba(79,70,229,0.3)] hover:shadow-[0_6px_20px_rgba(79,70,229,0.4)] hover:translate-y-0.5 transition-all duration-300 active:translate-y-0" size="lg">
                       {isLoading || isGeneratingTopicImage ? (
                         <>
                           <Loader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -322,6 +322,10 @@ export function PromotionGenerator({ onImageGenerated, onIdeaSelect, onReset, ca
                           Generate Promotion Ideas
                         </>
                       )}
+                    </Button>
+                    <Button type="button" onClick={handleReset} variant="outline" className="py-6 px-7 rounded-xl text-lg" size="lg">
+                      <RotateCcw className="mr-2 h-4 w-4" />
+                      Reset
                     </Button>
                   </div>
                 </form>
@@ -525,5 +529,3 @@ export function PromotionGenerator({ onImageGenerated, onIdeaSelect, onReset, ca
     </>
   );
 }
-
-    
