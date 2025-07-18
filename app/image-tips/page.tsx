@@ -13,8 +13,10 @@ import { Skeleton } from '@/components/ui/skeleton';
 export default function ImageTipsPage() {
   const [simpleKnightImage, setSimpleKnightImage] = useState<string | null>(null);
   const [goodKnightImage, setGoodKnightImage] = useState<string | null>(null);
+  const [excellentKnightImage, setExcellentKnightImage] = useState<string | null>(null);
   const [isGeneratingSimple, setIsGeneratingSimple] = useState(true);
   const [isGeneratingGood, setIsGeneratingGood] = useState(true);
+  const [isGeneratingExcellent, setIsGeneratingExcellent] = useState(true);
 
   useEffect(() => {
     const generateImages = async () => {
@@ -42,6 +44,19 @@ export default function ImageTipsPage() {
         console.error('Failed to generate good knight image:', error);
       } finally {
         setIsGeneratingGood(false);
+      }
+      
+      // Generate Excellent Image
+      setIsGeneratingExcellent(true);
+      try {
+        const excellentResult = await generateImage({ prompt: "Photorealistic, cinematic close-up shot of a female knight with a determined expression. She wears ornate, battle-worn steel armor reflecting the dramatic lighting of a fiery sunset. Sparks from a nearby forge float in the air. Low-angle view, making her look heroic. In the style of a high-fantasy movie poster." });
+        if (excellentResult && excellentResult.imageDataUri) {
+          setExcellentKnightImage(excellentResult.imageDataUri);
+        }
+      } catch (error) {
+        console.error('Failed to generate excellent knight image:', error);
+      } finally {
+        setIsGeneratingExcellent(false);
       }
     };
 
@@ -211,7 +226,18 @@ export default function ImageTipsPage() {
                                     <strong>Photorealistic, cinematic close-up shot</strong> of a <strong>female knight</strong> with a determined expression. She wears <strong>ornate, battle-worn steel armor</strong> reflecting the <strong>dramatic lighting</strong> of a fiery sunset. <strong>Sparks from a nearby forge</strong> float in the air. <strong>Low-angle view</strong>, making her look heroic. <strong>In the style of a high-fantasy movie poster</strong>.
                                 </p>
                                 <div className="mt-2 rounded-lg overflow-hidden border">
-                                    <Image src="https://placehold.co/400x400.png" alt="A photorealistic female knight in ornate armor at sunset" width={400} height={400} className="object-cover" data-ai-hint="female knight" />
+                                    {isGeneratingExcellent ? (
+                                        <div className="w-full h-full flex items-center justify-center bg-muted aspect-square">
+                                            <Skeleton className="w-full h-full" />
+                                            <Loader2 className="absolute h-8 w-8 animate-spin text-primary" />
+                                        </div>
+                                    ) : excellentKnightImage ? (
+                                        <Image src={excellentKnightImage} alt="A photorealistic female knight in ornate armor at sunset" width={400} height={400} className="object-cover" data-ai-hint="female knight" unoptimized />
+                                    ) : (
+                                        <div className="w-full h-full flex items-center justify-center bg-muted aspect-square">
+                                            <p className="text-destructive">Image failed to load.</p>
+                                        </div>
+                                    )}
                                 </div>
                             </div>
                         </CardContent>
@@ -242,3 +268,6 @@ export default function ImageTipsPage() {
 
     
 
+
+
+    
