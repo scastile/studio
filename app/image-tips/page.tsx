@@ -133,7 +133,7 @@ export default function ImageTipsPage() {
           <p>&copy; {new Date().getFullYear()} LibraryLaunchpad. All rights reserved.</p>
           <p className="font-sans font-bold text-white mt-2 flex justify-center items-center gap-2">
             <Paperclip className="inline-block h-4 w-4" />
-            Powered by PaperLab
+            Powered by <i>P</i>aper<i>L</i>ab
           </p>
         </div>
       </footer>
