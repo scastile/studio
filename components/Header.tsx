@@ -14,7 +14,7 @@ export function Header({ isSimple = false }: HeaderProps) {
     <div className={cn("relative", isSimple ? "pt-12" : "pb-24")}>
        {isSimple && (
             <Link href="/" passHref>
-              <Button variant="outline" size="icon" className="absolute top-[18px] left-0">
+              <Button variant="outline" size="icon" className="absolute top-[8px] left-0">
                 <Home className="h-5 w-5" />
                 <span className="sr-only">Home</span>
               </Button>
