@@ -3,7 +3,7 @@
 
 import { Header } from '@/components/Header';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { Lightbulb, Target, Scaling, Sparkles, Paperclip } from 'lucide-react';
+import { Lightbulb, Target, Scaling, Sparkles, Paperclip, Dice5, Save } from 'lucide-react';
 
 export default function PromptingTipsPage() {
 
@@ -66,17 +66,16 @@ export default function PromptingTipsPage() {
                 <Card className="flex flex-col">
                     <CardHeader>
                         <CardTitle className="font-sans text-2xl flex items-center gap-3">
-                            <Scaling className="w-7 h-7 text-primary" />
-                            Image Aspect Ratios
+                            <Dice5 className="w-7 h-7 text-primary" />
+                            Never Settle: Roll the Dice
                         </CardTitle>
                     </CardHeader>
                     <CardContent className="flex-grow space-y-4">
-                        <p className="text-muted-foreground">When generating an image with your topic, choosing the right aspect ratio is key for its intended use.</p>
-                        <p className="text-sm text-foreground font-semibold">Choose your ratio:</p>
+                        <p className="text-muted-foreground">Don't love a particular suggestion? Click the dice icon on any idea card to instantly generate a new, fresh idea for that same category. It's perfect for quick brainstorming and finding the perfect fit for your library.</p>
+                        <p className="text-sm text-foreground font-semibold">Pro Tip:</p>
                         <ul className="list-disc list-inside text-muted-foreground text-sm space-y-1">
-                            <li><span className="font-bold">Square (1:1):</span> Perfect for Instagram posts, profile pictures, or book cover mockups.</li>
-                            <li><span className="font-bold">Wide (16:9):</span> Ideal for website banners, digital signage, flyers, or video thumbnails.</li>
-                            <li><span className="font-bold">Tall (9:16):</span> Best for social media stories (Instagram, Facebook, TikTok) or posters.</li>
+                            <li>Use the regeneration feature to explore different angles for the same promotion type.</li>
+                            <li>The AI will avoid giving you the same idea twice, so you'll always get something new.</li>
                         </ul>
                     </CardContent>
                 </Card>
@@ -84,18 +83,17 @@ export default function PromptingTipsPage() {
                 <Card className="flex flex-col">
                     <CardHeader>
                         <CardTitle className="font-sans text-2xl flex items-center gap-3">
-                            <Scaling className="w-7 h-7 text-primary" />
-                            Iterate and Combine
+                            <Save className="w-7 h-7 text-primary" />
+                            Build & Save Your Campaign
                         </CardTitle>
                     </CardHeader>
                     <CardContent className="flex-grow space-y-4">
-                        <p className="text-muted-foreground">Don't stop at one search. The best campaigns come from combining ideas from multiple related topics.</p>
-                        <p className="text-sm text-foreground font-semibold">How to refine:</p>
+                        <p className="text-muted-foreground">Once you're happy with your generated ideas, save them as a campaign! This bundles your topic, ideas, dates, and media connections together so you can come back to them anytime.</p>
+                        <p className="text-sm text-foreground font-semibold">How to use campaigns:</p>
                         <ul className="list-disc list-inside text-muted-foreground text-sm space-y-1">
-                            <li>Run a search for a book, then another for its movie adaptation.</li>
-                            <li>Pin the best ideas from each search.</li>
-                            <li>Use the "More Info" button to elaborate on your favorite ideas and build a detailed plan.</li>
-                            <li>Save your final collection as a named campaign.</li>
+                            <li>Pin your favorite ideas from one or more searches.</li>
+                            <li>When ready, click "Save Idea Set" and give your campaign a memorable name.</li>
+                            <li>Load saved campaigns later to review your plans or share them with your team.</li>
                         </ul>
                     </CardContent>
                 </Card>
@@ -114,5 +112,3 @@ export default function PromptingTipsPage() {
     </main>
   );
 }
-
-    
