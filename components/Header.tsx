@@ -51,7 +51,7 @@ export function Header({ isSimple = false }: HeaderProps) {
                       <p className="text-xs sm:text-sm text-muted-foreground">Libraries Using</p>
                     </div>
                     <div className="text-center">
-                      <p className="text-2xl sm:text-3xl md:text-4xl font-bold text-primary">99<sub>.9</sub>%</p>
+                      <p className="text-2xl sm:text-3xl md:text-4xl font-bold text-primary">99<sup>.9</sup>%</p>
                       <p className="text-xs sm:text-sm text-muted-foreground">Satisfaction Rate</p>
                     </div>
                   </div>
