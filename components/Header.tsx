@@ -15,12 +15,11 @@ export function Header({ isSimple = false }: HeaderProps) {
       "pt-16 pb-24 text-center relative",
       isSimple ? "py-12 sm:py-16 sm:pb-8" : "sm:pt-16 sm:pb-24"
     )}>
-      <div className="container mx-auto px-5">
-        <div className={cn(
-          "bg-card rounded-2xl shadow-lg max-w-[1200px] mx-auto p-8 sm:p-12 relative",
-          isSimple && "p-6 sm:p-8"
-        )}>
-          {isSimple && (
+      <div className={cn(
+        "bg-card rounded-2xl shadow-lg max-w-[1200px] mx-auto p-8 sm:p-12 relative",
+        isSimple && "p-6 sm:p-8"
+      )}>
+        {isSimple && (
             <Link href="/" passHref>
               <Button variant="outline" size="icon" className="absolute top-4 left-4">
                 <Home className="h-5 w-5" />
