@@ -24,6 +24,15 @@ const config: Config = {
         headline: ['"Playfair Display"', 'serif'],
         code: ['monospace'],
       },
+      typography: ({theme}) => ({
+        DEFAULT: {
+          css: {
+            'h1, h2, h3, h4, h5, h6': {
+              fontFamily: theme('fontFamily.headline').join(', '),
+            },
+          },
+        },
+      }),
       colors: {
         border: 'hsl(var(--border))',
         input: 'hsl(var(--input))',
