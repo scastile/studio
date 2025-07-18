@@ -18,16 +18,13 @@ export function Header({ isSimple = false }: HeaderProps) {
             isSimple ? "p-6 sm:p-8" : "p-8 sm:p-12"
           )}>
             {isSimple && (
-                <div className="absolute top-[41px] left-[calc(50%-599px)] z-10">
-                  <Link href="/" passHref>
-                    <Button variant="outline" size="icon">
-                      <Home className="h-5 w-5" />
-                      <span className="sr-only">Home</span>
-                    </Button>
-                  </Link>
+              <div className="w-full flex justify-center absolute top-0 left-0 p-6 sm:p-8 pointer-events-none">
+                <div className="w-full max-w-[1200px] relative">
+                  {/* Home button was here */}
                 </div>
-              )}
-              <div className="w-full flex justify-center">
+              </div>
+            )}
+             <div className="w-full flex justify-center">
                   <a href="/" className="inline-block no-underline">
                     <div className="flex items-center gap-4 mb-4">
                         <div className="bg-gradient-to-r from-[#4f46e5] to-[#7c3aed] p-2 rounded-lg">
