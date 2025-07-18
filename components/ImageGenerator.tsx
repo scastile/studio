@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState, useRef } from 'react';
@@ -223,7 +224,12 @@ export function ImageGenerator({ onAddImage, onUpdateImage, onRemoveImage, onIma
           </Card>
         </div>
       <div className="flex flex-col">
-        {/* The InfoCard that was here has been removed */}
+        <InfoCard 
+            title="Image Tips"
+            description="Learn how to write effective prompts to get the best results from the image generator."
+            buttonText="View Image Tips"
+            href="/image-tips"
+        />
       </div>
     </div>
   );
