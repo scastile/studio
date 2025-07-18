@@ -14,7 +14,7 @@ export default function ExportOptionsPage() {
     <main className="min-h-screen">
       <Header isSimple={true} />
 
-      <div className="container mx-auto px-5 -mt-16">
+      <div className="container mx-auto px-5">
         <div className="max-w-[1200px] mx-auto space-y-4 sm:space-y-8">
             <Card>
                 <CardHeader>

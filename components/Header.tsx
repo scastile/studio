@@ -15,18 +15,18 @@ export function Header({ isSimple = false }: HeaderProps) {
       "pt-16 pb-24 text-center relative",
       isSimple ? "py-12 sm:py-16 sm:pb-8" : "sm:pt-16 sm:pb-24"
     )}>
-      <div className={cn(
-        "bg-card rounded-2xl shadow-lg max-w-[1200px] mx-auto p-8 sm:p-12 relative",
-        isSimple && "p-6 sm:p-8"
-      )}>
-        {isSimple && (
+      {isSimple && (
             <Link href="/" passHref>
-              <Button variant="outline" size="icon" className="absolute -top-12 left-2 sm:-top-6 sm:left-4">
+              <Button variant="outline" size="icon" className="absolute -top-6 -left-2 sm:-top-6 sm:left-4">
                 <Home className="h-5 w-5" />
                 <span className="sr-only">Home</span>
               </Button>
             </Link>
           )}
+      <div className={cn(
+        "bg-card rounded-2xl shadow-lg max-w-[1200px] mx-auto p-8 sm:p-12 relative",
+        isSimple && "p-6 sm:p-8"
+      )}>
           <a href="/" className="inline-block no-underline">
             <div className="flex justify-center items-center gap-4 mb-4">
                 <div className="bg-gradient-to-r from-[#4f46e5] to-[#7c3aed] p-2 rounded-lg">
