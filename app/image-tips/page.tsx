@@ -12,25 +12,40 @@ import { Skeleton } from '@/components/ui/skeleton';
 
 export default function ImageTipsPage() {
   const [simpleKnightImage, setSimpleKnightImage] = useState<string | null>(null);
-  const [isGenerating, setIsGenerating] = useState(true);
+  const [goodKnightImage, setGoodKnightImage] = useState<string | null>(null);
+  const [isGeneratingSimple, setIsGeneratingSimple] = useState(true);
+  const [isGeneratingGood, setIsGeneratingGood] = useState(true);
 
   useEffect(() => {
-    const generateSimpleImage = async () => {
-      setIsGenerating(true);
+    const generateImages = async () => {
+      // Generate Simple Image
+      setIsGeneratingSimple(true);
       try {
-        const result = await generateImage({ prompt: 'a knight' });
-        if (result && result.imageDataUri) {
-          setSimpleKnightImage(result.imageDataUri);
+        const simpleResult = await generateImage({ prompt: 'a knight' });
+        if (simpleResult && simpleResult.imageDataUri) {
+          setSimpleKnightImage(simpleResult.imageDataUri);
         }
       } catch (error) {
         console.error('Failed to generate simple knight image:', error);
-        // Optionally set a fallback or error state
       } finally {
-        setIsGenerating(false);
+        setIsGeneratingSimple(false);
+      }
+
+      // Generate Good Image
+      setIsGeneratingGood(true);
+      try {
+        const goodResult = await generateImage({ prompt: "A knight in shining armor holding a sword, fantasy art." });
+        if (goodResult && goodResult.imageDataUri) {
+          setGoodKnightImage(goodResult.imageDataUri);
+        }
+      } catch (error) {
+        console.error('Failed to generate good knight image:', error);
+      } finally {
+        setIsGeneratingGood(false);
       }
     };
 
-    generateSimpleImage();
+    generateImages();
   }, []);
 
   return (
@@ -158,7 +173,7 @@ export default function ImageTipsPage() {
                                 <h4 className="text-lg font-semibold text-foreground">Simple Prompt:</h4>
                                 <p className="p-3 bg-muted rounded-md mt-1 font-mono text-sm">a knight</p>
                                 <div className="mt-2 rounded-lg overflow-hidden border">
-                                    {isGenerating ? (
+                                    {isGeneratingSimple ? (
                                         <div className="w-full h-full flex items-center justify-center bg-muted aspect-square">
                                             <Skeleton className="w-full h-full" />
                                             <Loader2 className="absolute h-8 w-8 animate-spin text-primary" />
@@ -176,7 +191,18 @@ export default function ImageTipsPage() {
                                 <h4 className="text-lg font-semibold text-foreground">Good Prompt:</h4>
                                 <p className="p-3 bg-muted rounded-md mt-1 font-mono text-sm">A knight in shining armor holding a sword, fantasy art.</p>
                                  <div className="mt-2 rounded-lg overflow-hidden border">
-                                    <Image src="https://storage.googleapis.com/project-1-428616.appspot.com/a-knight-good.png" alt="A fantasy art style knight in shining armor" width={400} height={400} className="object-cover" data-ai-hint="fantasy knight" />
+                                    {isGeneratingGood ? (
+                                        <div className="w-full h-full flex items-center justify-center bg-muted aspect-square">
+                                            <Skeleton className="w-full h-full" />
+                                            <Loader2 className="absolute h-8 w-8 animate-spin text-primary" />
+                                        </div>
+                                    ) : goodKnightImage ? (
+                                        <Image src={goodKnightImage} alt="A fantasy art style knight in shining armor" width={400} height={400} className="object-cover" data-ai-hint="fantasy knight" unoptimized />
+                                    ) : (
+                                        <div className="w-full h-full flex items-center justify-center bg-muted aspect-square">
+                                            <p className="text-destructive">Image failed to load.</p>
+                                        </div>
+                                    )}
                                 </div>
                             </div>
                              <div>
@@ -215,3 +241,4 @@ export default function ImageTipsPage() {
     
 
     
+
