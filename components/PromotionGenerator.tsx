@@ -391,6 +391,17 @@ export function PromotionGenerator({ onImageGenerated, onIdeaSelect, onReset, ca
                         </>
                       )}
                     </Button>
+                    <Button
+                      type="button"
+                      onClick={handleReset}
+                      disabled={isLoading || isGeneratingTopicImage}
+                      variant="destructive"
+                      size="lg"
+                      className="rounded-xl py-6 px-7 text-lg font-bold"
+                    >
+                      <RotateCcw className="mr-2 h-4 w-4" />
+                      Reset
+                    </Button>
                   </div>
                 </form>
               </Form>
