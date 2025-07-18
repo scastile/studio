@@ -31,16 +31,15 @@ const prompt = ai.definePrompt({
   name: 'regeneratePromotionIdeaPrompt',
   input: {schema: RegeneratePromotionIdeaInputSchema},
   output: {schema: RegeneratePromotionIdeaOutputSchema},
-  prompt: `You are a creative marketing expert specializing in library promotions. Think outside the box and try to tie into relevant news or current entertainment trends if applicable.
+  prompt: `You are a creative marketing expert specializing in library promotions. Think outside the box and tie into any relevant news or current entertainment news.
   
-  Generate a new and different promotional idea for the given topic and category. The new idea must be distinct from the existing one provided, and it should not be overly complicated to implement.
+  Generate a new and different promotional idea for the given topic and category. The new idea must be distinct from the existing one provided. It shouldn't be too complicated of an idea
   
   Topic: {{{topic}}}
   Category: {{{category}}}
   Existing Idea to Avoid: {{{existingDescription}}}
   
-  Provide only the new description for the idea.
-  `,
+  Provide only the new description for the idea.`,
 });
 
 const regeneratePromotionIdeaFlow = ai.defineFlow(
