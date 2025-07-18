@@ -133,7 +133,7 @@ export default function ImageTipsPage() {
                                 <h4 className="text-lg font-semibold text-foreground">Simple Prompt:</h4>
                                 <p className="p-3 bg-muted rounded-md mt-1 font-mono text-sm">a knight</p>
                                 <div className="mt-2 rounded-lg overflow-hidden border">
-                                    <Image src="https://placehold.co/400x400.png" alt="A knight in armor in a field" width={400} height={400} className="object-cover" data-ai-hint="knight field" />
+                                    <Image src="https://storage.googleapis.com/project-1-428616.appspot.com/a-knight-simple.png" alt="A knight in armor in a field" width={400} height={400} className="object-cover" data-ai-hint="knight field" />
                                 </div>
                             </div>
                              <div>
@@ -174,3 +174,6 @@ export default function ImageTipsPage() {
 
     
 
+
+
+    
