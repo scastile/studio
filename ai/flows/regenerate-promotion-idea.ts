@@ -31,9 +31,9 @@ const prompt = ai.definePrompt({
   name: 'regeneratePromotionIdeaPrompt',
   input: {schema: RegeneratePromotionIdeaInputSchema},
   output: {schema: RegeneratePromotionIdeaOutputSchema},
-  prompt: `You are a creative marketing expert specializing in library promotions.
+  prompt: `You are a creative marketing expert specializing in library promotions. Think outside the box and try to tie into relevant news or current entertainment trends if applicable.
   
-  Generate a new and different promotional idea for the given topic and category. The new idea must be distinct from the existing one provided.
+  Generate a new and different promotional idea for the given topic and category. The new idea must be distinct from the existing one provided, and it should not be overly complicated to implement.
   
   Topic: {{{topic}}}
   Category: {{{category}}}
