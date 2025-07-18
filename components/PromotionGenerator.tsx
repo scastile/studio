@@ -5,7 +5,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { ref, push } from "firebase/database";
-import { Lightbulb, Loader2, CalendarDays, Info, Film, Book, Tv, Gamepad2, Save, Archive, Image as ImageIcon, Search, RotateCcw, X, Paperclip } from 'lucide-react';
+import { Lightbulb, Loader2, CalendarDays, Info, Film, Book, Tv, Gamepad2, Save, Archive, Image as ImageIcon, Search, RotateCcw, X } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -57,8 +57,6 @@ export function PromotionGenerator({ onImageGenerated, onIdeaSelect, onReset, ca
   const [isSaveSetDialogOpen, setIsSaveSetDialogOpen] = useState(false);
   const [currentTopic, setCurrentTopic] = useState('');
   const [regeneratingIdeaId, setRegeneratingIdeaId] = useState<string | null>(null);
-  const [uploadedImage, setUploadedImage] = useState<string | null>(null);
-  const fileInputRef = useRef<HTMLInputElement>(null);
   
   const { toast } = useToast();
 
@@ -68,24 +66,6 @@ export function PromotionGenerator({ onImageGenerated, onIdeaSelect, onReset, ca
       topic: '',
     },
   });
-  
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        setUploadedImage(e.target?.result as string);
-      };
-      reader.readAsDataURL(file);
-    }
-  };
-
-  const handleRemoveImage = () => {
-    setUploadedImage(null);
-    if(fileInputRef.current) {
-      fileInputRef.current.value = '';
-    }
-  };
 
   const handleReset = () => {
     promotionForm.reset({ topic: '' });
@@ -98,7 +78,6 @@ export function PromotionGenerator({ onImageGenerated, onIdeaSelect, onReset, ca
     onTopicChange('');
     setIsLoading(false);
     setIsGeneratingTopicImage(false);
-    handleRemoveImage();
     onReset();
   };
 
@@ -126,14 +105,14 @@ export function PromotionGenerator({ onImageGenerated, onIdeaSelect, onReset, ca
 
 
   async function onPromotionSubmit(values: z.infer<typeof promotionFormSchema>) {
-    if (!values.topic && !uploadedImage) {
+    if (!values.topic) {
         promotionForm.setError('topic', {
             type: 'manual',
-            message: 'A topic is required if no image is uploaded.',
+            message: 'A topic is required.',
         });
         return;
     }
-     if (values.topic.length < 3 && !uploadedImage) {
+     if (values.topic.length < 3) {
         promotionForm.setError('topic', {
             type: 'manual',
             message: 'Topic must be at least 3 characters long.',
@@ -142,7 +121,7 @@ export function PromotionGenerator({ onImageGenerated, onIdeaSelect, onReset, ca
     }
     promotionForm.clearErrors('topic');
 
-    const topic = values.topic || 'Uploaded Image';
+    const topic = values.topic;
     setIsLoading(true);
     setCurrentTopic(topic);
     onTopicChange(topic);
@@ -163,7 +142,7 @@ export function PromotionGenerator({ onImageGenerated, onIdeaSelect, onReset, ca
     }
     
     try {
-      const ideasPromise = generatePromotionIdeas({ topic: topic, imageDataUri: uploadedImage || undefined, });
+      const ideasPromise = generatePromotionIdeas({ topic: topic });
 
       let promptWithRatio = imagePrompt;
       if (topicImageAspectRatio === '1:1') {
@@ -175,7 +154,7 @@ export function PromotionGenerator({ onImageGenerated, onIdeaSelect, onReset, ca
       }
 
       const imagePromise = shouldGenerateImage 
-        ? generateImage({ prompt: promptWithRatio, imageDataUri: uploadedImage || undefined, })
+        ? generateImage({ prompt: promptWithRatio })
         : Promise.resolve(null);
       
       const ideasResult = await ideasPromise;
@@ -203,7 +182,6 @@ export function PromotionGenerator({ onImageGenerated, onIdeaSelect, onReset, ca
           onImageGenerated(imageResult.imageDataUri, topicImageId, imagePrompt);
         }
         setIsGeneratingTopicImage(false);
-        handleRemoveImage();
       }
 
     } catch (error) {
@@ -357,46 +335,14 @@ export function PromotionGenerator({ onImageGenerated, onIdeaSelect, onReset, ca
                               <Input
                                 placeholder="e.g., 'The Great Gatsby', 'Minecraft', 'Stranger Things'"
                                 {...field}
-                                className="pr-10 text-base"
+                                className="text-base"
                               />
-                               <Button 
-                                  type="button" 
-                                  variant="ghost" 
-                                  size="icon" 
-                                  className="absolute right-1 top-1/2 -translate-y-1/2 h-8 w-8"
-                                  onClick={() => fileInputRef.current?.click()}
-                                  disabled={isLoading || isGeneratingTopicImage}
-                                >
-                                  <Paperclip className="h-5 w-5" />
-                                </Button>
-                                <input
-                                  type="file"
-                                  ref={fileInputRef}
-                                  onChange={handleFileChange}
-                                  className="hidden"
-                                  accept="image/*"
-                                />
                             </div>
                           </FormControl>
                           <FormMessage />
                         </FormItem>
                       )}
                     />
-
-                    {uploadedImage && (
-                      <div className="relative mt-4 h-24 w-24 rounded-md border">
-                        <Image src={uploadedImage} alt="Uploaded preview" layout="fill" objectFit="cover" className="rounded-md" />
-                        <Button
-                          type="button"
-                          variant="destructive"
-                          size="icon"
-                          className="absolute -right-2 -top-2 h-6 w-6 rounded-full"
-                          onClick={handleRemoveImage}
-                        >
-                          <X className="h-4 w-4" />
-                        </Button>
-                      </div>
-                    )}
                     <div className="mt-6 flex h-12 w-full items-center justify-between rounded-md border border-input bg-background px-3 py-2 text-sm">
                       <div className="flex items-center gap-2">
                         <ImageIcon className="h-5 w-5 text-muted-foreground" />

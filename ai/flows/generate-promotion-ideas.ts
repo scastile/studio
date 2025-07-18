@@ -15,7 +15,6 @@ import {z} from 'genkit';
 
 const GeneratePromotionIdeasInputSchema = z.object({
   topic: z.string().describe('The topic for which to generate promotion ideas (e.g., a book, movie, game).'),
-  imageDataUri: z.string().optional().describe('An optional image for context, as a data URI.'),
 });
 export type GeneratePromotionIdeasInput = z.infer<typeof GeneratePromotionIdeasInputSchema>;
 
@@ -75,4 +74,5 @@ const generatePromotionIdeasFlow = ai.defineFlow(
     return output!;
   }
 );
+
 
