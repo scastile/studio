@@ -139,7 +139,7 @@ export function ImageGenerator({ onAddImage, onUpdateImage, onRemoveImage, onIma
                                   placeholder="Enter a prompt for a new image..." 
                                   {...field}
                                   disabled={isGeneratingNewImage}
-                                  className="pr-10"
+                                  className="pr-10 text-base"
                                 />
                                 <Button 
                                   type="button" 

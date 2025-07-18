@@ -1,11 +1,11 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { ref, push } from "firebase/database";
-import { Lightbulb, Loader2, CalendarDays, Info, Film, Book, Tv, Gamepad2, Save, Archive, Image as ImageIcon, Search, RotateCcw, X } from 'lucide-react';
+import { Lightbulb, Loader2, CalendarDays, Info, Film, Book, Tv, Gamepad2, Save, Archive, Image as ImageIcon, Search, RotateCcw } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -29,7 +29,6 @@ import { database } from '@/lib/utils';
 import { SaveSetDialog } from './SaveSetDialog';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { InfoCard } from './InfoCard';
-import Image from 'next/image';
 
 const promotionFormSchema = z.object({
   topic: z.string(),
