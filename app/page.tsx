@@ -317,7 +317,7 @@ export default function Home() {
           <p>&copy; {new Date().getFullYear()} LibraryLaunchpad. All rights reserved.</p>
            <p className="font-sans font-bold text-white mt-2 flex justify-center items-center gap-2">
             <Paperclip className="inline-block h-4 w-4" />
-            <span>Powered by <span className="italic">P</span>aper<span className="italic">L</span>ab</span>
+            Powered by PaperLab
           </p>
         </div>
       </footer>
@@ -401,3 +401,5 @@ export default function Home() {
     </main>
   );
 }
+
+    
