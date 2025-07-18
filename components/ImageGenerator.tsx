@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useState, useRef } from 'react';
@@ -167,7 +166,7 @@ export function ImageGenerator({ onAddImage, onUpdateImage, onRemoveImage, onIma
 
                   {uploadedImage && (
                     <div className="relative w-24 h-24 border rounded-md">
-                      <Image src={uploadedImage} alt="Uploaded preview" layout="fill" objectFit="cover" className="rounded-md" />
+                      <Image src={uploadedImage} alt="Uploaded preview" fill objectFit="cover" className="rounded-md" />
                       <Button
                         type="button"
                         variant="destructive"
@@ -224,12 +223,7 @@ export function ImageGenerator({ onAddImage, onUpdateImage, onRemoveImage, onIma
           </Card>
         </div>
       <div className="flex flex-col">
-        <InfoCard 
-          title="Image Tips"
-          description="For strong results, use descriptive prompts. Mention style, colors, and composition. Use clear, detailed prompts with style cues (e.g., photorealistic, anime), Add analogies or references for better results."
-          buttonText="Learn More"
-          href="/image-tips"
-        />
+        {/* The InfoCard that was here has been removed */}
       </div>
     </div>
   );
