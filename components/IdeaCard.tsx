@@ -26,7 +26,7 @@ export function IdeaCard({ idea, onSelect, onPin, onRegenerate, isRegenerating }
             <span>{idea.category}</span>
           </div>
           <div className="flex items-center">
-            <Button type="button" variant="ghost" size="icon" onClick={() => onRegenerate(idea)} title="Regenerate this idea" disabled={isRegenerating}>
+            <Button type="button" variant="ghost" size="icon" onClick={() => onRegenerate(idea)} title="Regenerate this idea" disabled={isRegenerating} className="hover:bg-transparent">
               <Dice5 className={cn("w-5 h-5 text-muted-foreground hover:text-primary", isRegenerating && "animate-spin")} />
             </Button>
             <Button 
@@ -36,7 +36,7 @@ export function IdeaCard({ idea, onSelect, onPin, onRegenerate, isRegenerating }
               onClick={() => onPin(idea)} 
               title="Pin this idea" 
               disabled={isRegenerating}
-              className="transition-transform active:translate-y-px"
+              className="transition-transform active:translate-y-px hover:bg-transparent"
             >
               <Pin className="w-5 h-5 text-muted-foreground hover:text-primary" />
             </Button>
