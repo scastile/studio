@@ -275,43 +275,44 @@ export default function Home() {
 
   return (
     <main className="min-h-screen">
-      <Header />
+      <div className="container mx-auto px-4 max-w-[1200px]">
+        <Header />
 
-      <div className="container mx-auto -mt-16">
-        <div className="max-w-[1200px] mx-auto space-y-8">
-          <PromotionGenerator 
-            onImageGenerated={handleInitialImageGenerated} 
-            onIdeaSelect={handleIdeaSelect}
-            onReset={handleResetSearch}
-            campaignToLoad={loadedCampaign}
-            onTopicChange={setCurrentTopic}
-          />
-          <SavedCampaignsList onCampaignLoad={handleCampaignLoad} />
-          <PinnedIdeasList pinnedIdeas={pinnedIdeas} onIdeaSelect={handleIdeaSelect} />
-          <SavedImagesList 
-              savedImages={savedImages}
-              onImageLoad={(image) => addImageToList({ id: uuidv4(), url: image.url, prompt: image.prompt, topic: image.topic })}
+        <div className="-mt-16 space-y-8">
+            <PromotionGenerator 
+              onImageGenerated={handleInitialImageGenerated} 
+              onIdeaSelect={handleIdeaSelect}
+              onReset={handleResetSearch}
+              campaignToLoad={loadedCampaign}
+              onTopicChange={setCurrentTopic}
+            />
+            <SavedCampaignsList onCampaignLoad={handleCampaignLoad} />
+            <PinnedIdeasList pinnedIdeas={pinnedIdeas} onIdeaSelect={handleIdeaSelect} />
+            <SavedImagesList 
+                savedImages={savedImages}
+                onImageLoad={(image) => addImageToList({ id: uuidv4(), url: image.url, prompt: image.prompt, topic: image.topic })}
+                onImageClick={setLightboxImage}
+                onCopyImage={handleCopyImage}
+            />
+            <ImageGenerator 
+              onAddImage={addImageToList}
+              onUpdateImage={updateImageInList}
+              onRemoveImage={removeImageFromList}
               onImageClick={setLightboxImage}
-              onCopyImage={handleCopyImage}
-          />
-          <ImageGenerator 
-            onAddImage={addImageToList}
-            onUpdateImage={updateImageInList}
-            onRemoveImage={removeImageFromList}
-            onImageClick={setLightboxImage}
-          />
+            />
         </div>
+        
+        <Gallery
+          images={generatedImages}
+          onSaveImage={handleSaveImage}
+          onRemoveImage={removeImageFromList}
+          onImageClick={setLightboxImage}
+          onDownloadImage={handleDownloadImage}
+          onCopyImage={handleCopyImage}
+          onRefineImage={handleRefineImage}
+        />
       </div>
-      
-      <Gallery
-        images={generatedImages}
-        onSaveImage={handleSaveImage}
-        onRemoveImage={removeImageFromList}
-        onImageClick={setLightboxImage}
-        onDownloadImage={handleDownloadImage}
-        onCopyImage={handleCopyImage}
-        onRefineImage={handleRefineImage}
-      />
+
       <footer className="text-center py-6 text-primary-foreground">
         <div className="container mx-auto">
           <p>&copy; {new Date().getFullYear()} LibraryLaunchpad. All rights reserved.</p>
@@ -398,3 +399,5 @@ export default function Home() {
     </main>
   );
 }
+
+    
