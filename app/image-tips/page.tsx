@@ -3,7 +3,7 @@
 
 import { Header } from '@/components/Header';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { CheckCircle2, Pencil, Sparkles, Image as ImageIcon } from 'lucide-react';
+import { CheckCircle2, Pencil, Sparkles, Image as ImageIcon, Wand2, Save } from 'lucide-react';
 import { Paperclip } from 'lucide-react';
 
 export default function ImageTipsPage() {
@@ -83,6 +83,26 @@ export default function ImageTipsPage() {
                             <p><strong className="text-foreground">Photographic Terms:</strong> <span className="text-muted-foreground">macro shot, wide-angle shot, long exposure, cinematic, black and white.</span></p>
                             <p><strong className="text-foreground">Art Movements:</strong> <span className="text-muted-foreground">surrealism, impressionism, pop art, cyberpunk.</span></p>
                              <p><strong className="text-foreground">Artist Inspiration:</strong> Reference the style of famous artists, e.g., <span className="text-muted-foreground">in the style of Van Gogh.</span></p>
+                        </CardContent>
+                    </Card>
+                    
+                    <Card>
+                        <CardHeader>
+                            <CardTitle className="font-sans text-2xl flex items-center gap-3">
+                                <Wand2 className="w-7 h-7 text-primary" />
+                                Iterate, Refine, and Save
+                            </CardTitle>
+                        </CardHeader>
+                        <CardContent className="space-y-4">
+                            <p className="text-muted-foreground">Your first generation is just the starting point. Use the tools provided to perfect your image.</p>
+                            <div>
+                                <h3 className="font-semibold text-lg text-foreground flex items-center gap-2"><Wand2 className="w-5 h-5"/>Refine Your Image</h3>
+                                <p className="text-muted-foreground mt-1">Don't be afraid to guide the AI. Use the 'Refine' input below each image to make changes. Treat it like a conversation. Try prompts like "Change the background to a snowy forest," "make the art style a watercolor painting," or "add a cat sitting on the chair."</p>
+                            </div>
+                            <div>
+                                <h3 className="font-semibold text-lg text-foreground flex items-center gap-2"><Save className="w-5 h-5"/>Save Your Favorites</h3>
+                                <p className="text-muted-foreground mt-1">Once you've generated an image you love, click the save icon. This will add it to your "Saved Images" collection, so you can easily access and use it in your campaigns later without having to regenerate it.</p>
+                            </div>
                         </CardContent>
                     </Card>
                 </div>
