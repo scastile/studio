@@ -277,7 +277,7 @@ export default function Home() {
     <main className="min-h-screen">
       <Header />
 
-      <div className="container mx-auto px-5 -mt-16">
+      <div className="container mx-auto -mt-16">
         <div className="max-w-[1200px] mx-auto space-y-8">
           <PromotionGenerator 
             onImageGenerated={handleInitialImageGenerated} 
