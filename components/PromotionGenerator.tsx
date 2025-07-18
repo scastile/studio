@@ -107,9 +107,13 @@ export function PromotionGenerator({ onImageGenerated, onIdeaSelect, onReset, ca
       promotionForm.setValue('topic', campaignToLoad.topic);
       setCurrentTopic(campaignToLoad.topic);
       onTopicChange(campaignToLoad.topic);
-      // Ensure ideas have unique IDs when loaded from a campaign
-      const ideasWithIds = (campaignToLoad.ideas || []).map(idea => ({ ...idea, id: idea.id || uuidv4() }));
-      setIdeas(ideasWithIds);
+      // Ensure ideas have unique IDs and the correct topic when loaded from a campaign
+      const ideasWithTopicAndIds = (campaignToLoad.ideas || []).map(idea => ({ 
+          ...idea, 
+          id: idea.id || uuidv4(),
+          topic: campaignToLoad.topic 
+      }));
+      setIdeas(ideasWithTopicAndIds);
       setRelevantDates(campaignToLoad.relevantDates || []);
       setCrossMediaConnections(campaignToLoad.crossMediaConnections || []);
       const uniqueCategories = [...new Set((campaignToLoad.ideas || []).map(idea => idea.category))];
