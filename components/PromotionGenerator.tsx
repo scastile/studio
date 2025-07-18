@@ -366,6 +366,17 @@ export function PromotionGenerator({ onImageGenerated, onIdeaSelect, onReset, ca
               <p><span className="font-semibold text-foreground">Saved:</span> {formatDistanceToNow(new Date(campaignToLoad.createdAt), { addSuffix: true })}</p>
             </div>
           </CardContent>
+          <CardFooter>
+            <Button
+              onClick={handleReset}
+              size="sm"
+              variant="destructive"
+              className="w-full"
+            >
+              <RotateCcw className="mr-2 h-4 w-4" />
+              Reset Search
+            </Button>
+          </CardFooter>
         </Card>
       )}
 
@@ -385,7 +396,7 @@ export function PromotionGenerator({ onImageGenerated, onIdeaSelect, onReset, ca
               <p><span className="font-semibold text-foreground">Topic:</span> {currentTopic}</p>
             </div>
           </CardContent>
-          <CardFooter>
+          <CardFooter className="flex-col sm:flex-row gap-2">
             <Button
               onClick={() => setIsSaveSetDialogOpen(true)}
               size="lg"
@@ -395,6 +406,15 @@ export function PromotionGenerator({ onImageGenerated, onIdeaSelect, onReset, ca
               <Save className="mr-2 h-5 w-5" />
               Save Idea Set
             </Button>
+             <Button
+                onClick={handleReset}
+                size="lg"
+                variant="destructive"
+                className="w-full mt-auto"
+              >
+                <RotateCcw className="mr-2 h-5 w-5" />
+                Reset Search
+              </Button>
           </CardFooter>
         </Card>
       )}
@@ -529,3 +549,5 @@ export function PromotionGenerator({ onImageGenerated, onIdeaSelect, onReset, ca
     </>
   );
 }
+
+    
