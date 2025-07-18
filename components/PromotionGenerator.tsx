@@ -395,9 +395,8 @@ export function PromotionGenerator({ onImageGenerated, onIdeaSelect, onReset, ca
                       type="button"
                       onClick={handleReset}
                       disabled={isLoading || isGeneratingTopicImage}
-                      variant="destructive"
                       size="lg"
-                      className="rounded-xl py-6 px-7 text-lg font-bold"
+                      className="rounded-xl bg-secondary text-secondary-foreground hover:bg-primary hover:text-primary-foreground py-6 px-7 text-lg font-bold"
                     >
                       <RotateCcw className="mr-2 h-4 w-4" />
                       Reset
@@ -631,3 +630,5 @@ export function PromotionGenerator({ onImageGenerated, onIdeaSelect, onReset, ca
     </>
   );
 }
+
+    
