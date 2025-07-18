@@ -9,6 +9,7 @@ import { Paperclip } from 'lucide-react';
 import Image from 'next/image';
 import { generateImage } from '@/ai/flows/generate-image-flow';
 import { Skeleton } from '@/components/ui/skeleton';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 
 export default function ImageTipsPage() {
   const [simpleKnightImage, setSimpleKnightImage] = useState<string | null>(null);
@@ -17,6 +18,8 @@ export default function ImageTipsPage() {
   const [isGeneratingSimple, setIsGeneratingSimple] = useState(true);
   const [isGeneratingGood, setIsGeneratingGood] = useState(true);
   const [isGeneratingExcellent, setIsGeneratingExcellent] = useState(true);
+  const [lightboxImage, setLightboxImage] = useState<{url: string; alt: string} | null>(null);
+
 
   useEffect(() => {
     const generateImages = async () => {
@@ -186,7 +189,7 @@ export default function ImageTipsPage() {
                         <CardContent className="space-y-6">
                             <div>
                                 <h4 className="text-lg font-semibold text-foreground">Simple Prompt:</h4>
-                                <p className="p-3 bg-muted rounded-md mt-1 font-mono text-sm">a knight</p>
+                                <p className="p-3 bg-muted rounded-md mt-1 font-mono text-sm">a knight --wide-aspect-ratio-16:9</p>
                                 <div className="mt-2 rounded-lg overflow-hidden border">
                                     {isGeneratingSimple ? (
                                         <div className="w-full h-full flex items-center justify-center bg-muted aspect-video">
@@ -194,7 +197,7 @@ export default function ImageTipsPage() {
                                             <Loader2 className="absolute h-8 w-8 animate-spin text-primary" />
                                         </div>
                                     ) : simpleKnightImage ? (
-                                        <Image src={simpleKnightImage} alt="A knight in armor in a field" width={400} height={400} className="object-cover" data-ai-hint="knight field" unoptimized />
+                                        <Image src={simpleKnightImage} alt="a knight" width={400} height={400} className="object-cover cursor-pointer" data-ai-hint="knight field" unoptimized onClick={() => setLightboxImage({url: simpleKnightImage, alt: "a knight"})}/>
                                     ) : (
                                         <div className="w-full h-full flex items-center justify-center bg-muted aspect-video">
                                             <p className="text-destructive">Image failed to load.</p>
@@ -204,7 +207,7 @@ export default function ImageTipsPage() {
                             </div>
                              <div>
                                 <h4 className="text-lg font-semibold text-foreground">Good Prompt:</h4>
-                                <p className="p-3 bg-muted rounded-md mt-1 font-mono text-sm">A knight in shining armor holding a sword, fantasy art.</p>
+                                <p className="p-3 bg-muted rounded-md mt-1 font-mono text-sm">A knight in shining armor holding a sword, fantasy art. --wide-aspect-ratio-16:9</p>
                                  <div className="mt-2 rounded-lg overflow-hidden border">
                                     {isGeneratingGood ? (
                                         <div className="w-full h-full flex items-center justify-center bg-muted aspect-video">
@@ -212,7 +215,7 @@ export default function ImageTipsPage() {
                                             <Loader2 className="absolute h-8 w-8 animate-spin text-primary" />
                                         </div>
                                     ) : goodKnightImage ? (
-                                        <Image src={goodKnightImage} alt="A fantasy art style knight in shining armor" width={400} height={400} className="object-cover" data-ai-hint="fantasy knight" unoptimized />
+                                        <Image src={goodKnightImage} alt="A knight in shining armor holding a sword, fantasy art." width={400} height={400} className="object-cover cursor-pointer" data-ai-hint="fantasy knight" unoptimized onClick={() => setLightboxImage({url: goodKnightImage, alt: "A knight in shining armor holding a sword, fantasy art."})}/>
                                     ) : (
                                         <div className="w-full h-full flex items-center justify-center bg-muted aspect-video">
                                             <p className="text-destructive">Image failed to load.</p>
@@ -223,7 +226,7 @@ export default function ImageTipsPage() {
                              <div>
                                 <h4 className="text-lg font-semibold text-foreground">Excellent, Detailed Prompt:</h4>
                                 <p className="p-3 bg-muted rounded-md mt-1 font-mono text-sm">
-                                    <strong>Photorealistic, cinematic close-up shot</strong> of a <strong>female knight</strong> with a determined expression. She wears <strong>ornate, battle-worn steel armor</strong> reflecting the <strong>dramatic lighting</strong> of a fiery sunset. <strong>Sparks from a nearby forge</strong> float in the air. <strong>Low-angle view</strong>, making her look heroic. <strong>In the style of a high-fantasy movie poster</strong>.
+                                    Photorealistic, cinematic close-up shot of a female knight with a determined expression. She wears ornate, battle-worn steel armor reflecting the dramatic lighting of a fiery sunset. Sparks from a nearby forge float in the air. Low-angle view, making her look heroic. In the style of a high-fantasy movie poster. --wide-aspect-ratio-16:9
                                 </p>
                                 <div className="mt-2 rounded-lg overflow-hidden border">
                                     {isGeneratingExcellent ? (
@@ -232,7 +235,7 @@ export default function ImageTipsPage() {
                                             <Loader2 className="absolute h-8 w-8 animate-spin text-primary" />
                                         </div>
                                     ) : excellentKnightImage ? (
-                                        <Image src={excellentKnightImage} alt="A photorealistic female knight in ornate armor at sunset" width={400} height={400} className="object-cover" data-ai-hint="female knight" unoptimized />
+                                        <Image src={excellentKnightImage} alt="Photorealistic, cinematic close-up shot of a female knight" width={400} height={400} className="object-cover cursor-pointer" data-ai-hint="female knight" unoptimized onClick={() => setLightboxImage({url: excellentKnightImage, alt: "Photorealistic, cinematic close-up shot of a female knight"})}/>
                                     ) : (
                                         <div className="w-full h-full flex items-center justify-center bg-muted aspect-video">
                                             <p className="text-destructive">Image failed to load.</p>
@@ -255,6 +258,27 @@ export default function ImageTipsPage() {
           </div>
         </div>
       </footer>
+      <Dialog open={!!lightboxImage} onOpenChange={(isOpen) => { if (!isOpen) setLightboxImage(null); }}>
+        <DialogContent className="max-w-4xl h-[80vh] flex flex-col">
+            {lightboxImage && (
+              <>
+                <DialogHeader className="sr-only">
+                  <DialogTitle>{lightboxImage.alt}</DialogTitle>
+                  <DialogDescription>A larger view of the generated image.</DialogDescription>
+                </DialogHeader>
+                <div className="relative w-full h-full">
+                  <Image 
+                      src={lightboxImage.url!}
+                      alt={lightboxImage.alt}
+                      fill
+                      className="object-contain"
+                      unoptimized
+                  />
+                </div>
+              </>
+            )}
+        </DialogContent>
+      </Dialog>
     </main>
   );
 }
