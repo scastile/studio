@@ -11,20 +11,22 @@ interface HeaderProps {
 
 export function Header({ isSimple = false }: HeaderProps) {
   return (
-    <header className={cn(
-      "pt-16 pb-24 text-center relative",
-      isSimple ? "py-12 sm:py-16 sm:pb-8" : "sm:pt-16 sm:pb-24"
-    )}>
-      {isSimple && (
+    <div className={cn("relative", isSimple && "pt-12")}>
+       {isSimple && (
             <Link href="/" passHref>
-              <Button variant="outline" size="icon" className="absolute -top-8 left-0 sm:-top-6 sm:left-4">
+              <Button variant="outline" size="icon" className="absolute top-0 left-0">
                 <Home className="h-5 w-5" />
                 <span className="sr-only">Home</span>
               </Button>
             </Link>
           )}
+    <header className={cn(
+      "pb-24 text-center",
+      isSimple ? "py-12 sm:py-16 sm:pb-8" : "sm:pt-16 sm:pb-24"
+    )}>
+     
       <div className={cn(
-        "bg-card rounded-2xl shadow-lg p-8 sm:p-12 relative",
+        "bg-card rounded-2xl shadow-lg p-8 sm:p-12",
         isSimple && "p-6 sm:p-8"
       )}>
           <a href="/" className="inline-block no-underline">
@@ -60,6 +62,7 @@ export function Header({ isSimple = false }: HeaderProps) {
           )}
         </div>
       </header>
+    </div>
   );
 }
 
