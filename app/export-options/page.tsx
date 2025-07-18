@@ -14,8 +14,8 @@ export default function ExportOptionsPage() {
     <main className="min-h-screen">
       <Header isSimple={true} />
 
-      <div className="container mx-auto px-5">
-        <div className="max-w-[1200px] mx-auto space-y-8">
+      <div className="container mx-auto px-5 -mt-16">
+        <div className="max-w-[1200px] mx-auto space-y-4 sm:space-y-8">
             <Card>
                 <CardHeader>
                     <CardTitle className="text-3xl sm:text-4xl font-sans font-bold text-gray-800 dark:text-gray-100 flex items-center gap-4">
@@ -29,7 +29,7 @@ export default function ExportOptionsPage() {
                 </CardContent>
             </Card>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4 sm:gap-8">
                 <Card className="flex flex-col">
                     <CardHeader>
                         <CardTitle className="font-sans text-2xl flex items-center gap-3">
