@@ -1,13 +1,38 @@
 
 'use client';
 
+import { useState, useEffect } from 'react';
 import { Header } from '@/components/Header';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { CheckCircle2, Pencil, Sparkles, Image as ImageIcon, Wand2, Save } from 'lucide-react';
+import { CheckCircle2, Pencil, Sparkles, Image as ImageIcon, Wand2, Save, Loader2 } from 'lucide-react';
 import { Paperclip } from 'lucide-react';
 import Image from 'next/image';
+import { generateImage } from '@/ai/flows/generate-image-flow';
+import { Skeleton } from '@/components/ui/skeleton';
 
 export default function ImageTipsPage() {
+  const [simpleKnightImage, setSimpleKnightImage] = useState<string | null>(null);
+  const [isGenerating, setIsGenerating] = useState(true);
+
+  useEffect(() => {
+    const generateSimpleImage = async () => {
+      setIsGenerating(true);
+      try {
+        const result = await generateImage({ prompt: 'a knight' });
+        if (result && result.imageDataUri) {
+          setSimpleKnightImage(result.imageDataUri);
+        }
+      } catch (error) {
+        console.error('Failed to generate simple knight image:', error);
+        // Optionally set a fallback or error state
+      } finally {
+        setIsGenerating(false);
+      }
+    };
+
+    generateSimpleImage();
+  }, []);
+
   return (
     <main className="min-h-screen flex flex-col bg-gradient-to-br from-[#667eea] to-[#764ba2]">
       <div className="container mx-auto max-w-screen-xl flex-grow space-y-8 pt-8 px-4 sm:px-8">
@@ -133,7 +158,18 @@ export default function ImageTipsPage() {
                                 <h4 className="text-lg font-semibold text-foreground">Simple Prompt:</h4>
                                 <p className="p-3 bg-muted rounded-md mt-1 font-mono text-sm">a knight</p>
                                 <div className="mt-2 rounded-lg overflow-hidden border">
-                                    <Image src="https://storage.googleapis.com/project-1-428616.appspot.com/a-knight-simple.png" alt="A knight in armor in a field" width={400} height={400} className="object-cover" data-ai-hint="knight field" />
+                                    {isGenerating ? (
+                                        <div className="w-full h-full flex items-center justify-center bg-muted aspect-square">
+                                            <Skeleton className="w-full h-full" />
+                                            <Loader2 className="absolute h-8 w-8 animate-spin text-primary" />
+                                        </div>
+                                    ) : simpleKnightImage ? (
+                                        <Image src={simpleKnightImage} alt="A knight in armor in a field" width={400} height={400} className="object-cover" data-ai-hint="knight field" unoptimized />
+                                    ) : (
+                                        <div className="w-full h-full flex items-center justify-center bg-muted aspect-square">
+                                            <p className="text-destructive">Image failed to load.</p>
+                                        </div>
+                                    )}
                                 </div>
                             </div>
                              <div>
