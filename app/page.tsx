@@ -273,8 +273,8 @@ export default function Home() {
 
 
   return (
-    <main className="min-h-screen bg-gradient-to-br from-[#667eea] to-[#764ba2]">
-       <div className="container mx-auto max-w-[1200px] space-y-8 pt-8">
+    <main className="min-h-screen flex flex-col bg-gradient-to-br from-[#667eea] to-[#764ba2]">
+       <div className="container mx-auto max-w-[1200px] flex-grow space-y-8 pt-8">
         <Header />
 
         <div className="space-y-8">
