@@ -126,12 +126,14 @@ export default function ExportOptionsPage() {
        <footer className="text-center py-6 text-primary-foreground mt-8">
         <div className="container mx-auto">
           <p>&copy; {new Date().getFullYear()} LibraryLaunchpad. All rights reserved.</p>
-          <p className="font-sans font-bold text-white mt-2 flex justify-center items-center gap-2">
+          <div className="font-sans font-bold text-white mt-2 flex justify-center items-center gap-2">
             <Paperclip className="inline-block h-4 w-4" />
-            Powered by <i>P</i>aper<i>L</i>ab
-          </p>
+            <p>Powered by <i className="italic">P</i>aper<i className="italic">L</i>ab</p>
+          </div>
         </div>
       </footer>
     </main>
   );
 }
+
+    
