@@ -3,7 +3,7 @@
 
 import { Header } from '@/components/Header';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { Lightbulb, Target, Scaling, Sparkles } from 'lucide-react';
+import { Lightbulb, Target, Scaling, Sparkles, Paperclip } from 'lucide-react';
 
 export default function PromptingTipsPage() {
 
@@ -105,7 +105,7 @@ export default function PromptingTipsPage() {
        <footer className="text-center py-6 text-primary-foreground mt-8">
         <div className="container mx-auto">
           <p>&copy; {new Date().getFullYear()} LibraryLaunchpad. All rights reserved.</p>
-          <p className="font-sans font-bold text-white mt-2">Powered by <span className="italic">P</span>aper<span className="italic">L</span>ab</p>
+          <p className="font-sans font-bold text-white mt-2 flex justify-center items-center gap-2">Powered by <Paperclip className="inline-block h-4 w-4" /> <span className="italic">P</span>aper<span className="italic">L</span>ab</p>
         </div>
       </footer>
     </main>

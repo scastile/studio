@@ -17,7 +17,7 @@ import { useToast } from '../hooks/use-toast';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '../components/ui/dialog';
 import { ScrollArea } from '../components/ui/scroll-area';
 import { Button } from '../components/ui/button';
-import { Loader2, Copy, Info, FileDown, Mail } from 'lucide-react';
+import { Loader2, Copy, Info, FileDown, Mail, Paperclip } from 'lucide-react';
 import { getIconForCategory } from '../components/icons';
 import Image from 'next/image';
 import { SavedCampaignsList } from '../components/SavedCampaignsList';
@@ -275,7 +275,7 @@ export default function Home() {
 
   return (
     <main className="min-h-screen">
-      <div className="container mx-auto max-w-[1200px] space-y-8">
+       <div className="container mx-auto max-w-[1200px] space-y-8">
         <Header />
 
         <div className="space-y-8">
@@ -316,7 +316,7 @@ export default function Home() {
       <footer className="text-center py-6 text-primary-foreground">
         <div className="container mx-auto">
           <p>&copy; {new Date().getFullYear()} LibraryLaunchpad. All rights reserved.</p>
-          <p className="font-sans font-bold text-white mt-2">Powered by <span className="italic">P</span>aper<span className="italic">L</span>ab</p>
+           <p className="font-sans font-bold text-white mt-2 flex justify-center items-center gap-2">Powered by <Paperclip className="inline-block h-4 w-4" /> <span className="italic">P</span>aper<span className="italic">L</span>ab</p>
         </div>
       </footer>
 
@@ -399,5 +399,3 @@ export default function Home() {
     </main>
   );
 }
-
-    

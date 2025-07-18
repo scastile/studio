@@ -3,7 +3,7 @@
 
 import { Header } from '@/components/Header';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from '@/components/ui/card';
-import { FileDown, Mail, Copy, Rocket, CalendarPlus } from 'lucide-react';
+import { FileDown, Mail, Copy, Rocket, CalendarPlus, Paperclip } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
 
@@ -12,7 +12,7 @@ export default function ExportOptionsPage() {
 
   return (
     <main className="min-h-screen flex flex-col">
-      <div className="container mx-auto max-w-[1200px] flex-grow space-y-8">
+       <div className="container mx-auto max-w-[1200px] flex-grow space-y-8">
         <Header isSimple={true} />
 
         <div className="space-y-8">
@@ -126,7 +126,7 @@ export default function ExportOptionsPage() {
        <footer className="text-center py-6 text-primary-foreground mt-8">
         <div className="container mx-auto">
           <p>&copy; {new Date().getFullYear()} LibraryLaunchpad. All rights reserved.</p>
-          <p className="font-sans font-bold text-white mt-2">Powered by <span className="italic">P</span>aper<span className="italic">L</span>ab</p>
+          <p className="font-sans font-bold text-white mt-2 flex justify-center items-center gap-2">Powered by <Paperclip className="inline-block h-4 w-4" /> <span className="italic">P</span>aper<span className="italic">L</span>ab</p>
         </div>
       </footer>
     </main>
