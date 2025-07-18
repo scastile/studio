@@ -2,8 +2,9 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { getIconForCategory } from '@/components/icons';
 import { Button } from './ui/button';
-import { Info, Pin, Dice5, Loader2 } from 'lucide-react';
+import { Info, Pin, Dice5 } from 'lucide-react';
 import type { Idea } from '@/lib/types';
+import { cn } from '@/lib/utils';
 
 interface IdeaCardProps {
   idea: Idea;
@@ -26,9 +27,17 @@ export function IdeaCard({ idea, onSelect, onPin, onRegenerate, isRegenerating }
           </div>
           <div className="flex items-center">
             <Button type="button" variant="ghost" size="icon" onClick={() => onRegenerate(idea)} title="Regenerate this idea" disabled={isRegenerating}>
-              {isRegenerating ? <Loader2 className="w-5 h-5 animate-spin" /> : <Dice5 className="w-5 h-5 text-muted-foreground hover:text-primary" />}
+              <Dice5 className={cn("w-5 h-5 text-muted-foreground hover:text-primary", isRegenerating && "animate-spin")} />
             </Button>
-            <Button type="button" variant="ghost" size="icon" onClick={() => onPin(idea)} title="Pin this idea" disabled={isRegenerating}>
+            <Button 
+              type="button" 
+              variant="ghost" 
+              size="icon" 
+              onClick={() => onPin(idea)} 
+              title="Pin this idea" 
+              disabled={isRegenerating}
+              className="transition-transform active:translate-y-px"
+            >
               <Pin className="w-5 h-5 text-muted-foreground hover:text-primary" />
             </Button>
           </div>
