@@ -7,7 +7,7 @@ import { CheckCircle2, Pencil, Sparkles, Image as ImageIcon, Paperclip } from 'l
 
 export default function ImageTipsPage() {
   return (
-    <main className="min-h-screen flex flex-col bg-gradient-to-br from-[#667eea] to-[#764ba2]">
+    <main className="min-h-screen flex flex-col bg-background">
       <div className="container mx-auto max-w-[1200px] flex-grow space-y-8 pt-8">
         <Header isSimple={true} />
 
@@ -15,7 +15,7 @@ export default function ImageTipsPage() {
             <Card>
                 <CardHeader>
                     <CardTitle className="text-3xl sm:text-4xl font-sans font-bold text-gray-800 dark:text-gray-100 flex items-center gap-4">
-                        <span className="title-gradient">Gemini Flash 2.0: A Quick Guide to Image Prompting</span> <ImageIcon className="w-24 h-24 text-primary" />
+                        <span className="title-gradient">Gemini Flash 2.0: A Quick Guide to Image Prompting</span> <ImageIcon className="w-8 h-8 text-primary" />
                     </CardTitle>
                 </CardHeader>
                 <CardContent>
@@ -35,15 +35,15 @@ export default function ImageTipsPage() {
                 <CardContent className="space-y-4">
                     <p className="text-muted-foreground">For a solid start, structure your prompt around three key elements. You don't need to follow this order rigidly, but ensure these components are present for best results.</p>
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                        <div className="p-4 bg-background rounded-lg border">
+                        <div className="p-4 bg-muted rounded-lg border">
                             <h3 className="font-semibold text-lg text-foreground">Subject</h3>
                             <p className="text-muted-foreground">What is the main focus? Be descriptive. Instead of <span className="text-foreground font-medium">&quot;a dog,&quot;</span> try <span className="text-foreground font-medium">&quot;A happy golden retriever puppy with floppy ears.&quot;</span></p>
                         </div>
-                        <div className="p-4 bg-background rounded-lg border">
+                        <div className="p-4 bg-muted rounded-lg border">
                             <h3 className="font-semibold text-lg text-foreground">Style</h3>
                             <p className="text-muted-foreground">What should it look like? Examples: <span className="text-foreground font-medium">photorealistic, oil painting, 3D render, watercolor sketch, anime style, cinematic</span>.</p>
                         </div>
-                        <div className="p-4 bg-background rounded-lg border">
+                        <div className="p-4 bg-muted rounded-lg border">
                             <h3 className="font-semibold text-lg text-foreground">Context</h3>
                             <p className="text-muted-foreground">What is the setting? Examples: <span className="text-foreground font-medium">on a sunny beach, in a futuristic neon-lit city, in a cozy library, at golden hour</span>.</p>
                         </div>
@@ -132,7 +132,7 @@ export default function ImageTipsPage() {
           <p>&copy; {new Date().getFullYear()} LibraryLaunchpad. All rights reserved.</p>
           <p className="font-sans font-bold text-white mt-2 flex justify-center items-center gap-2">
             <Paperclip className="inline-block h-4 w-4" />
-            <span>Powered by <span className="italic">P</span>aper<span className="italic">L</span>ab</span>
+            Powered by <span className="italic">P</span>aper<span className="italic">L</span>ab
           </p>
         </div>
       </footer>
