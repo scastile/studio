@@ -11,7 +11,7 @@ export default function ExportOptionsPage() {
     const { toast } = useToast();
 
   return (
-    <main className="min-h-screen flex flex-col">
+    <main className="min-h-screen flex flex-col pt-8">
        <div className="container mx-auto max-w-[1200px] flex-grow space-y-8">
         <Header isSimple={true} />
 

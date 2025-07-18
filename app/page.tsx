@@ -273,7 +273,7 @@ export default function Home() {
 
 
   return (
-    <main className="min-h-screen">
+    <main className="min-h-screen pt-8">
        <div className="container mx-auto max-w-[1200px] space-y-8">
         <Header />
 
@@ -398,5 +398,3 @@ export default function Home() {
     </main>
   );
 }
-
-    
