@@ -7,8 +7,8 @@ import { CheckCircle2, Pencil, Sparkles, Image as ImageIcon } from 'lucide-react
 
 export default function ImageTipsPage() {
   return (
-    <main className="min-h-screen">
-      <div className="container mx-auto max-w-[1200px]">
+    <main className="min-h-screen flex flex-col">
+      <div className="container mx-auto max-w-[1200px] flex-grow">
         <Header isSimple={true} />
 
         <div className="space-y-8">
@@ -127,7 +127,7 @@ export default function ImageTipsPage() {
             </div>
         </div>
       </div>
-      <footer className="text-center py-6 text-primary-foreground">
+      <footer className="text-center py-6 text-primary-foreground mt-8">
         <div className="container mx-auto">
           <p>&copy; {new Date().getFullYear()} LibraryLaunchpad. All rights reserved.</p>
           <p className="font-sans font-bold text-white mt-2">Powered by <span className="italic">P</span>aper<span className="italic">L</span>ab</p>

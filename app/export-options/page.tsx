@@ -11,11 +11,11 @@ export default function ExportOptionsPage() {
     const { toast } = useToast();
 
   return (
-    <main className="min-h-screen">
-      <div className="container mx-auto max-w-[1200px]">
+    <main className="min-h-screen flex flex-col">
+      <div className="container mx-auto max-w-[1200px] flex-grow">
         <Header isSimple={true} />
 
-        <div className="space-y-4 sm:space-y-8">
+        <div className="space-y-8">
             <Card>
                 <CardHeader>
                     <CardTitle className="text-3xl sm:text-4xl font-sans font-bold text-gray-800 dark:text-gray-100 flex items-center gap-4">
@@ -29,7 +29,7 @@ export default function ExportOptionsPage() {
                 </CardContent>
             </Card>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4 sm:gap-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-8">
                 <Card className="flex flex-col">
                     <CardHeader>
                         <CardTitle className="font-sans text-2xl flex items-center gap-3">
@@ -123,7 +123,7 @@ export default function ExportOptionsPage() {
             </div>
         </div>
       </div>
-       <footer className="text-center py-6 text-primary-foreground">
+       <footer className="text-center py-6 text-primary-foreground mt-8">
         <div className="container mx-auto">
           <p>&copy; {new Date().getFullYear()} LibraryLaunchpad. All rights reserved.</p>
           <p className="font-sans font-bold text-white mt-2">Powered by <span className="italic">P</span>aper<span className="italic">L</span>ab</p>
