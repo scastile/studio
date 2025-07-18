@@ -133,14 +133,14 @@ export default function ImageTipsPage() {
                                 <h4 className="text-lg font-semibold text-foreground">Simple Prompt:</h4>
                                 <p className="p-3 bg-muted rounded-md mt-1 font-mono text-sm">a knight</p>
                                 <div className="mt-2 relative w-full rounded-lg overflow-hidden border">
-                                    <Image src="https://storage.googleapis.com/librarylaunchpad-default-rtdb.appspot.com/a-knight-good.png" alt="A knight in armor in a field" width={400} height={400} className="object-cover w-full h-auto" data-ai-hint="knight field" />
+                                    <Image src="https://storage.googleapis.com/librarylaunchpad-default-rtdb.appspot.com/a-knight-good.png" alt="A knight in armor in a field" width={400} height={400} className="object-cover" data-ai-hint="knight field" />
                                 </div>
                             </div>
                              <div>
                                 <h4 className="text-lg font-semibold text-foreground">Good Prompt:</h4>
                                 <p className="p-3 bg-muted rounded-md mt-1 font-mono text-sm">A knight in shining armor holding a sword, fantasy art.</p>
                                  <div className="mt-2 relative w-full rounded-lg overflow-hidden border">
-                                    <Image src="https://storage.googleapis.com/librarylaunchpad-default-rtdb.appspot.com/a-knight-good.png" alt="A fantasy art style knight in shining armor" width={400} height={400} className="object-cover w-full h-auto" data-ai-hint="knight fantasy" />
+                                    <Image src="https://storage.googleapis.com/librarylaunchpad-default-rtdb.appspot.com/a-knight-good.png" alt="A fantasy art style knight in shining armor" width={400} height={400} className="object-cover" data-ai-hint="knight fantasy" />
                                 </div>
                             </div>
                              <div>
@@ -149,7 +149,7 @@ export default function ImageTipsPage() {
                                     <strong>Photorealistic, cinematic close-up shot</strong> of a <strong>female knight</strong> with a determined expression. She wears <strong>ornate, battle-worn steel armor</strong> reflecting the <strong>dramatic lighting</strong> of a fiery sunset. <strong>Sparks from a nearby forge</strong> float in the air. <strong>Low-angle view</strong>, making her look heroic. <strong>In the style of a high-fantasy movie poster</strong>.
                                 </p>
                                 <div className="mt-2 relative w-full rounded-lg overflow-hidden border">
-                                    <Image src="https://storage.googleapis.com/librarylaunchpad-default-rtdb.appspot.com/a-knight-good.png" alt="A photorealistic female knight in ornate armor at sunset" width={400} height={400} className="object-cover w-full h-auto" data-ai-hint="female knight" />
+                                    <Image src="https://storage.googleapis.com/librarylaunchpad-default-rtdb.appspot.com/a-knight-good.png" alt="A photorealistic female knight in ornate armor at sunset" width={400} height={400} className="object-cover" data-ai-hint="female knight" />
                                 </div>
                             </div>
                         </CardContent>
@@ -170,5 +170,6 @@ export default function ImageTipsPage() {
     </main>
   );
 }
+    
 
     
