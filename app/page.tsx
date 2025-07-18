@@ -22,7 +22,6 @@ import { getIconForCategory } from '../components/icons';
 import Image from 'next/image';
 import { SavedCampaignsList } from '../components/SavedCampaignsList';
 import { SavedImagesList } from '../components/SavedImagesList';
-import { InfoCard } from '../components/InfoCard';
 
 
 export default function Home() {
@@ -399,3 +398,5 @@ export default function Home() {
     </main>
   );
 }
+
+    
